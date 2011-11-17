@@ -1,0 +1,24 @@
+uhd (3.3.1-0squeeze1) experimental; urgency=low
+
+  * Keep up, rebase package with release_003_003_001 tag
+  * Packaged for Debian (Closes: #644789)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 12 Nov 2011 20:00:49 -0500
+
+uhd (3.2.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 07 Oct 2011 21:45:37 -0400
+
+uhd (3.2.3-1) experimental; urgency=low
+
+  * Keep up, rebase package with release_003_002_003 tag
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 20 Sep 2011 12:17:13 -0400
+
+uhd (3.2.1-1) experimental; urgency=low
+
+  * Package from upstream git
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri,  5 Aug 2011 19:12:07 -0500

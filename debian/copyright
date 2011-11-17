@@ -1,0 +1,31 @@
+GPL licensed source code from git:
+http://gnuradio.org/cgit/gnuradio.git/
+
+The upstream package source tarball was generated from the tag:
+git archive --format=tar --prefix=uhd-3.3.1/ release_003_003_001 | gzip > ../uhd_3.3.1.orig.tar.gz
+The corresponding UHD images tarball was downloaded from:
+http://files.ettus.com/uhd_releases/003_003_001/images-only/UHD-images-003.003.001.tar.gz
+
+Debianized by A. Maitland Bottoms <bottoms@debian.org>
+on 5 August 2011.
+
+Copyright 2010-2011 Ettus Research LLC
+
+                    GNU GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+A full copy of the license is in the file:
+/usr/share/common-licenses/GPL-3

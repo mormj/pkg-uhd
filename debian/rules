@@ -1,0 +1,8 @@
+#!/usr/bin/make -f
+%:
+	dh $@ --sourcedirectory=host --builddirectory=build
+
+override_dh_auto_install:
+	cp -a contrib-images/ debian/uhd-contrib-images/usr/
+	dh_auto_install
+	rm debian/tmp/usr/share/doc/uhd/LICENSE.txt

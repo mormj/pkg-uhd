@@ -3,12 +3,12 @@ DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 export DEB_HOST_MULTIARCH
 
 %:
-	dh $@ --sourcedirectory=host --builddirectory=build
-
-override_dh_auto_configure:
-	dh_auto_configure -- -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)"
+	dh $@ --sourcedirectory=images --builddirectory=build
 
 override_dh_auto_install:
-	cp -a contrib-images/ debian/uhd-contrib-images/usr/
 	dh_auto_install
-	rm debian/tmp/usr/share/doc/uhd/LICENSE.txt
+	cp -a contrib-images/share debian/uhd-images/usr/
+
+override_dh_auto_clean:
+	rm -f images/images/*tag
+	dh_auto_clean --sourcedirectory=images --builddirectory=build

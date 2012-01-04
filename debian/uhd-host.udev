@@ -1,4 +1,0 @@
-# USRP1
-ACTION=="add", BUS=="usb", SYSFS{idVendor}=="fffe", SYSFS{idProduct}=="0002", GROUP:="usrp", MODE:="0660"
-# USRP-B1XX series
-ACTION=="add", BUS=="usb", SYSFS{idVendor}=="2500", SYSFS{idProduct}=="0001", GROUP:="usrp", MODE:="0666"

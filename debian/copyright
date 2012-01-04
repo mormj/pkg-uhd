@@ -2,7 +2,7 @@ GPL licensed source code from git:
 http://gnuradio.org/cgit/gnuradio.git/
 
 The upstream package source tarball was generated from the tag:
-git archive --format=tar --prefix=uhd-3.3.1/ release_003_003_001 | gzip > ../uhd_3.3.1.orig.tar.gz
+git archive --format=tar --prefix=uhd-3.3.1/ release_003_003_001 | gzip > ../uhd-images_3.3.1.orig.tar.gz
 The corresponding UHD images tarball was downloaded from:
 http://files.ettus.com/uhd_releases/003_003_001/images-only/UHD-images-003.003.001.tar.gz
 

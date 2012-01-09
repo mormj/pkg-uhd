@@ -1,31 +1,131 @@
-GPL licensed source code from git:
-http://gnuradio.org/cgit/gnuradio.git/
+Format: http://dep.debian.net/deps/dep5/
+Maintainer: A. Maitland Bottoms <bottoms@debian.org>
+Upstream-Name: UHD
+Upstream-Contact: http://www.ettus.com/contact
+Source: http://code.ettus.com/redmine/ettus/projects/uhd/wiki#Source-code
+X-Note: The upstream package source tarball was generated from the tag:
+ git archive --format=tar --prefix=uhd-3.3.1/ release_003_003_001 | gzip > ../uhd_3.3.1.orig.tar.gz
+Comment: Only the host directory of the distributed source is used to build the uhd-host package for Debian main.
+Copyright: Copyright 2010-2011 Ettus Research LLC
+License: GPL-3+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-3'.
 
-The upstream package source tarball was generated from the tag:
-git archive --format=tar --prefix=uhd-3.3.1/ release_003_003_001 | gzip > ../uhd_3.3.1.orig.tar.gz
-The corresponding UHD images tarball was downloaded from:
-http://files.ettus.com/uhd_releases/003_003_001/images-only/UHD-images-003.003.001.tar.gz
+Files: host/* not listed below:
+Copyright: Copyright 2010-2011 Ettus Research LLC
+License: GPL-3+
 
-Debianized by A. Maitland Bottoms <bottoms@debian.org>
-on 5 August 2011.
+Files: host/cmake/Modules/FindUSB1.cmake
+Copyright: Copyright (c) 2006, 2008  Laurent Montel, <montel@kde.org>
+License: BSD
 
-Copyright 2010-2011 Ettus Research LLC
+Files: host/cmake/Modules/FindGit.cmake
+Copyright: Copyright 2010 Kitware, Inc.
+License: BSD
 
-                    GNU GENERAL PUBLIC LICENSE
-                       Version 3, 29 June 2007
+Files: host/cmake/msvc/*
+Copyright: Copyright (c) 2006 Alexander Chemeris
+Comment: Not used for building Debian packages.
+License: BSD
+ // Redistribution and use in source and binary forms, with or without
+ // modification, are permitted provided that the following conditions are met:
+ // 
+ //   1. Redistributions of source code must retain the above copyright notice,
+ //      this list of conditions and the following disclaimer.
+ // 
+ //   2. Redistributions in binary form must reproduce the above copyright
+ //      notice, this list of conditions and the following disclaimer in the
+ //      documentation and/or other materials provided with the distribution.
+ // 
+ //   3. The name of the author may be used to endorse or promote products
+ //      derived from this software without specific prior written permission.
+ // 
+ // THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ // WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+ // MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO
+ // EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ // SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ // PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ // OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, 
+ // WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ // OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+Files: debian/*
+Copyright: © 2011-2012 A. Maitland Bottoms<,bottoms@debian.org>
+License: GPL-3+
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+Files: images/*
+Copyright: Copyright 2010-2011 Ettus Research LLC
+License: GPL-3+
+Comment: Not used for uhd-host package
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+Files: firmware/*
+Copyright: Copyright 2010-2011 Ettus Research LLC
+ Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+ Copyright 2008-2009 Kitware, Inc.
+ Copyright 2003,2004,2006-2009 Free Software Foundation, Inc.
+License: VARIOUS
+Comment: Not used for uhd-host package
+ Collection provided by Ettus Research LLC contains:
+ - lwIP - A Lightweight TCP/IP stack
+   Copyright (c) 2001-2004 Swedish Institute of Computer Science.
+   lwIP is licenced under the BSD licence
+   http://savannah.nongnu.org/projects/lwip/
+ - Cmake files Copyright 2008-2009 Kitware, Inc.
+   with Kitware BSD license
+ - Python and C code
+   Copyright 2003,2004,2006-2009 Free Software Foundation, Inc.
+   using Gnu Radio GPL-3+ license
+   Copyright 2008-2011 Ettus Research LLC
+   using GPL-3+ license
 
-A full copy of the license is in the file:
-/usr/share/common-licenses/GPL-3
+Files: fpga/*
+Copyright: Copyright 2010-2011 Ettus Research LLC
+ Copyright (C) 2003-2008 Matt Ettus
+ Copyright (C) 2006 Martin Dudok van Heel
+ Copyright (C) 2007 Corgan Enterprises LLC
+ Copyright 2004-2006,2009 Free Software Foundation, Inc.
+License: VARIOUS
+Comment: Not used for uhd-host package
+ Collection provided by Ettus Research LLC contains:
+ - Verilog FPGA code
+ - Python and auto* code 
+   Copyright 2004-2006,2009 Free Software Foundation, Inc.
+ - Boilerplate code generated by Xilinx and Altera tools
+   created by the authors and distributed as part of the upstream source.
+ - fpga/usrp2/opencores: 
+   Each directory contains its own copyright and licensing information.  We 
+   believe that we have the right to distribute all of these files in the form
+   in which we provide them.  If this is not the case, please notify Matt Ettus,
+   matt@ettus.com.
+
+License: BSD
+ On Debian GNU/Linux systems, the complete text of the BSD
+ License can be found in `/usr/share/common-licenses/BSD'.
+
+License: GPL-3+
+ On Debian systems, the complete text of the GNU General
+ Public License can be found in `/usr/share/common-licenses/GPL-3'.
+
+License: VARIOUS
+ The UHD project doesn't use same license for all code in the
+ firmware and fpga directories. Code in these directories is
+ not used in building the Debian uhd-host package but is distributed
+ as part of the upstream source.
+ .
+ Please, check source code for more details. A license is usually at the start
+ of each source file.

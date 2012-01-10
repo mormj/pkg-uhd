@@ -1,7 +1,13 @@
+uhd (3.3.2-1) experimental; urgency=low
+
+  * New upstream release
+  * Packaged for Debian (Closes: #644789)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 10 Jan 2012 00:18:49 -0500
+
 uhd (3.3.1-1) experimental; urgency=low
 
   * Keep up, rebase package with release_003_003_001 tag
-  * Packaged for Debian (Closes: #644789)
 
  -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 12 Nov 2011 20:00:49 -0500
 

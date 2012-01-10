@@ -1,14 +1,31 @@
 #!/usr/bin/make -f
-DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
-export DEB_HOST_MULTIARCH
 
 %:
 	dh $@ --sourcedirectory=images --builddirectory=build
 
+override_dh_auto_configure:
+	dh_auto_configure
+	mkdir -p fx2-firmware
+	cd fx2-firmware && cmake ../firmware/fx2 -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_VERBOSE_MAKEFILE=ON
+
+override_dh_auto_build:
+	dh_auto_build
+	cd fx2-firmware && make
+
 override_dh_auto_install:
 	dh_auto_install
 	cp -a contrib-images/share debian/uhd-images/usr/
+	cp -a fx2-firmware/b100/b100_fw.ihx debian/uhd-images/usr/share/uhd/images/usrp_b100_fw.ihx
+	cp -a fx2-firmware/usrp1/usrp1_fw.ihx debian/uhd-images/usr/share/uhd/images/
 
 override_dh_auto_clean:
+	rm -rf fx2-firmware
 	rm -f images/images/*tag
+	rm -f firmware/fx2/b100/usb_descriptors.sym
+	rm -f firmware/fx2/b100/usrp_gpif.c
+	rm -f firmware/fx2/b100/usrp_gpif_inline.h
+	rm -f firmware/fx2/common/_startup.sym
+	rm -f firmware/fx2/common/eeprom_boot.sym
+	rm -f firmware/fx2/common/vectors.sym
+	rm -f firmware/fx2/usrp1/usb_descriptors.sym
 	dh_auto_clean --sourcedirectory=images --builddirectory=build

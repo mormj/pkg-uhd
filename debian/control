@@ -3,7 +3,7 @@ Section: contrib/libs
 Priority: optional
 Maintainer: A. Maitland Bottoms <bottoms@debian.org>
 Uploaders: Bdale Garbee <bdale@gag.com>
-Build-Depends: debhelper (>= 8.9.0~)
+Build-Depends: debhelper (>= 8.9.0~), sdcc
 Standards-Version: 3.9.2
 Homepage: http://code.ettus.com/redmine/ettus/projects/uhd/wiki
 Vcs-Browser: http://gnuradio.org/cgit/gnuradio.git/log/

@@ -1,3 +1,9 @@
+uhd-images (3.3.2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 10 Jan 2012 00:02:21 -0500
+
 uhd-images (3.3.1-1) unstable; urgency=low
 
   * Packaged for Debian contrib (Closes: #654637)

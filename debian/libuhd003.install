@@ -1,2 +1,1 @@
-usr/lib/libuhd.so.003.003
-usr/lib/libuhd.so.003
+usr/lib/*.so.*

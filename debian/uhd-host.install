@@ -1,5 +1,3 @@
 usr/bin
-usr/share/uhd/examples	usr/lib/uhd
-usr/share/uhd/tests	usr/lib/uhd
-usr/share/uhd/utils	usr/lib/uhd
-usr/share/doc/uhd/*	/usr/share/doc/uhd-host
+usr/lib/uhd
+usr/share/doc/uhd/manual /usr/share/doc/uhd-host/

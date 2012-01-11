@@ -1,3 +1,13 @@
+uhd (3.3.2-2) unstable; urgency=low
+
+  * improved uhd-host package
+    - include manual documentation
+    - configure sysctl and pam limits settings
+  * Add README.Debian
+  * upload to unstable
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 11 Jan 2012 13:37:13 -0500
+
 uhd (3.3.2-1) experimental; urgency=low
 
   * New upstream release

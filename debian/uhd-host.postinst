@@ -9,6 +9,8 @@ fi
 if ! getent group usrp >/dev/null; then
    addgroup --system usrp
 fi
+# Apply usrp2 networking optimization
+sysctl -p /etc/sysctl.d/uhd-usrp2.conf
 
 #DEBHELPER#
 

@@ -1,0 +1,88 @@
+--- a/host/CMakeLists.txt
++++ b/host/CMakeLists.txt
+@@ -41,6 +41,7 @@
+ SET(RUNTIME_DIR bin)
+ SET(LIBRARY_DIR lib${LIB_SUFFIX})
+ SET(INCLUDE_DIR include)
++SET(PKG_LIB_DIR lib/uhd)
+ SET(PKG_DATA_DIR share/uhd)
+ SET(PKG_DOC_DIR share/doc/uhd)
+ 
+--- a/host/examples/CMakeLists.txt
++++ b/host/examples/CMakeLists.txt
+@@ -38,7 +38,7 @@
+     GET_FILENAME_COMPONENT(example_name ${example_source} NAME_WE)
+     ADD_EXECUTABLE(${example_name} ${example_source})
+     TARGET_LINK_LIBRARIES(${example_name} uhd)
+-    INSTALL(TARGETS ${example_name} RUNTIME DESTINATION ${PKG_DATA_DIR}/examples COMPONENT examples)
++    INSTALL(TARGETS ${example_name} RUNTIME DESTINATION ${PKG_LIB_DIR}/examples COMPONENT examples)
+ ENDFOREACH(example_source)
+ 
+ ########################################################################
+@@ -50,5 +50,5 @@
+     INCLUDE_DIRECTORIES(${CURSES_INCLUDE_DIR})
+     ADD_EXECUTABLE(rx_ascii_art_dft rx_ascii_art_dft.cpp)
+     TARGET_LINK_LIBRARIES(rx_ascii_art_dft uhd ${CURSES_LIBRARIES})
+-    INSTALL(TARGETS rx_ascii_art_dft RUNTIME DESTINATION ${PKG_DATA_DIR}/examples COMPONENT examples)
++    INSTALL(TARGETS rx_ascii_art_dft RUNTIME DESTINATION ${PKG_LIB_DIR}/examples COMPONENT examples)
+ ENDIF(CURSES_FOUND)
+--- a/host/tests/CMakeLists.txt
++++ b/host/tests/CMakeLists.txt
+@@ -46,7 +46,7 @@
+     ADD_EXECUTABLE(${test_name} ${test_source})
+     TARGET_LINK_LIBRARIES(${test_name} uhd)
+     ADD_TEST(${test_name} ${test_name})
+-    INSTALL(TARGETS ${test_name} RUNTIME DESTINATION ${PKG_DATA_DIR}/tests COMPONENT tests)
++    INSTALL(TARGETS ${test_name} RUNTIME DESTINATION ${PKG_LIB_DIR}/tests COMPONENT tests)
+ ENDFOREACH(test_source)
+ 
+ ########################################################################
+--- a/host/usrp_e_utils/CMakeLists.txt
++++ b/host/usrp_e_utils/CMakeLists.txt
+@@ -38,7 +38,7 @@
+         GET_FILENAME_COMPONENT(util_name ${util_source} NAME_WE)
+         ADD_EXECUTABLE(${util_name} ${util_source})
+         TARGET_LINK_LIBRARIES(${util_name} ${Boost_LIBRARIES})
+-        INSTALL(TARGETS ${util_name} RUNTIME DESTINATION ${PKG_DATA_DIR}/usrp_e_utils)
++        INSTALL(TARGETS ${util_name} RUNTIME DESTINATION ${PKG_LIB_DIR}/usrp_e_utils)
+     ENDFOREACH(util_source)
+ 
+ ENDIF(ENABLE_USRP_E_UTILS)
+--- a/host/utils/CMakeLists.txt
++++ b/host/utils/CMakeLists.txt
+@@ -48,7 +48,7 @@
+ IF(LINUX AND ENABLE_USB)
+     INSTALL(FILES
+         uhd-usrp.rules
+-        DESTINATION ${PKG_DATA_DIR}/utils
++        DESTINATION ${PKG_LIB_DIR}/utils
+         COMPONENT utilities
+     )
+ ENDIF(LINUX AND ENABLE_USB)
+@@ -58,7 +58,7 @@
+     GET_FILENAME_COMPONENT(util_name ${util_source} NAME_WE)
+     ADD_EXECUTABLE(${util_name} ${util_source})
+     TARGET_LINK_LIBRARIES(${util_name} uhd)
+-    INSTALL(TARGETS ${util_name} RUNTIME DESTINATION ${PKG_DATA_DIR}/utils COMPONENT utilities)
++    INSTALL(TARGETS ${util_name} RUNTIME DESTINATION ${PKG_LIB_DIR}/utils COMPONENT utilities)
+ ENDFOREACH(util_source)
+ 
+ IF(ENABLE_USRP2)
+@@ -69,7 +69,7 @@
+         )
+         INSTALL(FILES
+             ${CMAKE_CURRENT_BINARY_DIR}/dd.exe
+-            DESTINATION ${PKG_DATA_DIR}/utils
++            DESTINATION ${PKG_LIB_DIR}/utils
+             COMPONENT utilities
+         )
+     ENDIF(WIN32 AND UHD_RELEASE_MODE)
+@@ -79,7 +79,7 @@
+         usrp2_card_burner_gui.py
+         usrp_n2xx_net_burner.py
+         usrp_n2xx_net_burner_gui.py
+-        DESTINATION ${PKG_DATA_DIR}/utils
++        DESTINATION ${PKG_LIB_DIR}/utils
+         COMPONENT utilities
+     )
+ ENDIF(ENABLE_USRP2)

@@ -1,3 +1,9 @@
+uhd (3.3.2-3) unstable; urgency=low
+
+  * more robust postinst (Closes: #656119)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 17 Jan 2012 11:05:15 -0500
+
 uhd (3.3.2-2) unstable; urgency=low
 
   * improved uhd-host package

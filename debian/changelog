@@ -1,3 +1,9 @@
+uhd (3.4.0-2) unstable; urgency=low
+
+  * Build without liborc to hunt bugs in convert_test
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 03 Apr 2012 11:43:02 -0400
+
 uhd (3.4.0-1) unstable; urgency=low
 
   * New upstream release

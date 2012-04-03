@@ -3,8 +3,8 @@ Section: science
 Priority: optional
 Maintainer: A. Maitland Bottoms <bottoms@debian.org>
 Uploaders: Bdale Garbee <bdale@gag.com>
-Build-Depends: debhelper (>= 8.0.0~), cmake (>= 2.8.2), autoconf, autotools-dev, pkg-config, python-dev, python-cheetah, python-docutils, doxygen, libboost-all-dev, libusb-1.0-0-dev, liborc-0.4-dev, liboil0.3-dev, libncurses5-dev
-Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 8), cmake (>= 2.8.2), autoconf, autotools-dev, pkg-config, python-dev, python-cheetah, python-docutils, doxygen, libboost-all-dev, libusb-1.0-0-dev, liborc-0.4-dev, liboil0.3-dev, libncurses5-dev
+Standards-Version: 3.9.1
 Homepage: http://code.ettus.com/redmine/ettus/projects/uhd/wiki
 Vcs-Browser: http://gnuradio.org/cgit/gnuradio.git/log/
 Vcs-Git: git://code.ettus.com/ettus/uhd.git
@@ -12,9 +12,13 @@ Vcs-Git: git://code.ettus.com/ettus/uhd.git
 Package: uhd-host
 Architecture: any
 Depends: libuhd003, python, adduser, ${shlibs:Depends}, ${misc:Depends}
-Recommends: gnuradio, python-tk, curl
+Recommends: gnuradio, python-tk, curl, procps
 Description: universal hardware driver for Ettus Research products
  Host utilities for the Universal Hardware Driver for Ettus Research products.
+ .
+ The supported devices provide analog radio receiver and transmitter hardware
+ along with digital interfaces for getting signals to and from a software
+ defined radio running on the host computer.
  .
  This package includes the uhd_find_devices application to locate and
  configure attached peripherals, and the uhd_usrp_probe application to
@@ -26,9 +30,14 @@ Section: libs
 Pre-Depends: ${misc:Pre-Depends}
 Depends: python, adduser, ${shlibs:Depends}, ${misc:Depends}
 Recommends: gnuradio
-Suggests: uhd-images
+Suggests: uhd-contrib-images
+Multi-Arch: same
 Description: universal hardware driver for Ettus Research products
  Host library for the Universal Hardware Driver for Ettus Research products.
+ .
+ The supported devices provide analog radio receiver and transmitter hardware
+ along with digital interfaces for getting signals to and from a software
+ defined radio running on the host computer.
 
 Package: libuhd-dev
 Architecture: any
@@ -38,6 +47,10 @@ Suggests: libjs-jquery
 Recommends: gnuradio
 Description: universal hardware driver for Ettus Research products
  Host library for the Universal Hardware Driver for Ettus Research products.
+ .
+ The supported devices provide analog radio receiver and transmitter hardware
+ along with digital interfaces for getting signals to and from a software
+ defined radio running on the host computer.
  .
  This package contains the header files and documentation for
  developing with libuhd.

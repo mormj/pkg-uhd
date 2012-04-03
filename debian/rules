@@ -1,7 +1,12 @@
 #!/usr/bin/make -f
+#DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+#export DEB_HOST_MULTIARCH
 
 %:
-	dh $@ --sourcedirectory=host --builddirectory=build
+	dh $@ --parallel --sourcedirectory=host --builddirectory=build
+
+override_dh_auto_configure:
+	dh_auto_configure -- -DPKG_LIB_DIR="/usr/lib/uhd"
 
 override_dh_auto_install:
 	cp debian/uhd-host.limits debian/uhd-host/etc/security/limits.d/uhd.conf

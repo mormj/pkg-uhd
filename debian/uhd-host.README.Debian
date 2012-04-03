@@ -52,5 +52,10 @@ uhd-images:
  directory at runtime. The uhd_install_frmware program in uhd-host
  also helps manage these files.
 
+More Information
+----------------
 
- -- A. Maitland Bottoms <bottoms@debian.org>, Wed, 11 Jan 2012 11:45:31 -0500
+Additional HTML documentation is installed. See
+file:///usr/share/doc/uhd-host/manual/html/index.html
+
+ -- A. Maitland Bottoms <bottoms@debian.org>, Wed, 11 Jan 2012 12:13:44 -0500

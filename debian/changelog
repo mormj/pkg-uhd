@@ -1,3 +1,11 @@
+uhd (3.4.0-3) unstable; urgency=low
+
+  * include upstream fix bsd compilation for network relay example
+    (Closes: #667079)
+  * use liborc again, revert 3.4.0-2 changes.
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 04 Apr 2012 22:43:26 -0400
+
 uhd (3.4.0-2) unstable; urgency=low
 
   * Build without liborc to hunt bugs in convert_test

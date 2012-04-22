@@ -1,0 +1,26 @@
+From 44b68ee80adbfc70869a5fc20ec93c4843f039e0 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Thu, 12 Apr 2012 10:37:54 -0700
+Subject: [PATCH 2/7] cmake: UHDVersion.cmake gets rid of git commit number if 'release' is specified in UHD_RELEASE_MODE
+
+---
+ host/cmake/Modules/UHDVersion.cmake |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
+
+diff --git a/host/cmake/Modules/UHDVersion.cmake b/host/cmake/Modules/UHDVersion.cmake
+index 734ef97..13d9523 100644
+--- a/host/cmake/Modules/UHDVersion.cmake
++++ b/host/cmake/Modules/UHDVersion.cmake
+@@ -68,4 +68,8 @@ IF(UHD_RELEASE_MODE)
+ ENDIF()
+ 
+ ########################################################################
+-SET(UHD_VERSION "${UHD_VERSION_MAJOR}.${UHD_VERSION_MINOR}.${UHD_VERSION_PATCH}-${UHD_GIT_COUNT}-${UHD_GIT_HASH}")
++IF(UHD_RELEASE_MODE STREQUAL "release")
++    SET(UHD_VERSION "${UHD_VERSION_MAJOR}.${UHD_VERSION_MINOR}.${UHD_VERSION_PATCH}-${UHD_GIT_HASH}")
++ELSE()
++    SET(UHD_VERSION "${UHD_VERSION_MAJOR}.${UHD_VERSION_MINOR}.${UHD_VERSION_PATCH}-${UHD_GIT_COUNT}-${UHD_GIT_HASH}")
++ENDIF()
+-- 
+1.7.2.5
+

@@ -1,0 +1,32 @@
+From b221b3e34d4c0eaaeb3ab66778e5b82dfd0f5230 Mon Sep 17 00:00:00 2001
+From: Josh Blum <josh@joshknows.com>
+Date: Mon, 16 Apr 2012 16:44:58 -0700
+Subject: [PATCH 3/7] convert: give SIMD conversions prio over table
+
+given performance benchmarks involving the converter,
+when the driver is also doing other things
+
+sc8 conversions will still involve tables since
+no SIMD implementations exist yet
+---
+ host/lib/convert/convert_common.hpp |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/host/lib/convert/convert_common.hpp b/host/lib/convert/convert_common.hpp
+index 55bc2e9..29ea948 100644
+--- a/host/lib/convert/convert_common.hpp
++++ b/host/lib/convert/convert_common.hpp
+@@ -57,8 +57,8 @@ static const int PRIORITY_SIMD = 1; //neon conversions could be implemented bett
+ static const int PRIORITY_TABLE = 2; //tables require large cache, so they are slower on arm
+ #else
+ static const int PRIORITY_LIBORC = 1;
+-static const int PRIORITY_SIMD = 2;
+-static const int PRIORITY_TABLE = 3;
++static const int PRIORITY_SIMD = 3;
++static const int PRIORITY_TABLE = 2;
+ #endif
+ 
+ /***********************************************************************
+-- 
+1.7.2.5
+

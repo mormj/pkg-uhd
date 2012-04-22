@@ -1,3 +1,9 @@
+uhd (3.4.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 21 Apr 2012 21:40:35 -0400
+
 uhd (3.4.0-3) unstable; urgency=low
 
   * include upstream fix bsd compilation for network relay example

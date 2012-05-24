@@ -1,6 +1,43 @@
+uhd (3.4.2-1) unstable; urgency=low
+
+  * New upstream release
+    * USRP2/N2x0:
+          o Card and net burner language fixes
+          o Net burner python v3 code fix
+          o Net burner IPv6 interface fix
+    * E1x0:
+          o Fix for FPGA timing issue with GPMC input
+          o Incremented FPGA compat number to 9.2
+    * B100:
+          o Fix USB wrapper/buffer release race condition
+    * USRP1:
+          o Fix DAC calculation for tune out of 1st nyquist zone
+    * General:
+          o Fix for recv packet handler time error check
+          o SIMD conversion routines priority over table look-up
+          o Fix undefined GCC float conversion behaviour for sc8
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 23 May 2012 20:50:59 -0400
+
 uhd (3.4.1-1) unstable; urgency=low
 
   * New upstream release
+      *  USRP2/N2x0:
+          o Filter out invalid broadcast replies
+          o Incremented FPGA compat number to 9.1
+    * E1x0:
+          o Incremented FPGA compat number to 9.1
+    * B100:
+          o FPGA fixes for USB slave FIFO interface
+          o Incremented FPGA compat number to 9.3
+    * USRP1:
+          o Stop thread in deconstructor for race condition
+          o Fixed DBSRX + USRP1 i2c lockup condition
+    * Gen2:
+          o Fix for unintentional clear in deprecated recv() call
+          o Fix RX DC offset call to handle negative values
+    * FreeBSD:
+          o Fixed network relay example compilation
 
  -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 21 Apr 2012 21:40:35 -0400
 

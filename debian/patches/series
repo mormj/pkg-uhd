@@ -1,8 +1,1 @@
-0001-utils-card-net-burner-string-decode.patch
-0002-cmake-UHDVersion.cmake-gets-rid-of-git-commit-number.patch
-0003-convert-give-SIMD-conversions-prio-over-table.patch
-0004-recv-only-inspect-tsf-on-timestamp-error-check.patch
-0005-usb-do-not-release-recv-buffer-in-wrapper.patch
-0006-n2x0-card-burner-fixes-for-python3.0-and-IPv6.patch
-0007-master-Fixing-comments-that-say-SPI-is-LSB.patch
 kfreebsd-usb

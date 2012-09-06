@@ -34,7 +34,7 @@ show_usage()
 imagedir="/usr/share/uhd/images"
 # The imagetarball is the source of firmware built with matching
 # source code.
-imagetarball="http://files.ettus.com/binaries/uhd_stable/releases/uhd_003.004.002-release/uhd-images_003.004.002-release.tar.gz"
+imagetarball="http://files.ettus.com/binaries/master_images/archive/uhd-images_003.004.003-205-g4896bf78.tar.gz"
 while [ "$1" != "" ]; do
     case $1 in
         -h | --help )           show_usage
@@ -72,11 +72,11 @@ echo "Using imagetarball:" $imagetarball
     if echo $imagetarball | grep -q :// ; then
 	echo Fetching $imagetarball ;
 	if [ -x /usr/bin/wget ] ; then
-	    /usr/bin/wget --user-agent="Debian UHD image installer" -O $tdir/uhd-images_003.004.002-release.tar.gz $imagetarball
+	    /usr/bin/wget --user-agent="Debian UHD image installer" -O $tdir/uhd-images_003.004.003-release.tar.gz $imagetarball
 	else
-	    curl --user-agent "Debian UHD image installer" -o $tdir/uhd-images_003.004.002-release.tar.gz $imagetarball
+	    curl --user-agent "Debian UHD image installer" -o $tdir/uhd-images_003.004.003-release.tar.gz $imagetarball
 	fi
-	imagetarball=$tdir/uhd-images_003.004.002-release.tar.gz
+	imagetarball=$tdir/uhd-images_003.004.003-release.tar.gz
     else
 	if [ -f $imagetarball ] ; then
 	    echo Extracting $imagetarball
@@ -88,7 +88,7 @@ echo "Using imagetarball:" $imagetarball
     fi
 
 # check image tarball
-    r=`echo 3a029f244df6dd9812e196ec905a1fc8\ \ $imagetarball | md5sum -c`
+    r=`echo a019114aaeea740dffbd6455003f4596\ \ $imagetarball | md5sum -c`
     if echo $r | grep -q OK ; then
 	echo "It's OK: md5sum is as expected." ;
 	rm -f $imagedir/*.tag

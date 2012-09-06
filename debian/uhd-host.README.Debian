@@ -9,7 +9,7 @@ This provides two main benefits:
  - Access control:
     The udev rules limit access to members of the group
     (at least for USB attached USRPs).
- - Real Time Priority priviledge:
+ - Real Time Priority privilege:
     The pam limits setting allows UHD to boost the
     thread scheduling priority for usrp group members.
 
@@ -58,4 +58,4 @@ More Information
 Additional HTML documentation is installed. See
 file:///usr/share/doc/uhd-host/manual/html/index.html
 
- -- A. Maitland Bottoms <bottoms@debian.org>, Wed, 11 Jan 2012 12:13:44 -0500
+ -- A. Maitland Bottoms <bottoms@petros.rf.org>, Wed,  5 Sep 2012 23:41:06 -0400

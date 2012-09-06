@@ -1,3 +1,18 @@
+uhd (3.4.3-1) experimental; urgency=low
+
+  * New upstream release
+    XCVR2450:
+        Fix to disable automatic LO offset on TX
+    N2x0:
+        Deal with misc exceptions in net burner
+    E1x0:
+        Changes to add reliability to bus state machine
+    USRP1:
+        Shutoff the DAC on transmit EOB flags
+        Revert 1st nyquist zone DAC calculation
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 05 Sep 2012 21:55:04 -0400
+
 uhd (3.4.2-1) unstable; urgency=low
 
   * New upstream release

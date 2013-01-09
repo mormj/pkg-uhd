@@ -1,3 +1,14 @@
+uhd (3.4.4-1) experimental; urgency=low
+
+  * New upstream release
+    * Gen2
+        Fix RX and TX DSP scalar adjustments
+    * B100/E1x0
+        Fixed RX ADC IQ inversion swap
+        Incremented FPGA compat number to 9.4
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Thu, 18 Oct 2012 13:21:54 -0400
+
 uhd (3.4.3-1) experimental; urgency=low
 
   * New upstream release

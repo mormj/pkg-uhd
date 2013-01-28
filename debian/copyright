@@ -3,7 +3,7 @@ Upstream-Name: UHD
 Upstream-Contact: http://www.ettus.com/contact
 Source: http://code.ettus.com/redmine/ettus/projects/uhd/wiki#Source-code
 X-Note: The upstream package source tarball was generated from the tag:
- git archive --format=tar --prefix=uhd-3.4.4/ release_003_004_004 | gzip > ../uhd_3.4.4.orig.tar.gz
+ git archive --format=tar --prefix=uhd-3.5.0/ release_003_005_000 | gzip > ../uhd_3.5.0.orig.tar.gz
 Comment: Only the host directory of the distributed source is used to build the uhd-host package for Debian main.
 Copyright: Copyright 2010-2011 Ettus Research LLC
 License: GPL-3+

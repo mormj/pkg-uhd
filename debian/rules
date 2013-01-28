@@ -1,7 +1,6 @@
 #!/usr/bin/make -f
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 export DEB_HOST_MULTIARCH
-#export DEB_BUILD_HARDENING=1
 CFLAGS+=$(CPPFLAGS)
 CXXFLAGS+=$(CPPFLAGS)
 
@@ -19,6 +18,8 @@ override_dh_auto_install:
 	cp debian/uhd-host.sysctl debian/uhd-host/etc/sysctl.d/uhd-usrp2.conf
 	cp debian/uhd_install_firmware debian/uhd-host/usr/bin/
 	chmod +x debian/uhd-host/usr/bin/uhd_install_firmware
+	cp build/utils/uhd_images_downloader.py debian/uhd-host/usr/bin/uhd_images_downloader
+	chmod +x debian/uhd-host/usr/bin/uhd_images_downloader
 	dh_auto_install
 	- rm debian/tmp/usr/share/doc/uhd/LICENSE.txt
 	- rm -f debian/tmp/usr/share/doc/uhd/doxygen/html/jquery.js

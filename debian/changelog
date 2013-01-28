@@ -1,3 +1,31 @@
+uhd (3.5.0-1) experimental; urgency=low
+
+  * New upstream release
+      B100:
+          Added timed commands feature
+          Incremented FPGA compat number to 11.1
+          Incremented firmware compat number to 3
+      E1x0:
+          Added timed commands feature
+          Incremented FPGA compat number to 11.1
+      USRP2/N2x0:
+          Alternative stream destination on TX
+          Incremented FPGA compat number to 10
+      N2x0:
+          Implemented timed-commands feature
+          Implemented fast-commands feature
+      SBX/WBX
+          Tune with phase sync using timed-commands
+      RFX series
+          Added calibration utilities support
+      General:
+          SSE2 conversions for sc8 RX samples
+          Added multi-threading to packet converters
+          Added automatic images fetcher application
+  * Upload to experimental during wheezy freeze
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 09 Jan 2013 14:24:11 -0500
+
 uhd (3.4.4-1) experimental; urgency=low
 
   * New upstream release

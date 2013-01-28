@@ -1,3 +1,16 @@
+uhd (3.5.1-1) experimental; urgency=low
+
+  * New upstream release
+    Misc:
+      Fixes to images downloader
+      Fixes to C++ net burner
+      Added sleep(1) to query_gpsdo_sensors
+    OSX:
+      Fix for socket send code newer OS versions
+  * Upload to experimental during wheezy freeze
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sun, 27 Jan 2013 23:33:25 -0500
+
 uhd (3.5.0-1) experimental; urgency=low
 
   * New upstream release
@@ -22,7 +35,6 @@ uhd (3.5.0-1) experimental; urgency=low
           SSE2 conversions for sc8 RX samples
           Added multi-threading to packet converters
           Added automatic images fetcher application
-  * Upload to experimental during wheezy freeze
 
  -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 09 Jan 2013 14:24:11 -0500
 

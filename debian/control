@@ -12,7 +12,8 @@ Vcs-Git: git://code.ettus.com/ettus/uhd.git
 Package: uhd-host
 Architecture: any
 Depends: libuhd003, python, adduser, ${shlibs:Depends}, ${misc:Depends}
-Recommends: gnuradio, python-tk, curl, procps
+Recommends: python-tk, curl, procps
+Suggests: gnuradio
 Description: universal hardware driver for Ettus Research products
  Host utilities for the Universal Hardware Driver for Ettus Research products.
  .
@@ -29,8 +30,7 @@ Architecture: any
 Section: libs
 Pre-Depends: multiarch-support, ${misc:Pre-Depends}
 Depends: python, adduser, ${shlibs:Depends}, ${misc:Depends}
-Recommends: gnuradio
-Suggests: uhd-contrib-images
+Suggests: gnuradio
 Multi-Arch: same
 Description: universal hardware driver for Ettus Research products
  Host library for the Universal Hardware Driver for Ettus Research products.

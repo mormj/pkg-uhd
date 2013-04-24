@@ -1,0 +1,25 @@
+From f703469ac9e14b9b834e3ea44ce6434187193117 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Wed, 27 Mar 2013 15:04:18 -0700
+Subject: [PATCH 1/5] utils: Fixed usrp_n2xx_simple_net_burner warning
+
+---
+ host/utils/usrp_n2xx_simple_net_burner.cpp |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/utils/usrp_n2xx_simple_net_burner.cpp b/host/utils/usrp_n2xx_simple_net_burner.cpp
+index 9f5700d..c3ccba1 100644
+--- a/host/utils/usrp_n2xx_simple_net_burner.cpp
++++ b/host/utils/usrp_n2xx_simple_net_burner.cpp
+@@ -504,7 +504,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+     }
+ 
+     //Reset USRP N2XX
+-    bool reset;
++    bool reset = false;
+     if(auto_reboot) reset = true;
+     else{
+         std::string user_response = "foo";
+-- 
+1.7.10.4
+

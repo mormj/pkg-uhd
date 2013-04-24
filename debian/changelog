@@ -1,3 +1,21 @@
+uhd (3.5.2-1) experimental; urgency=low
+
+  * New upstream release
+      B100:
+          Fix get send buffer timeout
+      E1x0:
+          Changes to bus timings for S issue
+      USRP1:
+          Restore broken EEPROM writing
+  * Plus fixes
+      E110:
+          Fix FPGA Makefile build typo
+      UHD:
+          Fixed timespec irrational rate rounding
+          Multichan streamer CPU utilization
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Mon, 22 Apr 2013 22:30:53 -0400
+
 uhd (3.5.1-1) experimental; urgency=low
 
   * New upstream release

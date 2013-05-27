@@ -1,7 +1,8 @@
-debian/uhd_cal_rx_iq_balance.1
-debian/uhd_cal_tx_dc_offset.1
-debian/uhd_cal_tx_iq_balance.1
-debian/uhd_find_devices.1
-debian/uhd_usrp_probe.1
-debian/uhd_install_firmware.1
-debian/uhd_images_downloader.1
+host/docs/uhd_cal_rx_iq_balance.1
+host/docs/uhd_cal_tx_dc_offset.1
+host/docs/uhd_cal_tx_iq_balance.1
+host/docs/uhd_find_devices.1
+host/docs/uhd_images_downloader.1
+host/docs/uhd_usrp_probe.1
+host/docs/usrp2_card_burner.1
+host/docs/usrp_n2xx_simple_net_burner.1

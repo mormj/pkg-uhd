@@ -1,3 +1,14 @@
+uhd (3.5.3-1) unstable; urgency=low
+
+  * New upstream release
+      UHD source includes man pages now
+      Moved usrp_n2xx_simple_net_burner and usrp2_card_burner into bin
+  * Add watchfile (Closes: #702937)
+  * Add USRP B100 2500:0002 to udev rules (Closes: #705509)
+  * No more uhd_install_firmware, use uhd_images_downloader (Closes: #654637)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 26 May 2013 22:41:47 -0400
+
 uhd (3.5.2-1) experimental; urgency=low
 
   * New upstream release

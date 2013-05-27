@@ -1,6 +1,0 @@
-kfreebsd-usb
-0001-utils-Fixed-usrp_n2xx_simple_net_burner-warning.patch
-#0002-E110-revert-Makefile-for-E110-the-UCF-was-accidental.patch
-0003-gps-use-to_ticks-in-query-app-to-avoid-rounding-issu.patch
-0004-uhd-fixes-for-time_spec-s-to_ticks-and-from_ticks-ca.patch
-0005-uhd-switch-the-reusable-barrier-to-condition-variabl.patch

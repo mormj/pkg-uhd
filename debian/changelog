@@ -1,3 +1,9 @@
+uhd (3.5.4-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 27 Sep 2013 23:43:51 -0400
+
 uhd (3.5.3-1) unstable; urgency=low
 
   * New upstream release

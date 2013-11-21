@@ -1,3 +1,36 @@
+uhd (3.5.4-4) unstable; urgency=low
+
+  * update to git 6bb62ea (head of maint branch) to fix BUG #203
+  Michael Dickens (1):
+        utils: fix declaration of "env_path_sep" such that it is always
+        initialized before it is used in the "get_env_paths" function, by
+        moving it from the global scope to inside that function.  This
+        change allows UHD_STATIC_BLOCK(load_modules) to work correctly.
+  
+  Michael West (1):
+        BUG #203:  Initialized gain values to 0.0
+  
+  Nicholas Corgan (3):
+        cmake: fixed UHD_IMAGES_DIR behavior to include directories
+               inside specified images directory
+        Updated images downloader URL
+        docs: added info on libusbx for Windows
+  
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 13 Nov 2013 19:20:05 -0500
+
+uhd (3.5.4-3) unstable; urgency=low
+
+  * Fix syntax to avoid failing test on powerpc
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 29 Oct 2013 09:30:06 -0400
+
+uhd (3.5.4-2) unstable; urgency=low
+
+  * Avoid failing test on powerpc
+  * Add pkg-config dependency to help find liborc
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Mon, 28 Oct 2013 21:07:40 -0400
+
 uhd (3.5.4-1) unstable; urgency=low
 
   * New upstream release

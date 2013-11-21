@@ -8,7 +8,7 @@ export DEB_HOST_MULTIARCH
 override_dh_auto_configure:
 	dh_auto_configure -- -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" -DPKG_LIB_DIR="/usr/lib/uhd"
 
-# The test suite for this package is busted on s390.
+# The test suite for this package is busted on powerpc.
 override_dh_auto_test:
 	- if [ $(DEB_BUILD_ARCH) != powerpc ]; then dh_auto_test; fi
 

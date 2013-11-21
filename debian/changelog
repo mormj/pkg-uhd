@@ -1,3 +1,13 @@
+uhd (3.5.5-1) unstable; urgency=low
+
+  * New upstream release
+    Nicholas Corgan:
+      uhd_images_downloader: fixes/improvements, redundancy fixes,
+        better error handling, more descriptive error when MD5 check fails
+      lib: dbsrx2 bugfix
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 20 Nov 2013 21:48:35 -0500
+
 uhd (3.5.4-4) unstable; urgency=low
 
   * update to git 6bb62ea (head of maint branch) to fix BUG #203

@@ -1,5 +1,0 @@
-0001-cmake-fixed-UHD_IMAGES_DIR-behavior-to-include-direc.patch
-0002-Updated-images-downloader-URL.patch
-0003-docs-added-info-on-libusbx-for-Windows.patch
-0004-utils-fix-declaration-of-env_path_sep-such-that-it-i.patch
-0005-BUG-203-Initialized-gain-values-to-0.0.patch

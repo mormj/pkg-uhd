@@ -1,0 +1,32 @@
+From 8f0f045cdac16ae84bc446b230beb2b651428294 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Thu, 5 Dec 2013 08:46:22 -0800
+Subject: [PATCH] network_relay: added #include necessary for older versions
+ of Boost on Windows
+
+---
+ host/examples/network_relay.cpp |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/host/examples/network_relay.cpp b/host/examples/network_relay.cpp
+index fc1ebd9..0a67bbf 100644
+--- a/host/examples/network_relay.cpp
++++ b/host/examples/network_relay.cpp
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2010-2012 Ettus Research LLC
++// Copyright 2010-2013 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -18,6 +18,7 @@
+ #include <uhd/utils/thread_priority.hpp>
+ #include <uhd/utils/safe_main.hpp>
+ #include <boost/program_options.hpp>
++#include <boost/thread/condition_variable.hpp>
+ #include <boost/thread/thread.hpp>
+ #include <boost/format.hpp>
+ #include <boost/asio.hpp>
+-- 
+1.7.10.4
+

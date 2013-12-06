@@ -10,7 +10,9 @@ override_dh_auto_configure:
 
 # The test suite for this package is busted on powerpc.
 override_dh_auto_test:
-	- if [ $(DEB_BUILD_ARCH) != powerpc ]; then dh_auto_test; fi
+#	- if [ $(DEB_BUILD_ARCH) != powerpc ]; then dh_auto_test; fi
+# Run tests everywhere in experimental upload to see how things are...
+	- dh_auto_test
 
 override_dh_auto_install:
 	cp debian/uhd-host.limits debian/uhd-host/etc/security/limits.d/uhd.conf

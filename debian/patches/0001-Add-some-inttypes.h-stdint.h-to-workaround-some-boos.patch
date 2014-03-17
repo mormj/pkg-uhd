@@ -1,0 +1,69 @@
+>From 05c7af8edefc970a0fd86596a3e0c93fc794c911 Mon Sep 17 00:00:00 2001
+From: Avery Pennarun <apenwarr@gmail.com>
+Date: Sat, 22 Feb 2014 18:48:47 -0800
+Subject: [PATCH] Add some inttypes.h/stdint.h to workaround some boost
+ versions.
+
+It's slightly inelegant to add these C-style includes, but they've been
+standardized for a long time.  Sadly some versions of boost (including the
+one in current Debian) cannot compile this package unless these extra
+includes are added.
+---
+ host/include/uhd/types/serial.hpp   | 1 +
+ host/include/uhd/utils/msg_task.hpp | 1 +
+ host/lib/usrp/x300/x300_regs.hpp    | 2 ++
+ host/tests/time_spec_test.cpp       | 1 +
+ 4 files changed, 5 insertions(+)
+
+diff --git a/host/include/uhd/types/serial.hpp b/host/include/uhd/types/serial.hpp
+index 7b565c6..ab37773 100644
+--- a/host/include/uhd/types/serial.hpp
++++ b/host/include/uhd/types/serial.hpp
+@@ -18,6 +18,7 @@
+ #ifndef INCLUDED_UHD_TYPES_SERIAL_HPP
+ #define INCLUDED_UHD_TYPES_SERIAL_HPP
+ 
++#include <inttypes.h>
+ #include <uhd/config.hpp>
+ #include <boost/shared_ptr.hpp>
+ #include <boost/cstdint.hpp>
+diff --git a/host/include/uhd/utils/msg_task.hpp b/host/include/uhd/utils/msg_task.hpp
+index 40ee65c..b79af56 100644
+--- a/host/include/uhd/utils/msg_task.hpp
++++ b/host/include/uhd/utils/msg_task.hpp
+@@ -18,6 +18,7 @@
+ #ifndef INCLUDED_UHD_UTILS_MSG_TASK_HPP
+ #define INCLUDED_UHD_UTILS_MSG_TASK_HPP
+ 
++#include <stdint.h>
+ #include <uhd/config.hpp>
+ #include <uhd/transport/zero_copy.hpp>
+ #include <boost/shared_ptr.hpp>
+diff --git a/host/lib/usrp/x300/x300_regs.hpp b/host/lib/usrp/x300/x300_regs.hpp
+index e4ae76a..c0bb565 100644
+--- a/host/lib/usrp/x300/x300_regs.hpp
++++ b/host/lib/usrp/x300/x300_regs.hpp
+@@ -18,6 +18,8 @@
+ #ifndef INCLUDED_X300_REGS_HPP
+ #define INCLUDED_X300_REGS_HPP
+ 
++#include <stdint.h>
++#include <inttypes.h>
+ #include <boost/cstdint.hpp>
+ 
+ #define TOREG(x) ((x)*4)
+diff --git a/host/tests/time_spec_test.cpp b/host/tests/time_spec_test.cpp
+index c9b9652..247a3ec 100644
+--- a/host/tests/time_spec_test.cpp
++++ b/host/tests/time_spec_test.cpp
+@@ -15,6 +15,7 @@
+ // along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ //
+ 
++#include <inttypes.h>
+ #include <boost/test/unit_test.hpp>
+ #include <uhd/types/time_spec.hpp>
+ #include <boost/foreach.hpp>
+-- 
+1.9.0
+

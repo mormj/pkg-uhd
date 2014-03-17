@@ -1,10 +1,42 @@
+uhd (3.7.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Introduced USRP X300 and X310 support!
+  * Releasing a CHDR Dissector for Wireshark analysis
+  * Improved USRP B200 and B210 stability
+  * Introducing Integer-N tuning for WBX, SBX, CBX daughterboards
+  * Introducing support for 120 MHz versions of WBX, SBX, CBX
+  * Lots of new documentation
+  * New GPIO example for USRP X300
+  * Fixed threading bug in USRP B2xx code causing GQRX issue
+  * General UHD bug fixes & improvements
+  * b200: Fixed bug in rx_dsp_core_3000 that would assume 3 halfbands
+    and X300 settings interface.
+  * Include patch from Avery Pennarun (Closes: #739852)
+  * Conflicts with earlier versions on gnuradio (Closes: #733690)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sun, 23 Feb 2014 17:48:29 -0500
+
+uhd (3.6.2-1) unstable; urgency=low
+
+  * New upstream release
+  * Completely re-written UHD Images Downloader, with bug fixes, new features.
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 21 Jan 2014 09:43:19 -0500
+
+uhd (3.6.2~rc2-1) experimental; urgency=low
+
+  * New upstream release candidate
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 14 Dec 2013 09:56:03 -0500
+
 uhd (3.6.2~rc1-1) experimental; urgency=low
 
   * New upstream release candidate
 
  -- A. Maitland Bottoms <bottoms@debian.org>  Thu, 05 Dec 2013 16:18:28 -0500
 
-uhd (3.5.5-1~wheezy) stable; urgency=low
+uhd (3.5.5-1) unstable; urgency=low
 
   * New upstream release
     Nicholas Corgan:

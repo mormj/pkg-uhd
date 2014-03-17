@@ -29,6 +29,7 @@ Architecture: any
 Section: libs
 Pre-Depends: multiarch-support, ${misc:Pre-Depends}
 Depends: python, adduser, ${shlibs:Depends}, ${misc:Depends}
+Conflicts: gnuradio (<<3.7.2.2)
 Suggests: gnuradio
 Multi-Arch: same
 Description: universal hardware driver for Ettus Research products

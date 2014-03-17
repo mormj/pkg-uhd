@@ -1,2 +1,2 @@
-0001-network_relay-added-include-necessary-for-older-vers.patch
-0002-revert-Coverity-fixes.patch
+0001-Add-some-inttypes.h-stdint.h-to-workaround-some-boos.patch
+0001-b200-Fixed-bug-in-rx_dsp_core_3000-that-would-assume.patch

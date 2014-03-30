@@ -1,0 +1,55 @@
+From 1d459fa2fbbc9217c9189589077536eba26724c3 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Thu, 13 Mar 2014 12:12:44 -0700
+Subject: [PATCH 25/39] Added handling for responses that do not have data.
+
+---
+ host/lib/transport/nirio/rpc/rpc_client.cpp |   25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/host/lib/transport/nirio/rpc/rpc_client.cpp b/host/lib/transport/nirio/rpc/rpc_client.cpp
+index 028327c..f8dc26b 100644
+--- a/host/lib/transport/nirio/rpc/rpc_client.cpp
++++ b/host/lib/transport/nirio/rpc/rpc_client.cpp
+@@ -16,7 +16,6 @@
+ //
+ 
+ #include <uhd/transport/nirio/rpc/rpc_client.hpp>
+-#include <uhd/exception.hpp>
+ #include <boost/bind.hpp>
+ #include <boost/version.hpp>
+ #include <boost/format.hpp>
+@@ -175,16 +174,20 @@ void rpc_client::_handle_response_hdr(const boost::system::error_code& err, size
+     if (!_exec_err && (transferred == expected)) {
+         //Response header received. Verify that it is expected
+         if (func_args_header_t::match_function(_request.header, _response.header)) {
+-            UHD_ASSERT_THROW(_response.header.func_args_size);
+-            _response.data.resize(_response.header.func_args_size);
+-
+-            //Wait for response data
+-            boost::asio::async_read(_socket,
+-                boost::asio::buffer(&(*_response.data.begin()), _response.data.size()),
+-                boost::bind(&rpc_client::_handle_response_data, this,
+-                    boost::asio::placeholders::error,
+-                    boost::asio::placeholders::bytes_transferred,
+-                    _response.data.size()));
++            if (_response.header.func_args_size)
++            {
++                _response.data.resize(_response.header.func_args_size);
++
++                //Wait for response data
++                boost::asio::async_read(_socket,
++                    boost::asio::buffer(&(*_response.data.begin()), _response.data.size()),
++                    boost::bind(&rpc_client::_handle_response_data, this,
++                        boost::asio::placeholders::error,
++                        boost::asio::placeholders::bytes_transferred,
++                        _response.data.size()));
++            } else {
++                _handle_response_data(err, 0, 0);
++            }
+         } else {
+             //Unexpected response. Ignore it.
+             UHD_LOG << "rpc_client received garbage responses." << std::endl;
+-- 
+1.7.10.4
+

@@ -1,0 +1,29 @@
+From a92d2f82104a0ac841e7f91001826e718f2b1656 Mon Sep 17 00:00:00 2001
+From: Moritz Fischer <moritz@ettus.com>
+Date: Sun, 23 Mar 2014 20:30:36 +0100
+Subject: [PATCH 37/39] b200: Added missing include to b200_impl
+
+* In order to use std::ceil and std::floor, on older compilers
+  we need to still add an include for cmath.
+
+Tested-by: Marcus D. Leech <mleech@ripnet.com>
+Signed-off-by: Moritz Fischer <moritz@ettus.com>
+---
+ host/lib/usrp/b200/b200_impl.cpp |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/host/lib/usrp/b200/b200_impl.cpp b/host/lib/usrp/b200/b200_impl.cpp
+index 66df1f3..a7f9b11 100644
+--- a/host/lib/usrp/b200/b200_impl.cpp
++++ b/host/lib/usrp/b200/b200_impl.cpp
+@@ -32,6 +32,7 @@
+ #include <boost/functional/hash.hpp>
+ #include <cstdio>
+ #include <ctime>
++#include <cmath>
+ 
+ using namespace uhd;
+ using namespace uhd::usrp;
+-- 
+1.7.10.4
+

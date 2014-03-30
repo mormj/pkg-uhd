@@ -1,0 +1,47 @@
+From 6962543fec1b186bed4ad1332ee601eff07af1e1 Mon Sep 17 00:00:00 2001
+From: Ben Hilburn <ben.hilburn@ettus.com>
+Date: Wed, 26 Mar 2014 11:02:11 -0700
+Subject: [PATCH 39/39] Pulling in patch from Marcus Leech for includes and
+ older OSes.
+
+---
+ host/lib/usrp/b200/b200_iface.cpp       |    6 ++++++
+ host/lib/usrp/common/adf435x_common.cpp |    3 +++
+ 2 files changed, 9 insertions(+)
+
+diff --git a/host/lib/usrp/b200/b200_iface.cpp b/host/lib/usrp/b200/b200_iface.cpp
+index 5d799bf..28a32aa 100644
+--- a/host/lib/usrp/b200/b200_iface.cpp
++++ b/host/lib/usrp/b200/b200_iface.cpp
+@@ -32,6 +32,12 @@
+ #include <iomanip>
+ #include <libusb.h>
+ 
++//! libusb_error_name is only in newer API
++#ifndef HAVE_LIBUSB_ERROR_NAME
++    #define libusb_error_name(code) \
++        str(boost::format("LIBUSB_ERROR_CODE %d") % code)
++#endif
++
+ using namespace uhd;
+ using namespace uhd::transport;
+ 
+diff --git a/host/lib/usrp/common/adf435x_common.cpp b/host/lib/usrp/common/adf435x_common.cpp
+index f0df6a3..972a693 100644
+--- a/host/lib/usrp/common/adf435x_common.cpp
++++ b/host/lib/usrp/common/adf435x_common.cpp
+@@ -16,8 +16,11 @@
+ //
+ 
+ #include "adf435x_common.hpp"
++
+ #include <uhd/types/tune_request.hpp>
+ #include <uhd/utils/log.hpp>
++#include <cmath>
++
+ 
+ using namespace uhd;
+ 
+-- 
+1.7.10.4
+

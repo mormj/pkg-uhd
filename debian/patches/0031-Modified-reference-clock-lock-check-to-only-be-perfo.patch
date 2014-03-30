@@ -1,0 +1,87 @@
+From c2d6f9c39adf792c043bc4f7df6ce504175b6d93 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Mon, 17 Mar 2014 23:05:59 -0700
+Subject: [PATCH 31/39] Modified reference clock lock check to only be
+ performed on Rev E or later.
+
+---
+ host/lib/usrp/x300/x300_impl.cpp |   26 ++++++++++++++++----------
+ host/lib/usrp/x300/x300_impl.hpp |    2 ++
+ 2 files changed, 18 insertions(+), 10 deletions(-)
+
+--- a/host/lib/usrp/x300/x300_impl.cpp
++++ b/host/lib/usrp/x300/x300_impl.cpp
+@@ -579,10 +579,10 @@
+     ////////////////////////////////////////////////////////////////////
+     UHD_MSG(status) << "Setup RF frontend clocking..." << std::endl;
+ 
+-    size_t hw_rev = 0;
++    mb.hw_rev = 0;
+     if(mb_eeprom.has_key("revision") and not mb_eeprom["revision"].empty()) {
+         try {
+-            hw_rev = boost::lexical_cast<size_t>(mb_eeprom["revision"]);
++            mb.hw_rev = boost::lexical_cast<size_t>(mb_eeprom["revision"]);
+         } catch(...) {
+             UHD_MSG(warning) << "Revision in EEPROM is invalid! Please reprogram your EEPROM." << std::endl;
+         }
+@@ -590,9 +590,9 @@
+         UHD_MSG(warning) << "No revision detected MB EEPROM must be reprogrammed!" << std::endl;
+     }
+ 
+-    if(hw_rev == 0) {
++    if(mb.hw_rev == 0) {
+         UHD_MSG(warning) << "Defaulting to X300 RevD Clock Settings. This will result in non-optimal lock times." << std::endl;
+-        hw_rev = X300_REV("D");
++        mb.hw_rev = X300_REV("D");
+     }
+ 
+     //Initialize clock control with internal references and GPSDO power on.
+@@ -606,12 +606,19 @@
+     //Create clock control
+     mb.clock = x300_clock_ctrl::make(mb.zpu_spi,
+         1 /*slaveno*/,
+-        hw_rev,
++        mb.hw_rev,
+         dev_addr.cast<double>("master_clock_rate", X300_DEFAULT_TICK_RATE),
+         dev_addr.cast<double>("system_ref_rate", X300_DEFAULT_SYSREF_RATE));
+ 
+     //wait for reference clock to lock
+-    wait_for_ref_locked(mb.zpu_ctrl, 1.0);
++    if(mb.hw_rev > 4)
++    {
++        try {
++            wait_for_ref_locked(mb.zpu_ctrl, 1.0);
++        } catch (uhd::runtime_error &e) {
++            UHD_MSG(warning) << "Clock failed to lock to internal source during initialization." << std::endl;
++        }
++    }
+ 
+     ////////////////////////////////////////////////////////////////////
+     // create clock properties
+@@ -1328,12 +1335,11 @@
+ 
+     //wait for lock
+     try {
+-        wait_for_ref_locked(mb.zpu_ctrl, 1.0);
++        if (mb.hw_rev > 4)
++            wait_for_ref_locked(mb.zpu_ctrl, 1.0);
+     } catch (uhd::runtime_error &e) {
+         //failed to lock on reference
+-        throw uhd::runtime_error(
+-            (boost::format("Error setting the clock source to %s: %s  Please check the clock and try again.")
+-            % source % e.what()).str());
++        throw uhd::runtime_error((boost::format("Clock failed to lock to %s source.") % source).str());
+     }
+ }
+ 
+--- a/host/lib/usrp/x300/x300_impl.hpp
++++ b/host/lib/usrp/x300/x300_impl.hpp
+@@ -208,6 +208,8 @@
+ 
+         //which FPGA image is loaded
+         std::string loaded_fpga_image;
++
++        size_t hw_rev;
+     };
+     std::vector<mboard_members_t> _mb;
+ 

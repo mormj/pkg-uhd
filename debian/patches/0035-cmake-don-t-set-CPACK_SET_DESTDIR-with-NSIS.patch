@@ -1,0 +1,25 @@
+From e1c329059d7dc6a1521a33bde8aab62606df1b17 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Fri, 21 Mar 2014 09:56:27 -0700
+Subject: [PATCH 35/39] cmake: don't set CPACK_SET_DESTDIR with NSIS
+
+---
+ host/cmake/Modules/UHDPackage.cmake |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/host/cmake/Modules/UHDPackage.cmake b/host/cmake/Modules/UHDPackage.cmake
+index 4aea557..a98a52f 100644
+--- a/host/cmake/Modules/UHDPackage.cmake
++++ b/host/cmake/Modules/UHDPackage.cmake
+@@ -200,5 +200,7 @@ IF(MSVC)
+ ENDIF(MSVC)
+ 
+ ########################################################################
+-SET(CPACK_SET_DESTDIR "ON")
++IF(NOT ${CPACK_GENERATOR} STREQUAL NSIS)
++    SET(CPACK_SET_DESTDIR "ON")
++ENDIF(NOT ${CPACK_GENERATOR} STREQUAL NSIS)
+ INCLUDE(CPack) #include after setting vars
+-- 
+1.7.10.4
+

@@ -1,0 +1,42 @@
+From 55fd590f3eac63f97433b68ae415027c7ff41f71 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Tue, 11 Feb 2014 12:25:06 -0800
+Subject: [PATCH 01/39] usb: better processing of strings from libusb
+
+* When overwriting a string field with a shorter string, libusb doesn't erase extra characters
+* Extra processing of this string (already done by load_eeprom) removes extraneous characters
+---
+ host/lib/transport/libusb1_base.cpp |   10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/host/lib/transport/libusb1_base.cpp b/host/lib/transport/libusb1_base.cpp
+index 8bd0f43..23117f1 100644
+--- a/host/lib/transport/libusb1_base.cpp
++++ b/host/lib/transport/libusb1_base.cpp
+@@ -21,6 +21,7 @@
+ #include <uhd/utils/log.hpp>
+ #include <uhd/utils/tasks.hpp>
+ #include <uhd/types/dict.hpp>
++#include <uhd/types/serial.hpp>
+ #include <boost/weak_ptr.hpp>
+ #include <boost/thread/mutex.hpp>
+ #include <boost/foreach.hpp>
+@@ -184,7 +185,14 @@ public:
+         );
+         if (ret < 0) return ""; //on error, just return empty string
+ 
+-        return std::string((char *)buff, ret);
++        std::string string_descriptor((char *)buff, ret);
++        byte_vector_t string_vec(string_descriptor.begin(), string_descriptor.end());
++        std::string out;
++        BOOST_FOREACH(boost::uint8_t byte, string_vec){
++            if (byte < 32 or byte > 127) return out;
++            out += byte;
++        }
++        return out;
+     }
+ 
+ private:
+-- 
+1.7.10.4
+

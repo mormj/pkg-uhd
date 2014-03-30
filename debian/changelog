@@ -1,3 +1,9 @@
+uhd (3.7.0-2) unstable; urgency=low
+
+  * Include additional bugfix patches from git maint branch
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 29 Mar 2014 20:01:30 -0400
+
 uhd (3.7.0-1) unstable; urgency=low
 
   * New upstream release

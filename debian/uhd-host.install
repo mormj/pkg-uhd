@@ -1,3 +1,4 @@
 usr/bin
 usr/lib/uhd
 usr/share/doc/uhd/manual /usr/share/doc/uhd-host/
+debian/NetworkManager-USRP /etc/NetworkManager/system-connections/USRP

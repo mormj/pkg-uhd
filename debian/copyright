@@ -3,7 +3,7 @@ Upstream-Name: UHD
 Upstream-Contact: http://www.ettus.com/contact
 Source: http://code.ettus.com/redmine/ettus/projects/uhd/wiki#Source-code
 X-Note: The upstream package source tarball was generated from the tag:
- git archive --format=tar --prefix=uhd-3.7.0/ release_003_007_000 | gzip > ../uhd_3.7.0.orig.tar.gz
+ git archive --format=tar --prefix=uhd-3.7.1/ release_003_007_001 | gzip > ../uhd_3.7.1.orig.tar.gz
 Comment: Only the host directory of the distributed source is used to build the uhd-host package for Debian main.
 Copyright: Copyright 2010-2011 Ettus Research LLC
 License: GPL-3+
@@ -98,6 +98,10 @@ Files: images/*
 Copyright: Copyright 2010-2011 Ettus Research LLC
 License: GPL-3+
 Comment: Not used for uhd-host package
+
+Files: firmware/fx3/* firmware/octoclock/* firmware/x300/*
+Copyright: 2013-2014 Ettus Research LLC
+License: GPL-3+
 
 Files: firmware/fx2/* not listed below
 Copyright: 2003,2004,2006,2007 Free Software Foundation, Inc.

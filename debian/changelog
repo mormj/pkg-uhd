@@ -1,3 +1,10 @@
+uhd (3.7.1-1) unstable; urgency=low
+
+  * New upstream release
+  * Include USRP NetworkManager configuration
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 22 Apr 2014 21:16:32 -0400
+
 uhd (3.7.0-3) unstable; urgency=low
 
   * update to release_003_007_000-72-gb6f1253

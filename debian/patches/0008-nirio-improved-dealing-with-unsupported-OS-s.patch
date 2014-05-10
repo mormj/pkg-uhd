@@ -1,0 +1,225 @@
+From f08e50934505c5a42a2f3dcf5a65052db07674dc Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Thu, 20 Mar 2014 10:16:55 -0700
+Subject: [PATCH 08/15] nirio: improved dealing with unsupported OS's
+
+* Instead of specifically checking for Apple, default to unsupported iface file if unsupported OS is detected
+* Don't error out if we can't catch a specific unsupported OS, just use barebones "unsupported" structs
+---
+ .../uhd/transport/nirio/nirio_driver_iface.h       |   12 ++--
+ host/lib/transport/nirio/CMakeLists.txt            |   10 ++--
+ .../transport/nirio/nirio_driver_iface_macos.cpp   |   63 --------------------
+ .../nirio/nirio_driver_iface_unsupported.cpp       |   63 ++++++++++++++++++++
+ 4 files changed, 71 insertions(+), 77 deletions(-)
+ delete mode 100644 host/lib/transport/nirio/nirio_driver_iface_macos.cpp
+ create mode 100644 host/lib/transport/nirio/nirio_driver_iface_unsupported.cpp
+
+diff --git a/host/include/uhd/transport/nirio/nirio_driver_iface.h b/host/include/uhd/transport/nirio/nirio_driver_iface.h
+index 46a1146..5b430b4 100644
+--- a/host/include/uhd/transport/nirio/nirio_driver_iface.h
++++ b/host/include/uhd/transport/nirio/nirio_driver_iface.h
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2013 Ettus Research LLC
++// Copyright 2013-2014 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -28,7 +28,7 @@
+     #pragma warning(disable:4201)  // nonstandard extension used : nameless struct/union
+         #include <WinIoCtl.h>
+     #pragma warning(default:4201)
+-#elif defined(UHD_PLATFORM_MACOS) || defined(UHD_PLATFORM_BSD)
++#elif !defined(UHD_PLATFORM_LINUX)
+     #include <IOKit/IOKitLib.h>
+ #endif
+ 
+@@ -445,10 +445,8 @@ static inline void init_syncop_out_params(nirio_syncop_out_params_t& param, void
+     typedef int rio_dev_handle_t;
+ #elif defined(UHD_PLATFORM_WIN32)
+     typedef HANDLE rio_dev_handle_t;
+-#elif defined(UHD_PLATFORM_MACOS) || defined(UHD_PLATFORM_BSD)
+-    typedef io_connect_t rio_dev_handle_t;
+ #else
+-    #error OS not supported by nirio_driver_iface.
++    typedef io_connect_t rio_dev_handle_t;
+ #endif
+ static const rio_dev_handle_t INVALID_RIO_HANDLE = ((rio_dev_handle_t)-1);
+ 
+@@ -492,15 +490,13 @@ static const rio_dev_handle_t INVALID_RIO_HANDLE = ((rio_dev_handle_t)-1);
+ 
+         bool is_null() { return addr == NULL; }
+     };
+-#elif defined(UHD_PLATFORM_MACOS) || defined(UHD_PLATFORM_BSD)
++#else
+      struct rio_mmap_t {
+          rio_mmap_t() : addr(NULL) {}
+          void *addr;
+ 
+          bool is_null() { return addr == NULL; }
+      };
+-#else
+-    #error OS not supported by nirio_driver_iface.
+ #endif
+ 
+     nirio_status rio_open(
+diff --git a/host/lib/transport/nirio/CMakeLists.txt b/host/lib/transport/nirio/CMakeLists.txt
+index 6a33da6..5f12e91 100644
+--- a/host/lib/transport/nirio/CMakeLists.txt
++++ b/host/lib/transport/nirio/CMakeLists.txt
+@@ -39,10 +39,8 @@ LIBUHD_APPEND_SOURCES(
+ 
+ IF(WIN32)
+     LIBUHD_APPEND_SOURCES(${CMAKE_CURRENT_SOURCE_DIR}/nirio_driver_iface_win.cpp)
+-ELSE(WIN32)
+-    IF(APPLE)
+-        LIBUHD_APPEND_SOURCES(${CMAKE_CURRENT_SOURCE_DIR}/nirio_driver_iface_macos.cpp)
+-    ELSE(APPLE)
+-        LIBUHD_APPEND_SOURCES(${CMAKE_CURRENT_SOURCE_DIR}/nirio_driver_iface_linux.cpp)
+-    ENDIF(APPLE)
++ELSEIF(${CMAKE_SYSTEM_NAME} STREQUAL "Linux") #Built-in variable encompasses all UNIX-like systems
++    LIBUHD_APPEND_SOURCES(${CMAKE_CURRENT_SOURCE_DIR}/nirio_driver_iface_linux.cpp)
++ELSE()
++    LIBUHD_APPEND_SOURCES(${CMAKE_CURRENT_SOURCE_DIR}/nirio_driver_iface_unsupported.cpp)
+ ENDIF(WIN32)
+diff --git a/host/lib/transport/nirio/nirio_driver_iface_macos.cpp b/host/lib/transport/nirio/nirio_driver_iface_macos.cpp
+deleted file mode 100644
+index 1a11425..0000000
+--- a/host/lib/transport/nirio/nirio_driver_iface_macos.cpp
++++ /dev/null
+@@ -1,63 +0,0 @@
+-//
+-// Copyright 2013 Ettus Research LLC
+-//
+-// This program is free software: you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by
+-// the Free Software Foundation, either version 3 of the License, or
+-// (at your option) any later version.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-//
+-#include <uhd/transport/nirio/nirio_driver_iface.h>
+-
+-namespace nirio_driver_iface {
+-
+-nirio_status rio_open(
+-    const std::string& device_path,
+-    rio_dev_handle_t& device_handle)
+-{
+-    return NiRio_Status_FeatureNotSupported;
+-}
+-
+-void rio_close(rio_dev_handle_t& device_handle)
+-{
+-}
+-
+-bool rio_isopen(rio_dev_handle_t device_handle)
+-{
+-    return false;
+-}
+-
+-nirio_status rio_ioctl(
+-    rio_dev_handle_t device_handle,
+-    uint32_t ioctl_code,
+-    const void *write_buf,
+-    size_t write_buf_len,
+-    void *read_buf,
+-    size_t read_buf_len)
+-{
+-    return NiRio_Status_FeatureNotSupported;
+-}
+-
+-nirio_status rio_mmap(
+-    rio_dev_handle_t device_handle,
+-    uint16_t memory_type,
+-    size_t size,
+-    bool writable,
+-    rio_mmap_t &map)
+-{
+-    return NiRio_Status_FeatureNotSupported;
+-}
+-
+-nirio_status rio_munmap(rio_mmap_t &map)
+-{
+-    return NiRio_Status_FeatureNotSupported;
+-}
+-
+-}
+diff --git a/host/lib/transport/nirio/nirio_driver_iface_unsupported.cpp b/host/lib/transport/nirio/nirio_driver_iface_unsupported.cpp
+new file mode 100644
+index 0000000..1a11425
+--- /dev/null
++++ b/host/lib/transport/nirio/nirio_driver_iface_unsupported.cpp
+@@ -0,0 +1,63 @@
++//
++// Copyright 2013 Ettus Research LLC
++//
++// This program is free software: you can redistribute it and/or modify
++// it under the terms of the GNU General Public License as published by
++// the Free Software Foundation, either version 3 of the License, or
++// (at your option) any later version.
++//
++// This program is distributed in the hope that it will be useful,
++// but WITHOUT ANY WARRANTY; without even the implied warranty of
++// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++// GNU General Public License for more details.
++//
++// You should have received a copy of the GNU General Public License
++// along with this program.  If not, see <http://www.gnu.org/licenses/>.
++//
++#include <uhd/transport/nirio/nirio_driver_iface.h>
++
++namespace nirio_driver_iface {
++
++nirio_status rio_open(
++    const std::string& device_path,
++    rio_dev_handle_t& device_handle)
++{
++    return NiRio_Status_FeatureNotSupported;
++}
++
++void rio_close(rio_dev_handle_t& device_handle)
++{
++}
++
++bool rio_isopen(rio_dev_handle_t device_handle)
++{
++    return false;
++}
++
++nirio_status rio_ioctl(
++    rio_dev_handle_t device_handle,
++    uint32_t ioctl_code,
++    const void *write_buf,
++    size_t write_buf_len,
++    void *read_buf,
++    size_t read_buf_len)
++{
++    return NiRio_Status_FeatureNotSupported;
++}
++
++nirio_status rio_mmap(
++    rio_dev_handle_t device_handle,
++    uint16_t memory_type,
++    size_t size,
++    bool writable,
++    rio_mmap_t &map)
++{
++    return NiRio_Status_FeatureNotSupported;
++}
++
++nirio_status rio_munmap(rio_mmap_t &map)
++{
++    return NiRio_Status_FeatureNotSupported;
++}
++
++}
+-- 
+1.7.10.4
+

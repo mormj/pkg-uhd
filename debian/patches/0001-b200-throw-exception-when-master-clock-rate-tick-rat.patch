@@ -1,0 +1,220 @@
+From 383128e2c9c3539e1bc8de7d13a894f50fc9719a Mon Sep 17 00:00:00 2001
+From: Balint Seeber <balint@ettus.com>
+Date: Thu, 13 Feb 2014 15:26:54 -0800
+Subject: [PATCH 01/15] b200: throw exception when master clock rate (tick
+ rate) is requested to be > max for certain # of
+ channels (i.e. restrict to 30.72MHz for MIMO) Also
+ includes sscanf type fix in b200_impl and longer
+ timeout for AD9361 read
+
+---
+ host/lib/usrp/b200/b200_iface.cpp    |    4 ++--
+ host/lib/usrp/b200/b200_impl.cpp     |   22 +++++++++++++++--
+ host/lib/usrp/b200/b200_impl.hpp     |   11 +++++----
+ host/lib/usrp/b200/b200_io_impl.cpp  |   44 ++++++++++++++++++++++++++++++++++
+ host/lib/usrp/common/ad9361_ctrl.hpp |    7 +++++-
+ 5 files changed, 79 insertions(+), 9 deletions(-)
+
+diff --git a/host/lib/usrp/b200/b200_iface.cpp b/host/lib/usrp/b200/b200_iface.cpp
+index 5d799bf..630ce9a 100644
+--- a/host/lib/usrp/b200/b200_iface.cpp
++++ b/host/lib/usrp/b200/b200_iface.cpp
+@@ -301,7 +301,7 @@ public:
+     void ad9361_transact(const unsigned char in_buff[64], unsigned char out_buff[64]) {
+         const int bytes_to_write = 64;
+         const int bytes_to_read = 64;
+-        const size_t read_retries = 30;
++        const size_t read_retries = 10;
+ 
+         int ret = fx3_control_write(B200_VREQ_AD9361_CTRL_WRITE, 0x00, 0x00, (unsigned char *)in_buff, bytes_to_write);
+         if (ret < 0)
+@@ -311,7 +311,7 @@ public:
+ 
+         for (size_t i = 0; i < read_retries; i++)
+         {
+-            ret = fx3_control_read(B200_VREQ_AD9361_CTRL_READ, 0x00, 0x00, out_buff, bytes_to_read, 1000);
++            ret = fx3_control_read(B200_VREQ_AD9361_CTRL_READ, 0x00, 0x00, out_buff, bytes_to_read, 3000);
+             if (ret < 0)
+                 throw uhd::io_error((boost::format("Failed to read AD9361 (%d: %s)") % ret % libusb_error_name(ret)).str());
+ 
+diff --git a/host/lib/usrp/b200/b200_impl.cpp b/host/lib/usrp/b200/b200_impl.cpp
+index 8ed8e99..3edd12b 100644
+--- a/host/lib/usrp/b200/b200_impl.cpp
++++ b/host/lib/usrp/b200/b200_impl.cpp
+@@ -156,8 +156,8 @@ b200_impl::b200_impl(const device_addr_t &device_addr)
+     const fs_path mb_path = "/mboards/0";
+ 
+     //try to match the given device address with something on the USB bus
+-    uint16_t vid = B200_VENDOR_ID;
+-    uint16_t pid = B200_PRODUCT_ID;
++    unsigned int vid = B200_VENDOR_ID;
++    unsigned int pid = B200_PRODUCT_ID;
+     if (device_addr.has_key("vid"))
+             sscanf(device_addr.get("vid").c_str(), "%x", &vid);
+     if (device_addr.has_key("pid"))
+@@ -659,9 +659,27 @@ void b200_impl::codec_loopback_self_test(wb_iface::sptr iface)
+ /***********************************************************************
+  * Sample and tick rate comprehension below
+  **********************************************************************/
++void b200_impl::enforce_tick_rate_limits(size_t chan_count, double tick_rate, const char* direction /*= NULL*/)
++{
++    const size_t max_chans = 2;
++    if (chan_count > max_chans)
++    {
++        throw uhd::value_error(boost::str(boost::format("cannot not setup %d %s channels (maximum is %d)") % chan_count % (direction ? direction : "data") % max_chans));
++    }
++    else
++    {
++        const double max_tick_rate = ((chan_count <= 1) ? AD9361_1_CHAN_CLOCK_RATE_MAX : AD9361_2_CHAN_CLOCK_RATE_MAX);
++        if (tick_rate > max_tick_rate)
++            throw uhd::value_error(boost::str(boost::format("current master clock rate (%.2f MHz) exceeds maximum possible master clock rate (%.2f MHz) when using %d %s channels") % (tick_rate/1e6) % (max_tick_rate/1e6) % chan_count % (direction ? direction : "data")));
++    }
++}
++
+ double b200_impl::set_tick_rate(const double rate)
+ {
+     UHD_MSG(status) << "Asking for clock rate " << rate/1e6 << " MHz\n";
++
++    check_tick_rate_with_current_streamers(rate);   // Defined in b200_io_impl.cpp
++
+     _tick_rate = _codec_ctrl->set_clock_rate(rate);
+     UHD_MSG(status) << "Actually got clock rate " << _tick_rate/1e6 << " MHz\n";
+ 
+diff --git a/host/lib/usrp/b200/b200_impl.hpp b/host/lib/usrp/b200/b200_impl.hpp
+index c88d14a..fb65cb8 100644
+--- a/host/lib/usrp/b200/b200_impl.hpp
++++ b/host/lib/usrp/b200/b200_impl.hpp
+@@ -91,6 +91,7 @@ public:
+     uhd::rx_streamer::sptr get_rx_stream(const uhd::stream_args_t &args);
+     uhd::tx_streamer::sptr get_tx_stream(const uhd::stream_args_t &args);
+     bool recv_async_msg(uhd::async_metadata_t &, double);
++    void check_streamer_args(const uhd::stream_args_t &args, double tick_rate, const char* direction = NULL);
+ 
+ private:
+     //controllers
+@@ -174,13 +175,15 @@ private:
+     void update_enables(void);
+     void update_atrs(void);
+ 
+-    void update_tick_rate(const double);
+-    void update_rx_samp_rate(const size_t, const double);
+-    void update_tx_samp_rate(const size_t, const double);
+-
+     double _tick_rate;
+     double get_tick_rate(void){return _tick_rate;}
+     double set_tick_rate(const double rate);
++    void update_tick_rate(const double);
++    void enforce_tick_rate_limits(size_t chan_count, double tick_rate, const char* direction = NULL);
++    void check_tick_rate_with_current_streamers(double rate);
++
++    void update_rx_samp_rate(const size_t, const double);
++    void update_tx_samp_rate(const size_t, const double);
+ };
+ 
+ #endif /* INCLUDED_B200_IMPL_HPP */
+diff --git a/host/lib/usrp/b200/b200_io_impl.cpp b/host/lib/usrp/b200/b200_io_impl.cpp
+index 4768aa3..c715d33 100644
+--- a/host/lib/usrp/b200/b200_io_impl.cpp
++++ b/host/lib/usrp/b200/b200_io_impl.cpp
+@@ -23,6 +23,7 @@
+ #include "async_packet_handler.hpp"
+ #include <boost/bind.hpp>
+ #include <boost/make_shared.hpp>
++#include <set>
+ 
+ using namespace uhd;
+ using namespace uhd::usrp;
+@@ -31,8 +32,47 @@ using namespace uhd::transport;
+ /***********************************************************************
+  * update streamer rates
+  **********************************************************************/
++void b200_impl::check_tick_rate_with_current_streamers(double rate)
++{
++    size_t max_tx_chan_count = 0, max_rx_chan_count = 0;
++    BOOST_FOREACH(radio_perifs_t &perif, _radio_perifs)
++    {
++        {
++            boost::shared_ptr<sph::recv_packet_streamer> rx_streamer =
++                boost::dynamic_pointer_cast<sph::recv_packet_streamer>(perif.rx_streamer.lock());
++            if (rx_streamer)
++                max_rx_chan_count = std::max(max_rx_chan_count, rx_streamer->get_num_channels());
++        }
++
++        {
++            boost::shared_ptr<sph::send_packet_streamer> tx_streamer =
++                boost::dynamic_pointer_cast<sph::send_packet_streamer>(perif.tx_streamer.lock());
++            if (tx_streamer)
++                max_tx_chan_count = std::max(max_tx_chan_count, tx_streamer->get_num_channels());
++        }
++    }
++
++    // Defined in b200_impl.cpp
++    enforce_tick_rate_limits(max_rx_chan_count, rate, "RX");
++    enforce_tick_rate_limits(max_tx_chan_count, rate, "TX");
++}
++
++void b200_impl::check_streamer_args(const uhd::stream_args_t &args, double tick_rate, const char* direction /*= NULL*/)
++{
++    std::set<size_t> chans_set;
++    for (size_t stream_i = 0; stream_i < args.channels.size(); stream_i++)
++    {
++        const size_t chan = args.channels[stream_i];
++        chans_set.insert(chan);
++    }
++
++    enforce_tick_rate_limits(chans_set.size(), tick_rate, direction);   // Defined in b200_impl.cpp
++}
++
+ void b200_impl::update_tick_rate(const double rate)
+ {
++    check_tick_rate_with_current_streamers(rate);
++
+     BOOST_FOREACH(radio_perifs_t &perif, _radio_perifs)
+     {
+         boost::shared_ptr<sph::recv_packet_streamer> my_streamer =
+@@ -235,6 +275,8 @@ rx_streamer::sptr b200_impl::get_rx_stream(const uhd::stream_args_t &args_)
+     if (args.otw_format.empty()) args.otw_format = "sc16";
+     args.channels = args.channels.empty()? std::vector<size_t>(1, 0) : args.channels;
+ 
++    check_streamer_args(args, this->get_tick_rate(), "RX");
++
+     boost::shared_ptr<sph::recv_packet_streamer> my_streamer;
+     for (size_t stream_i = 0; stream_i < args.channels.size(); stream_i++)
+     {
+@@ -337,6 +379,8 @@ tx_streamer::sptr b200_impl::get_tx_stream(const uhd::stream_args_t &args_)
+     if (args.otw_format.empty()) args.otw_format = "sc16";
+     args.channels = args.channels.empty()? std::vector<size_t>(1, 0) : args.channels;
+ 
++    check_streamer_args(args, this->get_tick_rate(), "TX");
++
+     boost::shared_ptr<sph::send_packet_streamer> my_streamer;
+     for (size_t stream_i = 0; stream_i < args.channels.size(); stream_i++)
+     {
+diff --git a/host/lib/usrp/common/ad9361_ctrl.hpp b/host/lib/usrp/common/ad9361_ctrl.hpp
+index fd80127..7a13d14 100644
+--- a/host/lib/usrp/common/ad9361_ctrl.hpp
++++ b/host/lib/usrp/common/ad9361_ctrl.hpp
+@@ -28,6 +28,11 @@
+ #include <string>
+ 
+ 
++static const double AD9361_CLOCK_RATE_MAX = 61.44e6;
++static const double AD9361_1_CHAN_CLOCK_RATE_MAX = AD9361_CLOCK_RATE_MAX;
++static const double AD9361_2_CHAN_CLOCK_RATE_MAX = (AD9361_1_CHAN_CLOCK_RATE_MAX / 2);
++
++
+ struct ad9361_ctrl_iface_type
+ {
+     virtual void ad9361_transact(const unsigned char in_buff[64], unsigned char out_buff[64]) = 0;
+@@ -100,7 +105,7 @@ public:
+     static uhd::meta_range_t get_clock_rate_range(void)
+     {
+         //return uhd::meta_range_t(220e3, 61.44e6);
+-        return uhd::meta_range_t(5e6, 61.44e6); //5 MHz DCM low end
++        return uhd::meta_range_t(5e6, AD9361_CLOCK_RATE_MAX); //5 MHz DCM low end
+     }
+ 
+     //! set the filter bandwidth for the frontend
+-- 
+1.7.10.4
+

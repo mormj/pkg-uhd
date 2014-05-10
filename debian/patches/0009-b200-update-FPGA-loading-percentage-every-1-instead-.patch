@@ -1,0 +1,21 @@
+From ff98c2a81623bc6ef68912583fada5d5c5a04cb2 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Mon, 24 Feb 2014 08:05:18 -0800
+Subject: [PATCH 09/15] b200: update FPGA loading percentage every 1% instead
+ of 10%
+
+---
+ host/lib/usrp/b200/b200_iface.cpp |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/host/lib/usrp/b200/b200_iface.cpp
++++ b/host/lib/usrp/b200/b200_iface.cpp
+@@ -706,7 +706,7 @@
+                 const size_t percent_before = size_t((bytes_sent*100)/file_size);
+                 bytes_sent += transfer_count;
+                 const size_t percent_after = size_t((bytes_sent*100)/file_size);
+-                if (percent_before/10 != percent_after/10)
++                if (percent_before != percent_after)
+                 {
+                     UHD_MSG(status) << "\b\b\b\b" << std::setw(3) << percent_after << "%" << std::flush;
+                 }

@@ -1,0 +1,26 @@
+From b6e21f1c201ef940443db229c9b525e89669ebd9 Mon Sep 17 00:00:00 2001
+From: Balint Seeber <balint@ettus.com>
+Date: Thu, 13 Mar 2014 13:15:25 -0700
+Subject: [PATCH 11/15] b200: RX DSP scaling mask is 1 bit too narrow for
+ decim 256
+
+---
+ host/lib/usrp/cores/rx_dsp_core_3000.cpp |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/lib/usrp/cores/rx_dsp_core_3000.cpp b/host/lib/usrp/cores/rx_dsp_core_3000.cpp
+index 8684666..69829bf 100644
+--- a/host/lib/usrp/cores/rx_dsp_core_3000.cpp
++++ b/host/lib/usrp/cores/rx_dsp_core_3000.cpp
+@@ -161,7 +161,7 @@ public:
+ 
+         // Calculate CIC decimation (i.e., without halfband decimators)
+         // Calculate closest multiplier constant to reverse gain absent scale multipliers
+-        const double rate_pow = std::pow(double(decim & 0xff), 4);
++        const double rate_pow = std::pow(double(decim & 0x1ff), 4);
+         _scaling_adjustment = std::pow(2, ceil_log2(rate_pow))/(1.65*rate_pow);
+         this->update_scalar();
+ 
+-- 
+1.7.10.4
+

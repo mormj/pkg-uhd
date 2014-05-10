@@ -1,0 +1,58 @@
+From b6f125388bb7bda1a8afd591b193a04a54252889 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Mon, 7 Apr 2014 10:37:09 +0200
+Subject: [PATCH 15/15] docs: Clarified there can only be one streamer per
+ device
+
+---
+ host/include/uhd/device.hpp          |   12 ++++++++++--
+ host/include/uhd/usrp/multi_usrp.hpp |    4 ++--
+ 2 files changed, 12 insertions(+), 4 deletions(-)
+
+diff --git a/host/include/uhd/device.hpp b/host/include/uhd/device.hpp
+index 1090c24..b54ffc5 100644
+--- a/host/include/uhd/device.hpp
++++ b/host/include/uhd/device.hpp
+@@ -77,10 +77,18 @@ public:
+      */
+     static sptr make(const device_addr_t &hint, size_t which = 0);
+ 
+-    //! Make a new receive streamer from the streamer arguments
++    /*! \brief Make a new receive streamer from the streamer arguments
++     *
++     * Note: There can always only be one streamer. When calling get_rx_stream()
++     * a second time, the first streamer must be destroyed beforehand.
++     */
+     virtual rx_streamer::sptr get_rx_stream(const stream_args_t &args) = 0;
+ 
+-    //! Make a new transmit streamer from the streamer arguments
++    /*! \brief Make a new transmit streamer from the streamer arguments
++     *
++     * Note: There can always only be one streamer. When calling get_tx_stream()
++     * a second time, the first streamer must be destroyed beforehand.
++     */
+     virtual tx_streamer::sptr get_tx_stream(const stream_args_t &args) = 0;
+ 
+     //! Get access to the underlying property structure
+diff --git a/host/include/uhd/usrp/multi_usrp.hpp b/host/include/uhd/usrp/multi_usrp.hpp
+index 5b49912..aac40ef 100644
+--- a/host/include/uhd/usrp/multi_usrp.hpp
++++ b/host/include/uhd/usrp/multi_usrp.hpp
+@@ -118,12 +118,12 @@ public:
+      */
+     virtual device::sptr get_device(void) = 0;
+ 
+-    //! Convenience method to get a RX streamer
++    //! Convenience method to get a RX streamer. See also uhd::device::get_rx_stream().
+     rx_streamer::sptr get_rx_stream(const stream_args_t &args){
+         return this->get_device()->get_rx_stream(args);
+     }
+ 
+-    //! Convenience method to get a TX streamer
++    //! Convenience method to get a TX streamer. See also uhd::device::get_rx_stream().
+     tx_streamer::sptr get_tx_stream(const stream_args_t &args){
+         return this->get_device()->get_tx_stream(args);
+     }
+-- 
+1.7.10.4
+

@@ -3,7 +3,16 @@ Section: science
 Priority: optional
 Maintainer: A. Maitland Bottoms <bottoms@debian.org>
 Uploaders: Bdale Garbee <bdale@gag.com>
-Build-Depends: debhelper (>= 9), cmake (>= 2.8.4+dfsg.1-3), python-dev, python-cheetah, python-docutils, doxygen, libboost-all-dev, libusb-1.0-0-dev [linux-any], libusb2-dev [kfreebsd-any], liborc-0.4-dev, liboil0.3-dev, libncurses5-dev, pkg-config
+Build-Depends: debhelper (>= 9), cmake (>= 2.8.4+dfsg.1-3), python-dev, python-cheetah, python-docutils, doxygen, libusb-1.0-0-dev [linux-any], libusb2-dev [kfreebsd-any], liborc-0.4-dev, liboil0.3-dev, libncurses5-dev, pkg-config,
+ libboost-dev,
+ libboost-date-time-dev,
+ libboost-filesystem-dev,
+ libboost-program-options-dev,
+ libboost-regex-dev,
+ libboost-system-dev,
+ libboost-thread-dev,
+ libboost-test-dev,
+ libboost-serialization-dev
 Standards-Version: 3.9.4
 Homepage: http://code.ettus.com/redmine/ettus/projects/uhd/wiki
 Vcs-Git: git://code.ettus.com/ettus/uhd.git

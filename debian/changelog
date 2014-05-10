@@ -1,3 +1,10 @@
+uhd (3.7.0-3) unstable; urgency=low
+
+  * update to release_003_007_000-72-gb6f1253
+  * reduce boost dependency to components listed in host/CMakelists.txt
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 08 Apr 2014 22:02:04 -0400
+
 uhd (3.7.0-2) unstable; urgency=low
 
   * Include additional bugfix patches from git maint branch

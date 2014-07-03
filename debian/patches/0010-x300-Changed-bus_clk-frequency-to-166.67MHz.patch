@@ -1,0 +1,51 @@
+From 623f5295d8297794d85894ed174221b6d18e75c0 Mon Sep 17 00:00:00 2001
+From: Ashish Chaudhari <ashish@ettus.com>
+Date: Mon, 28 Apr 2014 13:08:39 -0700
+Subject: [PATCH 10/31] x300: Changed bus_clk frequency to 166.67MHz.
+
+---
+ firmware/x300/x300/x300_defs.h   |   10 +++++-----
+ host/lib/usrp/x300/x300_impl.hpp |    2 +-
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/firmware/x300/x300/x300_defs.h b/firmware/x300/x300/x300_defs.h
+index 02c3d48..65c5d5a 100644
+--- a/firmware/x300/x300/x300_defs.h
++++ b/firmware/x300/x300/x300_defs.h
+@@ -1,10 +1,10 @@
+ 
+-// Copyright 2012 Ettus Research LLC
++// Copyright 2014 Ettus Research LLC
+ 
+-#ifndef INCLUDED_B250_DEFS_H
+-#define INCLUDED_B250_DEFS_H
++#ifndef INCLUDED_X300_DEFS_H
++#define INCLUDED_X300_DEFS_H
+ 
+-#define CPU_CLOCK 175000000
++#define CPU_CLOCK 166666667
+ #define MAIN_RAM_BASE 0x0000
+ #define PKT_RAM0_BASE 0x8000
+ #define XGE0_BASE 0xC000
+@@ -72,4 +72,4 @@ static const int BL_DATA        = 1;
+ #define ETH_FRAMER_DST_UDP_MAC 6
+ #define ETH_FRAMER_DST_MAC_LO 7
+ 
+-#endif /* INCLUDED_B250_DEFS_H */
++#endif /* INCLUDED_X300_DEFS_H */
+diff --git a/host/lib/usrp/x300/x300_impl.hpp b/host/lib/usrp/x300/x300_impl.hpp
+index 9645fe4..90aed2f 100644
+--- a/host/lib/usrp/x300/x300_impl.hpp
++++ b/host/lib/usrp/x300/x300_impl.hpp
+@@ -53,7 +53,7 @@
+ static const std::string X300_FW_FILE_NAME  = "usrp_x300_fw.bin";
+ 
+ static const double X300_DEFAULT_TICK_RATE      = 200e6;        //Hz
+-static const double X300_BUS_CLOCK_RATE         = 175e6;        //Hz
++static const double X300_BUS_CLOCK_RATE         = 166.666667e6; //Hz
+ 
+ static const size_t X300_TX_HW_BUFF_SIZE        = 0x90000;      //576KiB
+ static const size_t X300_TX_FC_RESPONSE_FREQ    = 8;            //per flow-control window
+-- 
+1.7.10.4
+

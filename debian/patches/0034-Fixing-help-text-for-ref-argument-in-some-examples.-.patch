@@ -1,0 +1,68 @@
+From df4cf6d6ecab4a11171183fca55b3aa3f011ed43 Mon Sep 17 00:00:00 2001
+From: Ben Hilburn <ben.hilburn@ettus.com>
+Date: Mon, 30 Jun 2014 16:00:06 -0700
+Subject: [PATCH 34/34] Fixing help text for --ref argument in some examples.
+ Reported by Marcus Mueller.
+
+---
+ host/examples/rx_ascii_art_dft.cpp     |    2 +-
+ host/examples/rx_samples_to_file.cpp   |    2 +-
+ host/examples/rx_samples_to_udp.cpp    |    2 +-
+ host/examples/tx_samples_from_file.cpp |    2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/host/examples/rx_ascii_art_dft.cpp b/host/examples/rx_ascii_art_dft.cpp
+index 85cf8b5..564a9e7 100644
+--- a/host/examples/rx_ascii_art_dft.cpp
++++ b/host/examples/rx_ascii_art_dft.cpp
+@@ -55,7 +55,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+         ("frame-rate", po::value<double>(&frame_rate)->default_value(5), "frame rate of the display (fps)")
+         ("ref-lvl", po::value<float>(&ref_lvl)->default_value(0), "reference level for the display (dB)")
+         ("dyn-rng", po::value<float>(&dyn_rng)->default_value(60), "dynamic range for the display (dB)")
+-        ("ref", po::value<std::string>(&ref)->default_value("internal"), "waveform type (internal, external, mimo)")
++        ("ref", po::value<std::string>(&ref)->default_value("internal"), "reference source (internal, external, mimo)")
+         ("int-n", "tune USRP with integer-N tuning")
+     ;
+     po::variables_map vm;
+diff --git a/host/examples/rx_samples_to_file.cpp b/host/examples/rx_samples_to_file.cpp
+index de36407..e196b85 100644
+--- a/host/examples/rx_samples_to_file.cpp
++++ b/host/examples/rx_samples_to_file.cpp
+@@ -231,7 +231,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+         ("ant", po::value<std::string>(&ant), "daughterboard antenna selection")
+         ("subdev", po::value<std::string>(&subdev), "daughterboard subdevice specification")
+         ("bw", po::value<double>(&bw), "daughterboard IF filter bandwidth in Hz")
+-        ("ref", po::value<std::string>(&ref)->default_value("internal"), "waveform type (internal, external, mimo)")
++        ("ref", po::value<std::string>(&ref)->default_value("internal"), "reference source (internal, external, mimo)")
+         ("wirefmt", po::value<std::string>(&wirefmt)->default_value("sc16"), "wire format (sc8 or sc16)")
+         ("setup", po::value<double>(&setup_time)->default_value(1.0), "seconds of setup time")
+         ("progress", "periodically display short-term bandwidth")
+diff --git a/host/examples/rx_samples_to_udp.cpp b/host/examples/rx_samples_to_udp.cpp
+index 2f62652..e397dbb 100644
+--- a/host/examples/rx_samples_to_udp.cpp
++++ b/host/examples/rx_samples_to_udp.cpp
+@@ -52,7 +52,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+         ("bw", po::value<double>(&bw), "daughterboard IF filter bandwidth in Hz")
+         ("port", po::value<std::string>(&port)->default_value("7124"), "server udp port")
+         ("addr", po::value<std::string>(&addr)->default_value("192.168.1.10"), "resolvable server address")
+-        ("ref", po::value<std::string>(&ref)->default_value("internal"), "waveform type (internal, external, mimo)")
++        ("ref", po::value<std::string>(&ref)->default_value("internal"), "reference source (internal, external, mimo)")
+         ("int-n", "tune USRP with integer-N tuning")
+     ;
+     po::variables_map vm;
+diff --git a/host/examples/tx_samples_from_file.cpp b/host/examples/tx_samples_from_file.cpp
+index f911c44..3293f8b 100644
+--- a/host/examples/tx_samples_from_file.cpp
++++ b/host/examples/tx_samples_from_file.cpp
+@@ -88,7 +88,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+         ("ant", po::value<std::string>(&ant), "daughterboard antenna selection")
+         ("subdev", po::value<std::string>(&subdev), "daughterboard subdevice specification")
+         ("bw", po::value<double>(&bw), "daughterboard IF filter bandwidth in Hz")
+-        ("ref", po::value<std::string>(&ref)->default_value("internal"), "waveform type (internal, external, mimo)")
++        ("ref", po::value<std::string>(&ref)->default_value("internal"), "reference source (internal, external, mimo)")
+         ("wirefmt", po::value<std::string>(&wirefmt)->default_value("sc16"), "wire format (sc8 or sc16)")
+         ("delay", po::value<double>(&delay)->default_value(0.0), "specify a delay between repeated transmission of file")
+         ("repeat", "repeatedly transmit file")
+-- 
+1.7.10.4
+

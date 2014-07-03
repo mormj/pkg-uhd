@@ -1,0 +1,38 @@
+From d878f8e42b1f5750c456cec3da5f5c2c39126414 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Tue, 6 May 2014 16:11:10 -0700
+Subject: [PATCH 16/31] BUG #460:  X300: GPGGA sensor most often empty, while
+ RMC is usually OK - It was found that strings
+ containing only a newline character were being
+ returned by N-series and X-series devices. - Added
+ better handling of strings received under 6 bytes. -
+ Added erasing of end of line characters.
+
+---
+ host/lib/usrp/gps_ctrl.cpp |    9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/host/lib/usrp/gps_ctrl.cpp b/host/lib/usrp/gps_ctrl.cpp
+index 6f5c75d..d327a84 100644
+--- a/host/lib/usrp/gps_ctrl.cpp
++++ b/host/lib/usrp/gps_ctrl.cpp
+@@ -74,8 +74,15 @@ private:
+ 
+     // Get all GPSDO messages available
+     // Creating a map here because we only want the latest of each message type
+-    for (std::string msg = _recv(); msg.length() > 6; msg = _recv())
++    for (std::string msg = _recv(); msg.length(); msg = _recv())
+     {
++        if (msg.length() < 6)
++            continue;
++
++        // Strip any end of line characters
++        erase_all(msg, "\r");
++        erase_all(msg, "\n");
++
+         // Look for SERVO message
+         if (boost::regex_search(msg, status_regex, boost::regex_constants::match_continuous))
+             msgs["SERVO"] = msg;
+-- 
+1.7.10.4
+

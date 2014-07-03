@@ -1,0 +1,26 @@
+From 997d9d5b187ce9b9e33aa89755d41c2f5c65af5e Mon Sep 17 00:00:00 2001
+From: Moritz Fischer <moritz@ettus.com>
+Date: Sat, 24 May 2014 13:51:51 +0200
+Subject: [PATCH 29/31] property_tree: doc: Fixed typo in doxygen string.
+
+Signed-off-by: Moritz Fischer <moritz@ettus.com>
+---
+ host/include/uhd/property_tree.hpp |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/include/uhd/property_tree.hpp b/host/include/uhd/property_tree.hpp
+index 47b2c57..f889ba2 100644
+--- a/host/include/uhd/property_tree.hpp
++++ b/host/include/uhd/property_tree.hpp
+@@ -38,7 +38,7 @@ public:
+ 
+     /*!
+      * Register a coercer into the property.
+-     * A coercer is a special subscribes that coerces the value.
++     * A coercer is a special subscriber that coerces the value.
+      * Only one coercer may be registered per property.
+      * Registering a coercer replaces the previous coercer.
+      * \param coercer the coercer callback function
+-- 
+1.7.10.4
+

@@ -1,3 +1,34 @@
+uhd (3.7.1-2) unstable; urgency=low
+
+  * Apply maint branch fixes through release_003_007_001-49-gdf4cf6d
+  * Fix B2xx udev rules
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 01 Jul 2014 22:34:32 -0400
+
+uhd (3.7.1-1~bpo70+1) wheezy-backports; urgency=low
+  
+  * Rebuild for wheezy-backports.
+  * Breaks gnuradio 3.6.3.2-1 in wheezy, needed by gnuradio 3.7.3 backport.
+  * New upstream release
+  * Include USRP NetworkManager configuration
+  * Include additional bugfix patches from git maint branch
+  * Introduced USRP X300 and X310 support!
+  * Releasing a CHDR Dissector for Wireshark analysis
+  * Improved USRP B200 and B210 stability
+  * Introducing Integer-N tuning for WBX, SBX, CBX daughterboards
+  * Introducing support for 120 MHz versions of WBX, SBX, CBX
+  * Lots of new documentation
+  * New GPIO example for USRP X300
+  * Fixed threading bug in USRP B2xx code causing GQRX issue
+  * General UHD bug fixes & improvements
+  * b200: Fixed bug in rx_dsp_core_3000 that would assume 3 halfbands
+    and X300 settings interface.
+  * Include patch from Avery Pennarun (Closes: #739852)
+  * Conflicts with earlier versions on gnuradio (Closes: #733690)
+  * Completely re-written UHD Images Downloader, with bug fixes, new features.
+  
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 24 May 2014 20:33:59 -0400
+  
 uhd (3.7.1-1) unstable; urgency=low
 
   * New upstream release

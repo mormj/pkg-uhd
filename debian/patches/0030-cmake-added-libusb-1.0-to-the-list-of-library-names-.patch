@@ -1,0 +1,26 @@
+From bae76224e30444f0721434e48233fd47a39e2069 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Tue, 3 Jun 2014 09:31:00 -0700
+Subject: [PATCH 30/31] cmake: added "libusb-1.0" to the list of library names
+ for libusb
+
+---
+ host/cmake/Modules/FindUSB1.cmake |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/cmake/Modules/FindUSB1.cmake b/host/cmake/Modules/FindUSB1.cmake
+index b2e4d11..96e2a5a 100644
+--- a/host/cmake/Modules/FindUSB1.cmake
++++ b/host/cmake/Modules/FindUSB1.cmake
+@@ -20,7 +20,7 @@ FIND_PATH(LIBUSB_INCLUDE_DIRS
+ )
+ 
+ #standard library name for libusb-1.0
+-set(libusb1_library_names usb-1.0)
++set(libusb1_library_names usb-1.0 libusb-1.0)
+ 
+ #libusb-1.0 compatible library on freebsd
+ if((CMAKE_SYSTEM_NAME STREQUAL "FreeBSD") OR (CMAKE_SYSTEM_NAME STREQUAL "kFreeBSD"))
+-- 
+1.7.10.4
+

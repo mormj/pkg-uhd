@@ -3,3 +3,5 @@ SUBSYSTEMS=="usb", ATTRS{idVendor}=="fffe", ATTRS{idProduct}=="0002", GROUP:="us
 # USRP-B1XX series
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2500", ATTRS{idProduct}=="0001", GROUP:="usrp", MODE:="0660"
 SUBSYSTEMS=="usb", ATTRS{idVendor}=="2500", ATTRS{idProduct}=="0002", GROUP:="usrp", MODE:="0660"
+# USRP-B2XX
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="2500", ATTRS{idProduct}=="0020", GROUP:="usrp", MODE:="0666"

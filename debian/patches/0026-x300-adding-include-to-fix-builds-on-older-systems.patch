@@ -1,0 +1,24 @@
+From 054a752bb25f9e17c1269b28ad2a95865c0d63a2 Mon Sep 17 00:00:00 2001
+From: Ben Hilburn <ben.hilburn@ettus.com>
+Date: Tue, 20 May 2014 14:33:55 -0700
+Subject: [PATCH 26/31] x300: adding include to fix builds on older systems
+
+---
+ host/lib/usrp/x300/x300_regs.hpp |    1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/host/lib/usrp/x300/x300_regs.hpp b/host/lib/usrp/x300/x300_regs.hpp
+index cf1e336..d461049 100644
+--- a/host/lib/usrp/x300/x300_regs.hpp
++++ b/host/lib/usrp/x300/x300_regs.hpp
+@@ -18,6 +18,7 @@
+ #ifndef INCLUDED_X300_REGS_HPP
+ #define INCLUDED_X300_REGS_HPP
+ 
++#include <stdint.h>
+ #include <boost/cstdint.hpp>
+ 
+ #define TOREG(x) ((x)*4)
+-- 
+1.7.10.4
+

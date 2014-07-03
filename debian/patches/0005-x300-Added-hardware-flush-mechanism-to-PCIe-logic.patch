@@ -1,0 +1,396 @@
+From 4b4e493f976094115dad7809121a092e2ac31668 Mon Sep 17 00:00:00 2001
+From: Ashish Chaudhari <ashish@ettus.com>
+Date: Thu, 24 Apr 2014 12:40:58 -0700
+Subject: [PATCH 05/31] x300: Added hardware flush mechanism to PCIe logic.
+
+- Added DMA enabled states to DMA logic to allow for hardware data flushing during init.
+- niusrprio_session will now check for FPGA busy before downloading
+---
+ host/include/uhd/transport/nirio/niriok_proxy.h    |    2 +
+ .../uhd/transport/nirio/niusrprio_session.h        |   71 ++++++++++----------
+ host/lib/transport/nirio/niriok_proxy.cpp          |   10 +++
+ host/lib/transport/nirio/niusrprio_session.cpp     |   58 ++++++++++++++++
+ host/lib/transport/nirio_zero_copy.cpp             |   58 +++++++++++++---
+ host/lib/usrp/x300/x300_regs.hpp                   |   10 ++-
+ 6 files changed, 162 insertions(+), 47 deletions(-)
+
+diff --git a/host/include/uhd/transport/nirio/niriok_proxy.h b/host/include/uhd/transport/nirio/niriok_proxy.h
+index a6b6183..ca6a4ba 100644
+--- a/host/include/uhd/transport/nirio/niriok_proxy.h
++++ b/host/include/uhd/transport/nirio/niriok_proxy.h
+@@ -126,6 +126,8 @@ namespace uhd { namespace niusrprio
+         nirio_status unmap_fifo_memory(
+             nirio_driver_iface::rio_mmap_t& map);
+ 
++        nirio_status stop_all_fifos();
++
+         nirio_quirks& get_rio_quirks() {
+             return _rio_quirks;
+         }
+diff --git a/host/include/uhd/transport/nirio/niusrprio_session.h b/host/include/uhd/transport/nirio/niusrprio_session.h
+index c9a61ae..c84bc75 100644
+--- a/host/include/uhd/transport/nirio/niusrprio_session.h
++++ b/host/include/uhd/transport/nirio/niusrprio_session.h
+@@ -37,31 +37,31 @@ public:
+     typedef uhd::usrprio_rpc::usrprio_device_info device_info;
+     typedef uhd::usrprio_rpc::usrprio_device_info_vtr device_info_vtr;
+ 
+-	static nirio_status enumerate(
++    static nirio_status enumerate(
+         const std::string& rpc_port_name,
+         device_info_vtr& device_info_vtr);
+ 
+-	niusrprio_session(
++    niusrprio_session(
+         const std::string& resource_name,
+         const std::string& port_name);
+-	virtual ~niusrprio_session();
++    virtual ~niusrprio_session();
+ 
+-	nirio_status open(
++    nirio_status open(
+         nifpga_lvbitx::sptr lvbitx,
+         bool force_download = false);
+ 
+-	void close(bool skip_reset = false);
++    void close(bool skip_reset = false);
+ 
+-	nirio_status reset();
++    nirio_status reset();
+ 
+-	template<typename data_t>
+-	nirio_status create_tx_fifo(
+-		const char* fifo_name,
+-		boost::shared_ptr< nirio_fifo<data_t> >& fifo)
+-	{
++    template<typename data_t>
++    nirio_status create_tx_fifo(
++        const char* fifo_name,
++        boost::shared_ptr< nirio_fifo<data_t> >& fifo)
++    {
+         if (!_session_open) return NiRio_Status_ResourceNotInitialized;
+         return _resource_manager.create_tx_fifo(fifo_name, fifo);
+-	}
++    }
+ 
+     template<typename data_t>
+     nirio_status create_tx_fifo(
+@@ -73,13 +73,13 @@ public:
+     }
+ 
+     template<typename data_t>
+-	nirio_status create_rx_fifo(
+-		const char* fifo_name,
+-		boost::shared_ptr< nirio_fifo<data_t> >& fifo)
+-	{
++    nirio_status create_rx_fifo(
++        const char* fifo_name,
++        boost::shared_ptr< nirio_fifo<data_t> >& fifo)
++    {
+         if (!_session_open) return NiRio_Status_ResourceNotInitialized;
+         return _resource_manager.create_rx_fifo(fifo_name, fifo);
+-	}
++    }
+ 
+     template<typename data_t>
+     nirio_status create_rx_fifo(
+@@ -90,9 +90,9 @@ public:
+         return create_rx_fifo(_lvbitx->get_input_fifo_names()[fifo_instance], fifo);
+     }
+ 
+-	niriok_proxy& get_kernel_proxy() {
+-	    return _riok_proxy;
+-	}
++    niriok_proxy& get_kernel_proxy() {
++        return _riok_proxy;
++    }
+ 
+     nirio_status download_bitstream_to_flash(const std::string& bitstream_path);
+ 
+@@ -102,21 +102,22 @@ public:
+         const std::string& rpc_port_name);
+ 
+ private:
+-	nirio_status _verify_signature();
+-	std::string _read_bitstream_checksum();
+-	nirio_status _write_bitstream_checksum(const std::string& checksum);
+-	nirio_status _wait_for_device_available();
+-
+-	std::string								_resource_name;
+-	nifpga_lvbitx::sptr                     _lvbitx;
+-    std::string                             _interface_path;
+-    bool                                    _session_open;
+-	niriok_proxy			                _riok_proxy;
+-	nirio_resource_manager	                _resource_manager;
+-    usrprio_rpc::usrprio_rpc_client         _rpc_client;
+-	boost::recursive_mutex                  _session_mutex;
+-
+-	static const uint32_t SESSION_LOCK_TIMEOUT_IN_MS    = 3000;
++    nirio_status _verify_signature();
++    std::string _read_bitstream_checksum();
++    nirio_status _write_bitstream_checksum(const std::string& checksum);
++    nirio_status _ensure_fpga_ready();
++
++    std::string                     _resource_name;
++    nifpga_lvbitx::sptr             _lvbitx;
++    std::string                     _interface_path;
++    bool                            _session_open;
++    niriok_proxy                    _riok_proxy;
++    nirio_resource_manager          _resource_manager;
++    usrprio_rpc::usrprio_rpc_client _rpc_client;
++    boost::recursive_mutex          _session_mutex;
++
++    static const uint32_t FPGA_READY_TIMEOUT_IN_MS      = 1000;
++    static const uint32_t SESSION_LOCK_TIMEOUT_IN_MS    = 3000;
+     static const uint32_t SESSION_LOCK_RETRY_INT_IN_MS  = 500;
+ };
+ 
+diff --git a/host/lib/transport/nirio/niriok_proxy.cpp b/host/lib/transport/nirio/niriok_proxy.cpp
+index 031623c..ac8faf0 100644
+--- a/host/lib/transport/nirio/niriok_proxy.cpp
++++ b/host/lib/transport/nirio/niriok_proxy.cpp
+@@ -293,6 +293,16 @@ namespace uhd { namespace niusrprio
+     {
+         return nirio_driver_iface::rio_munmap(map);
+     }
++
++    nirio_status niriok_proxy::stop_all_fifos()
++    {
++        nirio_driver_iface::nirio_syncop_in_params_t in = {};
++        nirio_driver_iface::nirio_syncop_out_params_t out = {};
++
++        in.function = nirio_driver_iface::NIRIO_FUNC::FIFO_STOP_ALL;
++
++        return sync_operation(&in, sizeof(in), &out, sizeof(out));
++    }
+ }}
+ 
+ #ifdef __GNUC__
+diff --git a/host/lib/transport/nirio/niusrprio_session.cpp b/host/lib/transport/nirio/niusrprio_session.cpp
+index a07bc4f..dd9cc2f 100644
+--- a/host/lib/transport/nirio/niusrprio_session.cpp
++++ b/host/lib/transport/nirio/niusrprio_session.cpp
+@@ -77,6 +77,8 @@ nirio_status niusrprio_session::open(
+         std::string lvbitx_checksum(_lvbitx->get_bitstream_checksum());
+         boost::uint16_t download_fpga = (force_download || (_read_bitstream_checksum() != lvbitx_checksum)) ? 1 : 0;
+ 
++        nirio_status_chain(_ensure_fpga_ready(), status);
++
+         nirio_status_chain(_rpc_client.niusrprio_open_session(
+             _resource_name, bitfile_path, signature, download_fpga), status);
+         _session_open = nirio_status_not_fatal(status);
+@@ -93,6 +95,7 @@ nirio_status niusrprio_session::open(
+         }
+     }
+ 
++    nirio_status_chain(_riok_proxy.set_attribute(ADDRESS_SPACE, BUS_INTERFACE), status);
+     return status;
+ }
+ 
+@@ -196,4 +199,59 @@ nirio_status niusrprio_session::_write_bitstream_checksum(const std::string& che
+     return status;
+ }
+ 
++nirio_status niusrprio_session::_ensure_fpga_ready()
++{
++    nirio_status status = NiRio_Status_Success;
++    niriok_scoped_addr_space(_riok_proxy, BUS_INTERFACE, status);
++
++    //Verify that the Ettus FPGA loaded in the device. This may not be true if the
++    //user is switching to UHD after using LabVIEW FPGA. In that case skip this check.
++    boost::uint32_t pcie_fpga_signature = 0;
++    nirio_status_chain(_riok_proxy.peek(FPGA_PCIE_SIG_REG, pcie_fpga_signature), status);
++    //@TODO: Remove X300 specific constants for future products
++    if (pcie_fpga_signature != FPGA_X3xx_SIG_VALUE) {
++        return status;
++    }
++
++    boost::uint32_t reg_data = 0xffffffff;
++    nirio_status_chain(_riok_proxy.peek(FPGA_STATUS_REG, reg_data), status);
++    if (reg_data & FPGA_STATUS_DMA_ACTIVE_MASK)
++    {
++        //In case this session was re-initialized *immediately* after the previous
++        //there is a small chance that the server is still finishing up cleaning up
++        //the DMA FIFOs. We currently don't have any feedback from the driver regarding
++        //this state so just wait.
++        boost::this_thread::sleep(boost::posix_time::milliseconds(FPGA_READY_TIMEOUT_IN_MS));
++
++        //Disable all FIFOs in the FPGA
++        for (size_t i = 0; i < _lvbitx->get_input_fifo_count(); i++) {
++            _riok_proxy.poke(PCIE_RX_DMA_REG(DMA_CTRL_STATUS_REG, i), DMA_CTRL_DISABLED);
++        }
++        for (size_t i = 0; i < _lvbitx->get_output_fifo_count(); i++) {
++            _riok_proxy.poke(PCIE_TX_DMA_REG(DMA_CTRL_STATUS_REG, i), DMA_CTRL_DISABLED);
++        }
++
++        //Disable all FIFOs in the kernel driver
++        _riok_proxy.stop_all_fifos();
++    }
++
++    boost::posix_time::ptime start_time = boost::posix_time::microsec_clock::local_time();
++    boost::posix_time::time_duration elapsed;
++    do {
++        boost::this_thread::sleep(boost::posix_time::microsec(1000)); //Avoid flooding the bus
++        elapsed = boost::posix_time::microsec_clock::local_time() - start_time;
++        nirio_status_chain(_riok_proxy.peek(FPGA_STATUS_REG, reg_data), status);
++    } while (
++        nirio_status_not_fatal(status) &&
++        (reg_data & FPGA_STATUS_DMA_ACTIVE_MASK) &&
++        elapsed.total_milliseconds() < FPGA_READY_TIMEOUT_IN_MS);
++
++    nirio_status_chain(_riok_proxy.peek(FPGA_STATUS_REG, reg_data), status);
++    if (nirio_status_not_fatal(status) && (reg_data & FPGA_STATUS_DMA_ACTIVE_MASK)) {
++        return NiRio_Status_FpgaBusy;
++    }
++
++    return status;
++}
++
+ }}
+diff --git a/host/lib/transport/nirio_zero_copy.cpp b/host/lib/transport/nirio_zero_copy.cpp
+index c3c8a93..87739b9 100644
+--- a/host/lib/transport/nirio_zero_copy.cpp
++++ b/host/lib/transport/nirio_zero_copy.cpp
+@@ -24,6 +24,7 @@
+ #include <uhd/utils/atomic.hpp>
+ #include <boost/format.hpp>
+ #include <boost/make_shared.hpp>
++#include <boost/date_time/posix_time/posix_time.hpp>
+ #include <boost/thread/thread.hpp> //sleep
+ #include <vector>
+ #include <algorithm>    // std::max
+@@ -143,6 +144,12 @@ public:
+         nirio_status status = 0;
+         size_t actual_depth = 0, actual_size = 0;
+ 
++        //Disable DMA streams in case last shutdown was unclean (cleanup, so don't status chain)
++        _proxy().poke(PCIE_TX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance), DMA_CTRL_DISABLED);
++        _proxy().poke(PCIE_RX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance), DMA_CTRL_DISABLED);
++
++        _wait_until_stream_ready();
++
+         //Configure frame width
+         nirio_status_chain(
+             _proxy().poke(PCIE_TX_DMA_REG(DMA_FRAME_SIZE_REG, _fifo_instance),
+@@ -152,14 +159,14 @@ public:
+             _proxy().poke(PCIE_RX_DMA_REG(DMA_FRAME_SIZE_REG, _fifo_instance),
+                           static_cast<uint32_t>(_xport_params.recv_frame_size/sizeof(fifo_data_t))),
+             status);
+-        //Config 32-bit word flipping and Reset DMA streams
++        //Config 32-bit word flipping and enable DMA streams
+         nirio_status_chain(
+             _proxy().poke(PCIE_TX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance),
+-                          DMA_CTRL_SW_BUF_U32 | DMA_CTRL_RESET),
++                          DMA_CTRL_SW_BUF_U32 | DMA_CTRL_ENABLED),
+             status);
+         nirio_status_chain(
+             _proxy().poke(PCIE_RX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance),
+-                          DMA_CTRL_SW_BUF_U32 | DMA_CTRL_RESET),
++                          DMA_CTRL_SW_BUF_U32 | DMA_CTRL_ENABLED),
+             status);
+ 
+         //Create FIFOs
+@@ -189,10 +196,6 @@ public:
+             nirio_status_chain(_send_fifo->start(), status);
+ 
+             if (nirio_status_not_fatal(status)) {
+-                //Flush RX kernel buffers in case some cruft was
+-                //left behind from the last run
+-                _flush_rx_buff();
+-
+                 //allocate re-usable managed receive buffers
+                 for (size_t i = 0; i < get_num_recv_frames(); i++){
+                     _mrb_pool.push_back(boost::shared_ptr<nirio_zero_copy_mrb>(new nirio_zero_copy_mrb(
+@@ -216,9 +219,9 @@ public:
+     {
+         _proxy().get_rio_quirks().remove_tx_fifo(_fifo_instance);
+ 
+-        //Reset DMA streams (Teardown, so don't status chain)
+-        _proxy().poke(PCIE_TX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance), DMA_CTRL_RESET);
+-        _proxy().poke(PCIE_RX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance), DMA_CTRL_RESET);
++        //Disable DMA streams (cleanup, so don't status chain)
++        _proxy().poke(PCIE_TX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance), DMA_CTRL_DISABLED);
++        _proxy().poke(PCIE_RX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance), DMA_CTRL_DISABLED);
+ 
+         _flush_rx_buff();
+ 
+@@ -284,6 +287,41 @@ private:
+         }
+     }
+ 
++    UHD_INLINE void _wait_until_stream_ready()
++    {
++        static const uint32_t TIMEOUT_IN_MS = 100;
++
++        uint32_t reg_data = 0xffffffff;
++        boost::posix_time::ptime start_time;
++        boost::posix_time::time_duration elapsed;
++        nirio_status status = NiRio_Status_Success;
++
++        start_time = boost::posix_time::microsec_clock::local_time();
++        do {
++            boost::this_thread::sleep(boost::posix_time::microsec(50)); //Avoid flooding the bus
++            elapsed = boost::posix_time::microsec_clock::local_time() - start_time;
++            nirio_status_chain(_proxy().peek(
++                PCIE_TX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance), reg_data), status);
++        } while (
++            nirio_status_not_fatal(status) &&
++            (reg_data & DMA_STATUS_BUSY) &&
++            elapsed.total_milliseconds() < TIMEOUT_IN_MS);
++
++        start_time = boost::posix_time::microsec_clock::local_time();
++        do {
++            boost::this_thread::sleep(boost::posix_time::microsec(50)); //Avoid flooding the bus
++            elapsed = boost::posix_time::microsec_clock::local_time() - start_time;
++            nirio_status_chain(_proxy().peek(
++                PCIE_RX_DMA_REG(DMA_CTRL_STATUS_REG, _fifo_instance), reg_data), status);
++        } while (
++            nirio_status_not_fatal(status) &&
++            (reg_data & DMA_STATUS_BUSY) &&
++            elapsed.total_milliseconds() < TIMEOUT_IN_MS);
++
++        nirio_status_to_exception(status,
++            "Could not create nirio_zero_copy transport because the FPGA is busy. Try re-downloading the LVBITX.");
++    }
++
+     //memory management -> buffers and fifos
+     niusrprio::niusrprio_session::sptr _fpga_session;
+     uint32_t _fifo_instance;
+diff --git a/host/lib/usrp/x300/x300_regs.hpp b/host/lib/usrp/x300/x300_regs.hpp
+index fb1786d..cf1e336 100644
+--- a/host/lib/usrp/x300/x300_regs.hpp
++++ b/host/lib/usrp/x300/x300_regs.hpp
+@@ -124,9 +124,12 @@ static const uint32_t FPGA_PCIE_SIG_REG     = PCIE_FPGA_REG(0x0000);
+ static const uint32_t FPGA_CNTR_LO_REG      = PCIE_FPGA_REG(0x0004);
+ static const uint32_t FPGA_CNTR_HI_REG      = PCIE_FPGA_REG(0x0008);
+ static const uint32_t FPGA_CNTR_FREQ_REG    = PCIE_FPGA_REG(0x000C);
++static const uint32_t FPGA_STATUS_REG       = PCIE_FPGA_REG(0x0020);
+ static const uint32_t FPGA_USR_SIG_REG_BASE = PCIE_FPGA_REG(0x0030);
+ static const uint32_t FPGA_USR_SIG_REG_SIZE = 16;
+ 
++static const uint32_t FPGA_STATUS_DMA_ACTIVE_MASK = 0x3F3F0000;
++
+ static const uint32_t PCIE_TX_DMA_REG_BASE  = PCIE_FPGA_REG(0x0200);
+ static const uint32_t PCIE_RX_DMA_REG_BASE  = PCIE_FPGA_REG(0x0400);
+ 
+@@ -139,12 +142,15 @@ static const uint32_t DMA_PKT_COUNT_REG     = 0xC;
+ #define PCIE_TX_DMA_REG(REG, CHAN)          (PCIE_TX_DMA_REG_BASE + (CHAN*DMA_REG_GRP_SIZE) + REG)
+ #define PCIE_RX_DMA_REG(REG, CHAN)          (PCIE_RX_DMA_REG_BASE + (CHAN*DMA_REG_GRP_SIZE) + REG)
+ 
+-static const uint32_t DMA_CTRL_RESET        = 1;
++static const uint32_t DMA_CTRL_DISABLED     = 0x00000000;
++static const uint32_t DMA_CTRL_ENABLED      = 0x00000002;
++static const uint32_t DMA_CTRL_CLEAR_STB    = 0x00000001;
+ static const uint32_t DMA_CTRL_SW_BUF_U64   = (3 << 4);
+ static const uint32_t DMA_CTRL_SW_BUF_U32   = (2 << 4);
+ static const uint32_t DMA_CTRL_SW_BUF_U16   = (1 << 4);
+ static const uint32_t DMA_CTRL_SW_BUF_U8    = (0 << 4);
+-static const uint32_t DMA_STATUS_ERROR      = 1;
++static const uint32_t DMA_STATUS_ERROR      = 0x00000001;
++static const uint32_t DMA_STATUS_BUSY       = 0x00000002;
+ 
+ static const uint32_t PCIE_ROUTER_REG_BASE  = PCIE_FPGA_REG(0x0500);
+ #define PCIE_ROUTER_REG(X)                  (PCIE_ROUTER_REG_BASE + X)
+-- 
+1.7.10.4
+

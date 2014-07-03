@@ -1,0 +1,25 @@
+From 72f11b3ecb233b8ce214ba7814dbb036575e3f4f Mon Sep 17 00:00:00 2001
+From: Ashish Chaudhari <ashish@ettus.com>
+Date: Fri, 25 Apr 2014 12:24:52 -0700
+Subject: [PATCH 09/31] x300: Bumped FPGA compat number to 5.
+
+---
+ host/lib/usrp/x300/x300_fw_common.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/lib/usrp/x300/x300_fw_common.h b/host/lib/usrp/x300/x300_fw_common.h
+index 6323916..1edb8b2 100644
+--- a/host/lib/usrp/x300/x300_fw_common.h
++++ b/host/lib/usrp/x300/x300_fw_common.h
+@@ -31,7 +31,7 @@ extern "C" {
+ 
+ #define X300_FW_COMPAT_MAJOR 3
+ #define X300_FW_COMPAT_MINOR 0
+-#define X300_FPGA_COMPAT_MAJOR 4
++#define X300_FPGA_COMPAT_MAJOR 5
+ 
+ //shared memory sections - in between the stack and the program space
+ #define X300_FW_SHMEM_BASE 0x6000
+-- 
+1.7.10.4
+

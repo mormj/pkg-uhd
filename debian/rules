@@ -1,6 +1,10 @@
 #!/usr/bin/make -f
 DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
 export DEB_HOST_MULTIARCH
+DEB_DEBIAN_DIR=$(dir $(firstword $(MAKEFILE_LIST)))
+VER=$(shell dpkg-parsechangelog -l$(DEB_DEBIAN_DIR)/changelog \
+              | sed -rne 's,^Version: ([^-]+).*,\1,p')
+GITREV=$(shell echo $(VER) | sed -rne 's,([0-9]).([0-9]).([0-9]),release_00\1_00\2_00\3,p')
 
 %:
 	dh $@ --parallel --sourcedirectory=host --builddirectory=build
@@ -18,3 +22,12 @@ override_dh_auto_install:
 	dh_auto_install
 	- rm -f debian/tmp/usr/share/doc/uhd/doxygen/html/jquery.js
 	ln -s /usr/share/javascript/jquery/jquery.js debian/tmp/usr/share/doc/uhd/doxygen/html/jquery.js
+
+get-orig-source:
+	git clone git://github.com/EttusResearch/uhd.git
+	cd uhd && git checkout $(GITREV)
+	cd uhd && git submodule init
+	cd uhd && git submodule update
+	cd uhd && git archive --format=tar --prefix=uhd-$(VER)/  $(GITREV) | xz > ../../uhd_$(VER).orig.tar.xz
+	cd uhd/fpga-src && git archive --format=tar --prefix=uhd-$(VER)/fpga-src/ HEAD | xz > ../../../uhd_$(VER)-fpga-src.orig.tar.xz
+	rm -rf uhd

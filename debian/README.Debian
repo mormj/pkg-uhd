@@ -53,14 +53,6 @@ UHD Firmware / FPGA images
  the UHD library will fetch files from the /usr/share/uhd/images/
  directory at runtime.
 
- To manage this there are currently two download/install scripts
- in the uhd-host package:
-
- The uhd_install_firmware program is a shell script that either
- downloads FPGA image and firmware tarballs from Ettus.com or takes
- the tarball file as a command-line argument, checks the md5sum,
- and installs the files.
-
  The uhd_images_downloader is a python script to download from
  Ettus.com and install the files.
 
@@ -70,4 +62,4 @@ More Information
 Additional HTML documentation is installed. See
 file:///usr/share/doc/uhd-host/manual/html/index.html
 
- -- A. Maitland Bottoms <bottoms@debian.org>, Tue, 23 Apr 2013 23:51:15 -0400
+ -- A. Maitland Bottoms <bottoms@debian.org>, Thu,  9 Oct 2014 23:14:19 -0400

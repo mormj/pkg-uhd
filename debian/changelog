@@ -1,3 +1,13 @@
+uhd (3.8.5-2) unstable; urgency=medium
+
+  * update to release_003_008_005-10-g3dbced2
+  * Added NI B2x0 VID/PID pairs to udev rules in Debian uhd-host package.
+  * 0099-revert-neon-changes.patch: Revert the NEON changes from upstream
+    commit 1b149f561370687ad65e3aa644a402f00dbd16ea to fix build on arm64.
+    (Thanks Adam!) (Closes: #794906)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 07 Aug 2015 23:49:20 -0400
+
 uhd (3.8.5-1) unstable; urgency=medium
 
   * New upstream release

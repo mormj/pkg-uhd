@@ -1,0 +1,161 @@
+From 1728cf492fb214d99ae00bf73106648a0985d416 Mon Sep 17 00:00:00 2001
+From: Ben Hilburn <ben.hilburn@ettus.com>
+Date: Tue, 4 Aug 2015 17:27:30 -0700
+Subject: [PATCH 09/10] E300 FW: Fixing copyrights
+
+---
+ firmware/e300/rev_b/bq24190.c | 3 +--
+ firmware/e300/rev_b/bq24190.h | 3 +--
+ firmware/e300/rev_b/error.h   | 3 +--
+ firmware/e300/rev_b/global.h  | 3 +--
+ firmware/e300/rev_b/ltc4155.h | 3 +--
+ firmware/e300/rev_c/bq24190.c | 3 +--
+ firmware/e300/rev_c/bq24190.h | 3 +--
+ firmware/e300/rev_c/error.h   | 3 +--
+ firmware/e300/rev_c/global.h  | 3 +--
+ firmware/e300/rev_c/ltc4155.h | 3 +--
+ 10 files changed, 10 insertions(+), 20 deletions(-)
+
+diff --git a/firmware/e300/rev_b/bq24190.c b/firmware/e300/rev_b/bq24190.c
+index 029beac..d864ad0 100644
+--- a/firmware/e300/rev_b/bq24190.c
++++ b/firmware/e300/rev_b/bq24190.c
+@@ -1,8 +1,7 @@
+ /*
+  * bq24190.c
+  *
+- * Created: 11/12/2012 4:58:12 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */
+ 
+ #ifdef CHARGER_TI
+diff --git a/firmware/e300/rev_b/bq24190.h b/firmware/e300/rev_b/bq24190.h
+index dc20ca7..bca4151 100644
+--- a/firmware/e300/rev_b/bq24190.h
++++ b/firmware/e300/rev_b/bq24190.h
+@@ -1,8 +1,7 @@
+ /*
+  * bq24190.h
+  *
+- * Created: 11/12/2012 4:58:23 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */ 
+ 
+ 
+diff --git a/firmware/e300/rev_b/error.h b/firmware/e300/rev_b/error.h
+index 82a8f0a..4275fbf 100644
+--- a/firmware/e300/rev_b/error.h
++++ b/firmware/e300/rev_b/error.h
+@@ -1,8 +1,7 @@
+ /*
+  * error.h
+  *
+- * Created: 4/09/2012 6:25:53 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */ 
+ 
+ 
+diff --git a/firmware/e300/rev_b/global.h b/firmware/e300/rev_b/global.h
+index 50fab58..a142d6e 100644
+--- a/firmware/e300/rev_b/global.h
++++ b/firmware/e300/rev_b/global.h
+@@ -1,8 +1,7 @@
+ /*
+  * global.h
+  *
+- * Created: 31/08/2012 8:47:14 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */ 
+ 
+ #ifndef GLOBAL_H_
+diff --git a/firmware/e300/rev_b/ltc4155.h b/firmware/e300/rev_b/ltc4155.h
+index 7e8e375..048e476 100644
+--- a/firmware/e300/rev_b/ltc4155.h
++++ b/firmware/e300/rev_b/ltc4155.h
+@@ -1,8 +1,7 @@
+ /*
+  * ltc4155.h
+  *
+- * Created: 17/08/2012 8:09:43 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */ 
+ 
+ 
+diff --git a/firmware/e300/rev_c/bq24190.c b/firmware/e300/rev_c/bq24190.c
+index 029beac..d864ad0 100644
+--- a/firmware/e300/rev_c/bq24190.c
++++ b/firmware/e300/rev_c/bq24190.c
+@@ -1,8 +1,7 @@
+ /*
+  * bq24190.c
+  *
+- * Created: 11/12/2012 4:58:12 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */
+ 
+ #ifdef CHARGER_TI
+diff --git a/firmware/e300/rev_c/bq24190.h b/firmware/e300/rev_c/bq24190.h
+index dc20ca7..bca4151 100644
+--- a/firmware/e300/rev_c/bq24190.h
++++ b/firmware/e300/rev_c/bq24190.h
+@@ -1,8 +1,7 @@
+ /*
+  * bq24190.h
+  *
+- * Created: 11/12/2012 4:58:23 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */ 
+ 
+ 
+diff --git a/firmware/e300/rev_c/error.h b/firmware/e300/rev_c/error.h
+index 82a8f0a..4275fbf 100644
+--- a/firmware/e300/rev_c/error.h
++++ b/firmware/e300/rev_c/error.h
+@@ -1,8 +1,7 @@
+ /*
+  * error.h
+  *
+- * Created: 4/09/2012 6:25:53 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */ 
+ 
+ 
+diff --git a/firmware/e300/rev_c/global.h b/firmware/e300/rev_c/global.h
+index 50fab58..a142d6e 100644
+--- a/firmware/e300/rev_c/global.h
++++ b/firmware/e300/rev_c/global.h
+@@ -1,8 +1,7 @@
+ /*
+  * global.h
+  *
+- * Created: 31/08/2012 8:47:14 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */ 
+ 
+ #ifndef GLOBAL_H_
+diff --git a/firmware/e300/rev_c/ltc4155.h b/firmware/e300/rev_c/ltc4155.h
+index 7e8e375..048e476 100644
+--- a/firmware/e300/rev_c/ltc4155.h
++++ b/firmware/e300/rev_c/ltc4155.h
+@@ -1,8 +1,7 @@
+ /*
+  * ltc4155.h
+  *
+- * Created: 17/08/2012 8:09:43 PM
+- *  Author: Balint Seeber
++ * Copyright 2015 National Instruments Corp
+  */ 
+ 
+ 
+-- 
+2.1.4
+

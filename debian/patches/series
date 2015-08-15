@@ -8,3 +8,6 @@ timestamps_in_documentation_generated_by_doxygen
 0006-e3xx-docs-Add-a-paragraph-on-network-configuration.patch
 0007-docs-Added-X3x0-LEDs-table.patch
 0008-Added-NI-B2x0-VID-PID-pairs-to-udev-rules.patch
+0009-E300-FW-Fixing-copyrights.patch
+0010-Fixed-.ipp-include-behavior.patch
+0099-revert-neon-changes.patch

@@ -1,0 +1,113 @@
+Description: Revert the NEON changes from upstream commit
+ 1b149f561370687ad65e3aa644a402f00dbd16ea to fix arm64.
+Author: Adam Conrad <adconrad@ubuntu.com>
+Bug-Debian: https://bugs.debian.org/794906
+
+--- uhd-3.8.5.orig/host/lib/convert/CMakeLists.txt
++++ uhd-3.8.5/host/lib/convert/CMakeLists.txt
+@@ -95,11 +95,8 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
+ ENDIF(CMAKE_COMPILER_IS_GNUCXX)
+ 
+ IF(HAVE_ARM_NEON_H)
+-    ENABLE_LANGUAGE(ASM)
+-
+     LIBUHD_APPEND_SOURCES(
+         ${CMAKE_CURRENT_SOURCE_DIR}/convert_with_neon.cpp
+-        ${CMAKE_CURRENT_SOURCE_DIR}/convert_neon.S
+     )
+ ENDIF()
+ 
+--- uhd-3.8.5.orig/host/lib/convert/convert_neon.S
++++ /dev/null
+@@ -1,37 +0,0 @@
+-//
+-// Copyright 2014 Ettus Research LLC
+-//
+-// This program is free software: you can redistribute it and/or modify
+-// it under the terms of the GNU General Public License as published by
+-// the Free Software Foundation, either version 3 of the License, or
+-// (at your option) any later version.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-//
+-
+-	.arch armv7-a
+-	.fpu neon
+-	.syntax unified
+-	.text
+-	.align 2
+-	.global neon_item32_sc16_swap_16n
+-	.type neon_item32_sc16_swap_16n, %function
+-neon_item32_sc16_swap_16n:
+-.loop_swap:
+-	vld2.16      {q0, q1}, [r0]!
+-	vld2.16      {q2, q3}, [r0]!
+-	vswp               q0, q1
+-	vswp               q2, q3
+-	vst2.16      {q0, q1}, [r1]!
+-	vst2.16      {q2, q3}, [r1]!
+-	subs               r2, #1
+-	bne          .loop_swap
+-	bx                 lr
+-	.size neon_item32_sc16_swap_16n, .-neon_item32_sc16_swap_16n
+-	.section .note.GNU-stack,"",%progbits
+--- uhd-3.8.5.orig/host/lib/convert/convert_with_neon.cpp
++++ uhd-3.8.5/host/lib/convert/convert_with_neon.cpp
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2011-2014 Ettus Research LLC
++// Copyright 2011-2012 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -19,12 +19,6 @@
+ #include <uhd/utils/byteswap.hpp>
+ #include <arm_neon.h>
+ 
+-extern "C" {
+-void neon_item32_sc16_swap_16n(void *, void *, int iter);
+-}
+-
+-static const int SIMD_WIDTH = 16;
+-
+ using namespace uhd::convert;
+ 
+ DECLARE_CONVERTER(fc32, 1, sc16_item32_le, 1, PRIORITY_SIMD){
+@@ -64,31 +58,3 @@ DECLARE_CONVERTER(sc16_item32_le, 1, fc3
+ 
+     item32_sc16_to_xx<uhd::htowx>(input+i, output+i, nsamps-i, scale_factor);
+ }
+-
+-DECLARE_CONVERTER(sc16, 1, sc16_item32_le, 1, PRIORITY_SIMD){
+-    const sc16_t *input = reinterpret_cast<const sc16_t *>(inputs[0]);
+-    item32_t *output = reinterpret_cast<item32_t *>(outputs[0]);
+-
+-    size_t i = nsamps / SIMD_WIDTH;
+-
+-    if (i)
+-        neon_item32_sc16_swap_16n((void *) input, (void *) output, i);
+-
+-    i *= SIMD_WIDTH;
+-
+-    xx_to_item32_sc16<uhd::htowx>(input+i, output+i, nsamps-i, scale_factor);
+-}
+-
+-DECLARE_CONVERTER(sc16_item32_le, 1, sc16, 1, PRIORITY_SIMD){
+-    const item32_t *input = reinterpret_cast<const item32_t *>(inputs[0]);
+-    sc16_t *output = reinterpret_cast<sc16_t *>(outputs[0]);
+-
+-    size_t i = nsamps / SIMD_WIDTH;
+-
+-    if (i)
+-        neon_item32_sc16_swap_16n((void *) input, (void *) output, i);
+-
+-    i *= SIMD_WIDTH;
+-
+-    item32_sc16_to_xx<uhd::wtohx>(input+i, output+i, nsamps-i, scale_factor);
+-}

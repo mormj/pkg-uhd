@@ -1,1 +1,10 @@
 uhd-platform-hurd-kfreebsd
+timestamps_in_documentation_generated_by_doxygen
+0001-docs-Updated-X3x0-unbricking-procedure-info.patch
+0002-docs-Added-paragraph-on-GPIO-maximum-current-3.3V-su.patch
+0003-e3xx-Fix-firmware-to-actually-write-fuse-values.patch
+0004-e3xx-doc-Explain-autoboot-configuration.patch
+0005-e3xx-Make-frame-sizes-configurable.patch
+0006-e3xx-docs-Add-a-paragraph-on-network-configuration.patch
+0007-docs-Added-X3x0-LEDs-table.patch
+0008-Added-NI-B2x0-VID-PID-pairs-to-udev-rules.patch

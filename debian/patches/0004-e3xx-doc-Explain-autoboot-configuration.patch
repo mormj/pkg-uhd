@@ -1,0 +1,47 @@
+From 97d71375fffe88ee89b10ba0a125d106738f9e7b Mon Sep 17 00:00:00 2001
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Wed, 22 Jul 2015 11:36:26 -0700
+Subject: [PATCH 4/8] e3xx: doc: Explain autoboot configuration.
+
+Firmware Revision 2.0 introduced the possibility to configure
+the power on behavior.
+
+This documents how to configure it through sysfs.
+
+Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
+---
+ host/docs/usrp_e3x0.dox | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/host/docs/usrp_e3x0.dox b/host/docs/usrp_e3x0.dox
+index 86ce93b..7479c58 100644
+--- a/host/docs/usrp_e3x0.dox
++++ b/host/docs/usrp_e3x0.dox
+@@ -283,6 +283,7 @@ It's behavior is firmware version dependent.
+     + 1 - Low voltage error
+     + 2 - Regulator low voltage error
+     + 3 - FPGA power error
++    + 4 - DRAM power error
+     + 5 - 1.8V rail power error
+     + 6 - 3.3V rail power error
+     + 7 - Daughterboard / TX power error
+@@ -746,6 +747,16 @@ by pinging the USRP and making sure the LEDs start to blink.
+      In the file `/etc/ssh/sshd_config`, uncomment the line \#`X11Forwarding no`
+      and change "no" to "yes".
+ 
++ - Firmware
++  -# With Firmware 2.0 the device no longer turns on when AC power is plugged.<br>
++     This setting can be adjusted via `/sys/devices/axi_pmu.3/autoboot`.
++
++     Using `$ echo 1 > /sys/devices/axi_pmu.3/autoboot` autoboot is turned on.
++
++     Using `$ echo 0 > /sys/devices/axi_pmu.3/autoboot` autoboot is turned off.
++
++     Note that the path above is subject to change depending on device tree changes.
++
+ \section e3x0_apps Applications
+ 
+ \subsection e3x0_apps_gsm GSM Base Station
+-- 
+2.1.4
+

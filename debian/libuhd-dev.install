@@ -1,4 +1,3 @@
 usr/include
 usr/lib/*/pkgconfig
 usr/lib/*/libuhd.so
-usr/share/doc/uhd/doxygen /usr/share/doc/libuhd-dev/

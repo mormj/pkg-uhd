@@ -1,0 +1,44 @@
+From e889d685b4d8b94c2534f258a04b9725dc776695 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marcus=20M=C3=BCller?= <marcus.mueller@ettus.com>
+Date: Tue, 21 Jul 2015 20:06:43 +0200
+Subject: [PATCH 2/8] docs: Added paragraph on GPIO maximum current, +3.3V
+ supply
+
+---
+ host/docs/gpio_api.dox  | 4 ++++
+ host/docs/usrp_x3x0.dox | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/host/docs/gpio_api.dox b/host/docs/gpio_api.dox
+index d3bb4f0..98515d0 100644
+--- a/host/docs/gpio_api.dox
++++ b/host/docs/gpio_api.dox
+@@ -13,6 +13,10 @@ disabling a TX or RX mixer).
+ 
+ \subsection xgpio_fpanel_gpio X3x0 Front Panel GPIO
+ 
++The GPIO port is not meant to drive big loads. You should not try to source more than 5mA per pin.
++
++The +3.3V is for ESD clamping purposes only and not designed to deliver high currents.
++
+ \subsubsection xgpio_fpanel_conn Connector
+ 
+ \image html x3x0_gpio_conn.png "X3x0 GPIO Connectors"
+diff --git a/host/docs/usrp_x3x0.dox b/host/docs/usrp_x3x0.dox
+index f3e916a..9af6854 100644
+--- a/host/docs/usrp_x3x0.dox
++++ b/host/docs/usrp_x3x0.dox
+@@ -584,6 +584,10 @@ Please see \ref page_gpsdo_x3x0 for information on configuring and using the int
+ 
+ \image html x3x0_gpio_conn.png "X3x0 GPIO Connector"
+ 
++The GPIO port is not meant to drive big loads. You should not try to source more than 5mA per pin.
++
++The +3.3V is for ESD clamping purposes only and not designed to deliver high currents.
++
+ ### Pin Mapping
+ 
+ - Pin 1:  +3.3V
+-- 
+2.1.4
+

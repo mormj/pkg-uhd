@@ -1,0 +1,73 @@
+From 1d1dd415a958fa6f2a7aac06cf4026a8d387a9f2 Mon Sep 17 00:00:00 2001
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Mon, 27 Jul 2015 19:14:54 -0700
+Subject: [PATCH 5/8] e3xx: Make frame sizes configurable.
+
+UHD 3.8.5 increased the TX framesize from 2048 to 4096,
+this can lead to issues in 2x2.
+
+The behaviour can avoided by specifying send_frame_size = 2048
+for these scenarios.
+
+Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
+---
+ host/lib/usrp/e300/e300_defaults.hpp |  3 +++
+ host/lib/usrp/e300/e300_impl.cpp     | 23 +++++++++++++++++------
+ 2 files changed, 20 insertions(+), 6 deletions(-)
+
+diff --git a/host/lib/usrp/e300/e300_defaults.hpp b/host/lib/usrp/e300/e300_defaults.hpp
+index 89afcb2..d409062 100644
+--- a/host/lib/usrp/e300/e300_defaults.hpp
++++ b/host/lib/usrp/e300/e300_defaults.hpp
+@@ -50,6 +50,9 @@ static const size_t DEFAULT_CTRL_NUM_FRAMES    = 32;
+ static const size_t MAX_NET_RX_DATA_FRAME_SIZE = 1200;
+ static const size_t MAX_NET_TX_DATA_FRAME_SIZE = 1200;
+ 
++static const size_t MAX_AXI_RX_DATA_FRAME_SIZE = 4096;
++static const size_t MAX_AXI_TX_DATA_FRAME_SIZE = 4096;
++
+ class e300_ad9361_client_t : public ad9361_params {
+ public:
+     ~e300_ad9361_client_t() {}
+diff --git a/host/lib/usrp/e300/e300_impl.cpp b/host/lib/usrp/e300/e300_impl.cpp
+index 515fccc..a08168e 100644
+--- a/host/lib/usrp/e300/e300_impl.cpp
++++ b/host/lib/usrp/e300/e300_impl.cpp
+@@ -325,17 +325,28 @@ e300_impl::e300_impl(const uhd::device_addr_t &device_addr)
+     _ctrl_xport_params.send_frame_size = e300::DEFAULT_CTRL_FRAME_SIZE;
+     _ctrl_xport_params.num_send_frames = e300::DEFAULT_CTRL_NUM_FRAMES;
+ 
+-    _data_xport_params.recv_frame_size = e300::DEFAULT_RX_DATA_FRAME_SIZE;
+-    _data_xport_params.num_recv_frames = e300::DEFAULT_RX_DATA_NUM_FRAMES;
+-    _data_xport_params.send_frame_size = e300::DEFAULT_TX_DATA_FRAME_SIZE;
+-    _data_xport_params.num_send_frames = e300::DEFAULT_TX_DATA_NUM_FRAMES;
+-
+-    // until we figure out why this goes wrong we'll keep this hack around
++    _data_xport_params.recv_frame_size = device_addr.cast<size_t>("recv_frame_size",
++        e300::DEFAULT_RX_DATA_FRAME_SIZE);
++    _data_xport_params.num_recv_frames = device_addr.cast<size_t>("num_recv_frames",
++	e300::DEFAULT_RX_DATA_NUM_FRAMES);
++    _data_xport_params.send_frame_size = device_addr.cast<size_t>("send_frame_size",
++        e300::DEFAULT_TX_DATA_FRAME_SIZE);
++    _data_xport_params.num_send_frames = device_addr.cast<size_t>("num_send_frames",
++	e300::DEFAULT_TX_DATA_NUM_FRAMES);
++
++
++    // until we figure out why this goes wrong we'll keep this hack around for
++    // the ethernet case, in the AXI case we cannot go above one page
+     if (_xport_path == ETH) {
+         _data_xport_params.recv_frame_size =
+             std::min(e300::MAX_NET_RX_DATA_FRAME_SIZE, _data_xport_params.recv_frame_size);
+         _data_xport_params.send_frame_size =
+             std::min(e300::MAX_NET_TX_DATA_FRAME_SIZE, _data_xport_params.send_frame_size);
++    } else {
++        _data_xport_params.recv_frame_size =
++            std::min(e300::MAX_AXI_RX_DATA_FRAME_SIZE, _data_xport_params.recv_frame_size);
++        _data_xport_params.send_frame_size =
++            std::min(e300::MAX_AXI_TX_DATA_FRAME_SIZE, _data_xport_params.send_frame_size);
+     }
+     udp_zero_copy::buff_params dummy_buff_params_out;
+ 
+-- 
+2.1.4
+

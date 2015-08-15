@@ -1,0 +1,27 @@
+From 21a93aeaa21d55b28103c6f4e59b88df1ca7ec36 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Tue, 21 Jul 2015 16:25:59 -0700
+Subject: [PATCH 1/8] docs: Updated X3x0 unbricking procedure info
+
+---
+ host/docs/usrp_x3x0.dox | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/host/docs/usrp_x3x0.dox b/host/docs/usrp_x3x0.dox
+index 98e21a4..f3e916a 100644
+--- a/host/docs/usrp_x3x0.dox
++++ b/host/docs/usrp_x3x0.dox
+@@ -334,6 +334,10 @@ It is possible to put the device into an unusable state by loading bad images ("
+ Fortunately, the USRP-X Series device can be loaded with a good image temporarily using the USB-JTAG interface.
+ Once booted into the safe image, the user can once again load images onto the device over Ethernet or PCI Express.
+ 
++See Section \ref x3x0_load_fpga_imgs_jtag on how to load the FPGA image onto the device using a JTAG interface.
++After running the JTAG process, a new image can be flashed onto the device using the usual procedure
++to permently recover the device.
++
+ \section x3x0_setup_network Setup Networking
+ The USRP-X Series only supports Gigabit and Ten Gigabit Ethernet and will not work with a 10/100 Mbps interface.
+ 
+-- 
+2.1.4
+

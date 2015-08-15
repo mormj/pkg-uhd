@@ -1,14 +1,36 @@
+uhd (3.8.5-1) unstable; urgency=medium
+
+  * New upstream release
+    with maint branch patches:
+      docs-Updated-X3x0-unbricking-procedure-info
+      docs-Added-paragraph-on-GPIO-maximum-current-3.3V-su
+      e3xx-Fix-firmware-to-actually-write-fuse-values
+      e3xx-doc-Explain-autoboot-configuration
+      e3xx-Make-frame-sizes-configurable
+      e3xx-docs-Add-a-paragraph-on-network-configuration
+      docs-Added-X3x0-LEDs-table
+      Added-NI-B2x0-VID-PID-pairs-to-udev-rules
+  * New upstream path code (closes: #772412)
+  * Debian patches:
+     for Debian Hurd and kFreeBSD support
+     for reproducible builds: Doxygen HTML_TIMESTAMP = NO
+  * Debian source package uses multiple tarballs to match
+    upstream use of git with a submodule.
+  * remove unused build-dependency on liboil0.3-dev (Closes: #793627)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 05 Aug 2015 00:41:49 -0400
+
 uhd (3.7.3-1) unstable; urgency=low
 
   * New upstream release
 
- -- A. Maitland Bottoms <bottoms@debian.org>  Thu, 09 Oct 2014 21:33:00 -0400
+ -- A. Maitland Bottoms <bottoms@debian.org>  Mon, 06 Oct 2014 09:21:14 -0500
 
 uhd (3.7.2-1) unstable; urgency=low
 
   * New upstream release
 
- -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 22 Aug 2014 12:40:05 -0400
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 20 Aug 2014 17:33:06 -0500
 
 uhd (3.7.1-2) unstable; urgency=low
 

@@ -1,3 +1,9 @@
+uhd (3.7.2-1+bpo70+1) wheezy-backports; urgency=low
+
+  * Rebuild for wheezy-backports.
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sun, 21 Sep 2014 12:12:40 -0400
+
 uhd (3.7.2-1) unstable; urgency=low
 
   * New upstream release

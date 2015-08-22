@@ -22,7 +22,7 @@ Vcs-Browser: http://anonscm.debian.org/cgit/users/bottoms/pkg-uhd.git/
 
 Package: uhd-host
 Architecture: any
-Depends: libuhd003, python, adduser, ${shlibs:Depends}, ${misc:Depends}
+Depends: libuhd003v5, python, adduser, ${shlibs:Depends}, ${misc:Depends}
 Recommends: python-tk, curl, procps
 Suggests: gnuradio
 Description: universal hardware driver for Ettus Research products
@@ -37,14 +37,15 @@ Description: universal hardware driver for Ettus Research products
  display hardware configuration information and Doxygen generated
  documentation.
 
-Package: libuhd003
+Package: libuhd003v5
 Architecture: any
 Section: libs
 Pre-Depends: multiarch-support, ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Conflicts: gnuradio (<<3.7.6.1)
+Conflicts: libuhd003, gnuradio (<<3.7.6.1)
 Suggests: gnuradio
 Multi-Arch: same
+Replaces: libuhd003
 Description: universal hardware driver for Ettus Research products
  Host library for the Universal Hardware Driver for Ettus Research products.
  .
@@ -55,7 +56,7 @@ Description: universal hardware driver for Ettus Research products
 Package: libuhd-dev
 Architecture: any
 Section: libdevel
-Depends: libuhd003 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
+Depends: libuhd003v5 (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Recommends: gnuradio
 Description: universal hardware driver for Ettus Research products
  Host library for the Universal Hardware Driver for Ettus Research products.

@@ -1,3 +1,10 @@
+uhd (3.8.5-2.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Rename library packages for g++5 ABI transition (closes: 794878).
+
+ -- Julien Cristau <jcristau@debian.org>  Sun, 16 Aug 2015 17:55:53 +0200
+
 uhd (3.8.5-2) unstable; urgency=medium
 
   * update to release_003_008_005-10-g3dbced2

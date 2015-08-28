@@ -1,3 +1,10 @@
+uhd (3.8.5-3) unstable; urgency=low
+
+  * acknowledge NMU changes
+  * update to release_003_008_005-11-g7a86523
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Thu, 27 Aug 2015 20:25:15 -0400
+
 uhd (3.8.5-2.1) unstable; urgency=medium
 
   * Non-maintainer upload.

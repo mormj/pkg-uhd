@@ -10,4 +10,5 @@ timestamps_in_documentation_generated_by_doxygen
 0008-Added-NI-B2x0-VID-PID-pairs-to-udev-rules.patch
 0009-E300-FW-Fixing-copyrights.patch
 0010-Fixed-.ipp-include-behavior.patch
+0011-e3xx-Added-paragraph-about-NFS-root-booting.patch
 0099-revert-neon-changes.patch

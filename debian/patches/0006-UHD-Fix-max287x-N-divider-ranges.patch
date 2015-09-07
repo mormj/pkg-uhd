@@ -1,0 +1,43 @@
+From 5d3ad761d5479c981858dfe7d13e5fb11c25d8d6 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Tue, 25 Aug 2015 13:39:45 -0700
+Subject: [PATCH 06/13] UHD: Fix max287x N divider ranges
+
+---
+ host/lib/usrp/common/max287x.hpp | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/host/lib/usrp/common/max287x.hpp b/host/lib/usrp/common/max287x.hpp
+index 53d967d..fe5da19 100644
+--- a/host/lib/usrp/common/max287x.hpp
++++ b/host/lib/usrp/common/max287x.hpp
+@@ -412,7 +412,7 @@ double max287x<max287x_regs_t>::set_frequency(
+         (128, max287x_regs_t::RF_DIVIDER_SELECT_DIV128);
+ 
+     //map mode setting to valid integer divider (N) values
+-    static const uhd::range_t int_n_mode_div_range(16,65536,1);
++    static const uhd::range_t int_n_mode_div_range(16,65535,1);
+     static const uhd::range_t frac_n_mode_div_range(19,4091,1);
+ 
+     //other ranges and constants from MAX287X datasheets
+@@ -486,13 +486,13 @@ double max287x<max287x_regs_t>::set_frequency(
+         //keep N within int divider requirements
+         if(is_int_n)
+         {
+-            if(N < int_n_mode_div_range.start()) continue;
+-            if(N > int_n_mode_div_range.stop()) continue;
++            if(N <= int_n_mode_div_range.start()) continue;
++            if(N >= int_n_mode_div_range.stop()) continue;
+         }
+         else
+         {
+-            if(N < frac_n_mode_div_range.start()) continue;
+-            if(N > frac_n_mode_div_range.stop()) continue;
++            if(N <= frac_n_mode_div_range.start()) continue;
++            if(N >= frac_n_mode_div_range.stop()) continue;
+         }
+ 
+         //keep pfd freq low enough to achieve 50kHz BS clock
+-- 
+2.1.4
+

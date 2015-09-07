@@ -2,6 +2,7 @@ host/docs/uhd_cal_rx_iq_balance.1
 host/docs/uhd_cal_tx_dc_offset.1
 host/docs/uhd_cal_tx_iq_balance.1
 host/docs/uhd_find_devices.1
+host/docs/uhd_image_loader.1
 host/docs/uhd_images_downloader.1
 host/docs/uhd_usrp_probe.1
 host/docs/usrp2_card_burner.1

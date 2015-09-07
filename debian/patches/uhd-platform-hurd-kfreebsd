@@ -1,6 +1,6 @@
 --- a/host/include/uhd/config.hpp
 +++ b/host/include/uhd/config.hpp
-@@ -82,7 +82,7 @@
+@@ -89,7 +89,7 @@
  // Platform defines for conditional parts of headers:
  // Taken from boost/config/select_platform_config.hpp,
  // however, we define macros, not strings for platforms.

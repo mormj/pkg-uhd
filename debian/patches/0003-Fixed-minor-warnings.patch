@@ -1,0 +1,268 @@
+From 0ce526f302de68ece342545b4533aab699336028 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Wed, 19 Aug 2015 11:13:20 -0700
+Subject: [PATCH 03/13] Fixed minor warnings
+
+* Unreferenced exceptions in try-catch statements
+* Incorrect function documentation
+* Unlabelled unused variables
+---
+ host/include/uhd/types/metadata.h                   | 10 +++++-----
+ host/include/uhd/usrp/usrp.h                        |  4 ++--
+ host/include/uhd/utils/soft_register.hpp            |  2 +-
+ host/lib/transport/nirio/nirio_driver_iface_win.cpp |  5 ++---
+ host/lib/usrp/b200/b200_impl.cpp                    |  4 ++--
+ host/lib/usrp/b200/b200_io_impl.cpp                 |  4 ++--
+ host/lib/usrp/common/max287x.hpp                    |  2 +-
+ host/lib/usrp/e300/e300_remote_codec_ctrl.cpp       |  2 +-
+ host/lib/usrp_clock/octoclock/kk_ihex_read.h        |  6 +++---
+ host/lib/usrp_clock/octoclock/octoclock_uart.cpp    |  8 ++++----
+ 10 files changed, 23 insertions(+), 24 deletions(-)
+
+diff --git a/host/include/uhd/types/metadata.h b/host/include/uhd/types/metadata.h
+index 0cdbc6a..37758e1 100644
+--- a/host/include/uhd/types/metadata.h
++++ b/host/include/uhd/types/metadata.h
+@@ -164,7 +164,7 @@ UHD_API uhd_error uhd_rx_metadata_out_of_sequence(
+  *
+  * \param h metadata handle
+  * \param pp_string_out string buffer for pp_string
+- * \param buffer length
++ * \param strbuffer_len buffer length
+  */
+ UHD_API uhd_error uhd_rx_metadata_to_pp_string(
+     uhd_rx_metadata_handle h,
+@@ -190,7 +190,7 @@ UHD_API uhd_error uhd_rx_metadata_error_code(
+  *
+  * \param h metadata handle
+  * \param strerror_out string buffer for strerror
+- * \param buffer length
++ * \param strbuffer_len buffer length
+  */
+ UHD_API uhd_error uhd_rx_metadata_strerror(
+     uhd_rx_metadata_handle h,
+@@ -210,7 +210,7 @@ UHD_API uhd_error uhd_rx_metadata_strerror(
+  *
+  * \param h metadata handle
+  * \param error_out string buffer for error
+- * \param buffer length
++ * \param strbuffer_len buffer length
+  */
+ UHD_API uhd_error uhd_rx_metadata_last_error(
+     uhd_rx_metadata_handle h,
+@@ -269,7 +269,7 @@ UHD_API uhd_error uhd_tx_metadata_end_of_burst(
+  *
+  * \param h metadata handle
+  * \param error_out string buffer for error
+- * \param buffer length
++ * \param strbuffer_len buffer length
+  */
+ UHD_API uhd_error uhd_tx_metadata_last_error(
+     uhd_tx_metadata_handle h,
+@@ -349,7 +349,7 @@ UHD_API uhd_error uhd_async_metadata_user_payload(
+  *
+  * \param h metadata handle
+  * \param error_out string buffer for error
+- * \param buffer length
++ * \param strbuffer_len buffer length
+  */
+ UHD_API uhd_error uhd_async_metadata_last_error(
+     uhd_async_metadata_handle h,
+diff --git a/host/include/uhd/usrp/usrp.h b/host/include/uhd/usrp/usrp.h
+index 1bde694..67f8e0f 100644
+--- a/host/include/uhd/usrp/usrp.h
++++ b/host/include/uhd/usrp/usrp.h
+@@ -155,7 +155,7 @@ UHD_API uhd_error uhd_rx_streamer_max_num_samps(
+  *
+  * \param h RX streamer handle
+  * \param buffs pointer to buffers in which to receive samples
+- * \param samps_per_buffer max number of samples per buffer
++ * \param samps_per_buff max number of samples per buffer
+  * \param md handle to RX metadata in which to receive results
+  * \param timeout timeout in seconds to wait for a packet
+  * \param one_packet send a single packet
+@@ -235,7 +235,7 @@ UHD_API uhd_error uhd_tx_streamer_max_num_samps(
+  *
+  * \param h TX streamer handle
+  * \param buffs pointer to buffers containing samples to send
+- * \param samps_per_buffer max number of samples per buffer
++ * \param samps_per_buff max number of samples per buffer
+  * \param md handle to TX metadata
+  * \param timeout timeout in seconds to wait for a packet
+  * \param items_sent pointer to output variable for number of samples send
+diff --git a/host/include/uhd/utils/soft_register.hpp b/host/include/uhd/utils/soft_register.hpp
+index 9006ab5..a2c34a4 100644
+--- a/host/include/uhd/utils/soft_register.hpp
++++ b/host/include/uhd/utils/soft_register.hpp
+@@ -649,7 +649,7 @@ public:
+                 BOOST_FOREACH(const soft_regmap_accessor_t* db, _regmap_dbs) {
+                     try {
+                         return db->lookup(newpath.substr(1));
+-                    } catch (std::exception& e) {
++                    } catch (std::exception&) {
+                         continue;
+                     }
+                 }
+diff --git a/host/lib/transport/nirio/nirio_driver_iface_win.cpp b/host/lib/transport/nirio/nirio_driver_iface_win.cpp
+index b47c6ce..7179231 100644
+--- a/host/lib/transport/nirio/nirio_driver_iface_win.cpp
++++ b/host/lib/transport/nirio/nirio_driver_iface_win.cpp
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2013 Ettus Research LLC
++// Copyright 2013,2015 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -60,14 +60,13 @@ nirio_status rio_ioctl(
+     * DeviceIoControl, even when doing synchronous IO. */
+     OVERLAPPED zeroedOverlapped = {0};
+     DWORD outLen = 0;
+-    int_fast32_t lastError = 0;
+ 
+     if (!(DeviceIoControl(device_handle, ioctl_code,
+             const_cast<void*>(write_buf), static_cast<DWORD>(write_buf_len),
+             read_buf, static_cast<DWORD>(read_buf_len),
+             &outLen, &zeroedOverlapped )))
+     {
+-        lastError = GetLastError();
++        int_fast32_t lastError = GetLastError();
+         return NiRio_Status_SoftwareFault;
+     }
+ 
+diff --git a/host/lib/usrp/b200/b200_impl.cpp b/host/lib/usrp/b200/b200_impl.cpp
+index 2a590b7..12baa1c 100644
+--- a/host/lib/usrp/b200/b200_impl.cpp
++++ b/host/lib/usrp/b200/b200_impl.cpp
+@@ -227,7 +227,7 @@ static device_addrs_t b200_find(const device_addr_t &hint)
+             try {
+                 // Turn the 16-Bit product ID into a string representation
+                 new_addr["product"] = B2XX_STR_NAMES[get_b200_product(handle, mb_eeprom)];
+-            } catch (const uhd::runtime_error &e) {
++            } catch (const uhd::runtime_error &) {
+                 // No problem if this fails -- this is just device discovery, after all.
+                 new_addr["product"] = "B2??";
+             }
+@@ -258,7 +258,7 @@ static device::sptr b200_make(const device_addr_t &device_addr)
+     try {
+         return device::sptr(new b200_impl(device_addr, handle));
+     }
+-    catch (const uhd::usb_error &e) {
++    catch (const uhd::usb_error &) {
+         UHD_MSG(status) << "Detected bad USB state; resetting." << std::flush;
+         libusb::device_handle::sptr dev_handle(libusb::device_handle::get_cached_handle(
+             boost::static_pointer_cast<libusb::special_handle>(handle)->get_device()
+diff --git a/host/lib/usrp/b200/b200_io_impl.cpp b/host/lib/usrp/b200/b200_io_impl.cpp
+index 4aa1a46..7fcd048 100644
+--- a/host/lib/usrp/b200/b200_io_impl.cpp
++++ b/host/lib/usrp/b200/b200_io_impl.cpp
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2012-2014 Ettus Research LLC
++// Copyright 2012-2015 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -135,7 +135,7 @@ void b200_impl::set_auto_tick_rate(
+         if (!uhd::math::frequencies_are_equal(_tree->access<double>("/mboards/0/tick_rate").get(), new_rate)) {
+             _tree->access<double>("/mboards/0/tick_rate").set(new_rate);
+         }
+-    } catch (const uhd::value_error &e) {
++    } catch (const uhd::value_error &) {
+         UHD_MSG(warning)
+             << "Cannot automatically determine an appropriate tick rate for these sampling rates." << std::endl
+             << "Consider using different sampling rates, or manually specify a suitable master clock rate." << std::endl;
+diff --git a/host/lib/usrp/common/max287x.hpp b/host/lib/usrp/common/max287x.hpp
+index d084dcf..53d967d 100644
+--- a/host/lib/usrp/common/max287x.hpp
++++ b/host/lib/usrp/common/max287x.hpp
+@@ -772,7 +772,7 @@ void max287x<max287x_regs_t>::commit()
+                 if (changed_regs.find(boost::uint32_t(addr)) != changed_regs.end())
+                     regs.push_back(_regs.get_reg(boost::uint32_t(addr)));
+             }
+-        } catch (uhd::runtime_error& e) {
++        } catch (uhd::runtime_error&) {
+             // No saved state - write all regs
+             for (int addr = 5; addr >= 0; addr--)
+                 regs.push_back(_regs.get_reg(boost::uint32_t(addr)));
+diff --git a/host/lib/usrp/e300/e300_remote_codec_ctrl.cpp b/host/lib/usrp/e300/e300_remote_codec_ctrl.cpp
+index be98f40..17a564f 100644
+--- a/host/lib/usrp/e300/e300_remote_codec_ctrl.cpp
++++ b/host/lib/usrp/e300/e300_remote_codec_ctrl.cpp
+@@ -242,7 +242,7 @@ public:
+         UHD_MSG(warning) << "Attempting to set filter on E300 in network mode." << std::endl;
+     }
+ 
+-    void output_digital_test_tone(bool enb)
++    void output_digital_test_tone(UHD_UNUSED(bool enb))
+     {
+         UHD_THROW_INVALID_CODE_PATH();
+     }
+diff --git a/host/lib/usrp_clock/octoclock/kk_ihex_read.h b/host/lib/usrp_clock/octoclock/kk_ihex_read.h
+index 5e210fd..303622b 100644
+--- a/host/lib/usrp_clock/octoclock/kk_ihex_read.h
++++ b/host/lib/usrp_clock/octoclock/kk_ihex_read.h
+@@ -54,11 +54,11 @@ void ihex_begin_read(struct ihex_state * const ihex);
+ // Begin reading at `address` (the lowest 16 bits of which will be ignored);
+ // this is required only if the high bytes of the 32-bit starting address
+ // are not specified in the input data and they are non-zero
+-void ihex_read_at_address(struct ihex_state *ihex,
++void ihex_read_at_address(struct ihex_state * const ihex,
+                           ihex_address_t address);
+ 
+ // Read a single character
+-void ihex_read_byte(struct ihex_state *ihex, char chr, FILE* outfile);
++void ihex_read_byte(struct ihex_state * const ihex, const char byte, FILE* outfile);
+ 
+ // Read `count` bytes from `data`
+ void ihex_read_bytes(struct ihex_state * ihex,
+@@ -67,7 +67,7 @@ void ihex_read_bytes(struct ihex_state * ihex,
+                      FILE* outfile);
+ 
+ // End reading (may call `ihex_data_read` if there is data waiting)
+-void ihex_end_read(struct ihex_state *ihex, FILE* outfile);
++void ihex_end_read(struct ihex_state * const ihex, FILE* outfile);
+ 
+ // Called when a complete line has been read, the record type of which is
+ // passed as `type`. The `ihex` structure will have its fields `data`,
+diff --git a/host/lib/usrp_clock/octoclock/octoclock_uart.cpp b/host/lib/usrp_clock/octoclock/octoclock_uart.cpp
+index e879c4b..f366bac 100644
+--- a/host/lib/usrp_clock/octoclock/octoclock_uart.cpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_uart.cpp
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2014 Ettus Research LLC
++// Copyright 2014-2015 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -91,7 +91,7 @@ namespace uhd{
+         while(boost::get_system_time() < exit_time){
+             _update_cache();
+ 
+-            for(char ch = _getchar(); ch != -1; ch = _getchar()){
++            for(char ch = _getchar(); ch != 0; ch = _getchar()){
+                 if(ch == '\r') continue; //Skip carriage returns
+                 _rxbuff += ch;
+ 
+@@ -111,7 +111,7 @@ namespace uhd{
+     void octoclock_uart_iface::_update_cache(){
+         octoclock_packet_t pkt_out;
+         pkt_out.len = 0;
+-		pkt_out.sequence = 0;
++        pkt_out.sequence = 0;
+         size_t len = 0;
+ 
+         boost::uint8_t octoclock_data[udp_simple::mtu];
+@@ -146,7 +146,7 @@ namespace uhd{
+ 
+     char octoclock_uart_iface::_getchar(){
+         if(LOCAL_STATE_AHEAD){
+-            return -1;
++            return 0;
+         }
+ 
+         char ch = _cache[_state.pos];
+-- 
+2.1.4
+

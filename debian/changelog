@@ -1,3 +1,12 @@
+uhd (3.9.0-1) unstable; urgency=medium
+
+  * New upstream release, update to release_003_009_000-13-g01ed9b3
+  * build with libgps, gpsd support
+  * use aarch64.patch from https://bugzilla.redhat.com/show_bug.cgi?id=1200836
+    (Sorry Adam, thanks Marcin!)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 01 Sep 2015 22:08:38 -0400
+
 uhd (3.8.5-3) unstable; urgency=low
 
   * acknowledge NMU changes

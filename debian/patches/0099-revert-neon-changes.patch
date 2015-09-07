@@ -3,9 +3,9 @@ Description: Revert the NEON changes from upstream commit
 Author: Adam Conrad <adconrad@ubuntu.com>
 Bug-Debian: https://bugs.debian.org/794906
 
---- uhd-3.8.5.orig/host/lib/convert/CMakeLists.txt
-+++ uhd-3.8.5/host/lib/convert/CMakeLists.txt
-@@ -95,11 +95,8 @@ IF(CMAKE_COMPILER_IS_GNUCXX)
+--- a/host/lib/convert/CMakeLists.txt
++++ b/host/lib/convert/CMakeLists.txt
+@@ -61,11 +61,8 @@
  ENDIF(CMAKE_COMPILER_IS_GNUCXX)
  
  IF(HAVE_ARM_NEON_H)
@@ -17,7 +17,7 @@ Bug-Debian: https://bugs.debian.org/794906
      )
  ENDIF()
  
---- uhd-3.8.5.orig/host/lib/convert/convert_neon.S
+--- a/host/lib/convert/convert_neon.S
 +++ /dev/null
 @@ -1,37 +0,0 @@
 -//
@@ -57,8 +57,8 @@ Bug-Debian: https://bugs.debian.org/794906
 -	bx                 lr
 -	.size neon_item32_sc16_swap_16n, .-neon_item32_sc16_swap_16n
 -	.section .note.GNU-stack,"",%progbits
---- uhd-3.8.5.orig/host/lib/convert/convert_with_neon.cpp
-+++ uhd-3.8.5/host/lib/convert/convert_with_neon.cpp
+--- a/host/lib/convert/convert_with_neon.cpp
++++ b/host/lib/convert/convert_with_neon.cpp
 @@ -1,5 +1,5 @@
  //
 -// Copyright 2011-2014 Ettus Research LLC
@@ -79,7 +79,7 @@ Bug-Debian: https://bugs.debian.org/794906
  using namespace uhd::convert;
  
  DECLARE_CONVERTER(fc32, 1, sc16_item32_le, 1, PRIORITY_SIMD){
-@@ -64,31 +58,3 @@ DECLARE_CONVERTER(sc16_item32_le, 1, fc3
+@@ -64,31 +58,3 @@
  
      item32_sc16_to_xx<uhd::htowx>(input+i, output+i, nsamps-i, scale_factor);
  }

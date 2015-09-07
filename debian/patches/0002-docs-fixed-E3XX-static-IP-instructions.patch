@@ -1,0 +1,25 @@
+From 4cfa04f771649245148b7c993d52fdd34225b08e Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Fri, 28 Aug 2015 10:11:19 -0700
+Subject: [PATCH 02/13] docs: fixed E3XX static IP instructions
+
+---
+ host/docs/usrp_e3x0.dox | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/docs/usrp_e3x0.dox b/host/docs/usrp_e3x0.dox
+index db41143..3c20619 100644
+--- a/host/docs/usrp_e3x0.dox
++++ b/host/docs/usrp_e3x0.dox
+@@ -660,7 +660,7 @@ iface eth0 inet dhcp
+ 
+ To configure a static IP address edit
+ 
+-    /etc/hostname
++    /etc/network/interfaces
+ 
+ to look like
+ 
+-- 
+2.1.4
+

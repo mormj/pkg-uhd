@@ -1,3 +1,11 @@
+uhd (3.9.0-2) unstable; urgency=low
+
+  * fix FTBFS:
+    use dh_acc and abi-compliance-checker just on amd64
+    revise uhd-platform-hurd-kfreebsd patch
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Mon, 07 Sep 2015 19:35:50 -0400
+
 uhd (3.9.0-1) unstable; urgency=medium
 
   * New upstream release, update to release_003_009_000-13-g01ed9b3

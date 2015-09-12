@@ -1,3 +1,9 @@
+uhd (3.9.0-3) unstable; urgency=medium
+
+  * drop dh_acc to get reproducible builds
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 11 Sep 2015 22:37:50 -0400
+
 uhd (3.9.0-2) unstable; urgency=low
 
   * fix FTBFS:

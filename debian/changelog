@@ -1,3 +1,9 @@
+uhd (3.9.1-1) unstable; urgency=low
+
+  * New upstream release, updated udev rules
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sun, 13 Sep 2015 10:23:00 -0400
+
 uhd (3.9.0-3) unstable; urgency=medium
 
   * drop dh_acc to get reproducible builds

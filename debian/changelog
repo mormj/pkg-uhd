@@ -1,3 +1,10 @@
+uhd (3.9.1-2) unstable; urgency=medium
+
+  * update to release_003_009_001-3-gfee054d
+  * use Breaks instead of Conflicts with older gnuradio, gr-osmosdr
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 29 Sep 2015 21:49:36 -0400
+
 uhd (3.9.1-1) unstable; urgency=low
 
   * New upstream release, updated udev rules

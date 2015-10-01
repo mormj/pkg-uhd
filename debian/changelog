@@ -1,3 +1,9 @@
+uhd (3.9.1-3) unstable; urgency=medium
+
+  * use dh_makeshlibs -V 'libuhd003 (>= 3.9)'
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 30 Sep 2015 22:25:33 -0400
+
 uhd (3.9.1-2) unstable; urgency=medium
 
   * update to release_003_009_001-3-gfee054d

@@ -1,0 +1,28 @@
+From 9dea76ab85eb1ba3a0c52dc0499b2b16a16e82da Mon Sep 17 00:00:00 2001
+From: Philip Balister <philip@opensdr.com>
+Date: Wed, 21 Oct 2015 16:23:01 -0700
+Subject: [PATCH 12/14] E300 docs: Use Release-3 to rebuild file system.
+
+Release-2 fails due to moved rtimulib code.
+
+Signed-off-by: Philip Balister <philip@opensdr.com>
+---
+ host/docs/usrp_e3x0.dox | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/docs/usrp_e3x0.dox b/host/docs/usrp_e3x0.dox
+index 6baf7b7..807d82e 100644
+--- a/host/docs/usrp_e3x0.dox
++++ b/host/docs/usrp_e3x0.dox
+@@ -172,7 +172,7 @@ knowledge of Linux.
+ \code{.sh}
+  $ mkdir e300-oe-build
+  $ cd e300-oe-build
+- $ repo init -u git://github.com/EttusResearch/e300-manifest.git -b Release-2
++ $ repo init -u git://github.com/EttusResearch/e300-manifest.git -b Release-3
+ \endcode
+ 
+ -# Initialize the environment. This will take a little while.
+-- 
+2.1.4
+

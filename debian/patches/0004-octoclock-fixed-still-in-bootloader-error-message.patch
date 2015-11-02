@@ -1,0 +1,25 @@
+From c7564bc99e8a1b72af1cef61d4fbde182fc55da7 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Fri, 2 Oct 2015 14:27:41 -0700
+Subject: [PATCH 04/14] octoclock: fixed still-in-bootloader error message
+
+---
+ host/lib/usrp_clock/octoclock/octoclock_impl.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/lib/usrp_clock/octoclock/octoclock_impl.cpp b/host/lib/usrp_clock/octoclock/octoclock_impl.cpp
+index ef1bc8c..22c26b4 100644
+--- a/host/lib/usrp_clock/octoclock/octoclock_impl.cpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_impl.cpp
+@@ -431,7 +431,7 @@ std::string octoclock_impl::_get_images_help_message(const std::string &addr){
+     #endif
+ 
+     //Get burner command
+-    const std::string burner_path = (fs::path(uhd::get_pkg_path()) / "bin" / "octoclock_firmware_burner").string();
++    const std::string burner_path = (fs::path(uhd::get_pkg_path()) / "bin" / "uhd_image_loader").string();
+     const std::string burner_cmd = str(boost::format("%s %s--addr=\"%s\"") % burner_path % ml % addr);
+     return str(boost::format("%s\n%s") % uhd::print_utility_error("uhd_images_downloader.py") % burner_cmd);
+ }
+-- 
+2.1.4
+

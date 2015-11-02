@@ -1,0 +1,25 @@
+From 36feb03dcb3b370d6e42f247691da22960d0eace Mon Sep 17 00:00:00 2001
+From: Jon Kiser <jon.kiser@ettus.com>
+Date: Tue, 3 Feb 2015 08:56:27 -0800
+Subject: [PATCH 06/14] docs: updated value for max rx gain from 73 to 76
+
+---
+ host/docs/usrp_e3x0.dox | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/docs/usrp_e3x0.dox b/host/docs/usrp_e3x0.dox
+index d49310c..6baf7b7 100644
+--- a/host/docs/usrp_e3x0.dox
++++ b/host/docs/usrp_e3x0.dox
+@@ -518,7 +518,7 @@ frontends share the TX LO. Each LO is tunable between 50 MHz and 6 GHz.
+ \subsubsection e3x0_dboard_e310_gain Frontend gain
+ 
+ All frontends have individual analog gain controls. The receive
+-frontends have 73 dB of available gain; and the transmit frontends have
++frontends have 76 dB of available gain; and the transmit frontends have
+ 89.5 dB of available gain. Gain settings are application specific, but
+ it is recommended that users consider using at least half of the
+ available gain to get reasonable dynamic range.
+-- 
+2.1.4
+

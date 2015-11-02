@@ -1,0 +1,33 @@
+From ec9ce22775468d48766463a1f38d3d83fd0a1775 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marcus=20M=C3=BCller?= <marcus.mueller@ettus.com>
+Date: Sat, 17 Oct 2015 12:13:17 +0200
+Subject: [PATCH 11/14] utils: Added pre-API change python request
+ compatibility
+
+Affects the uhd_images_downloader utility.
+Older versions of requests didn't know the "stream" kwarg.
+Added a compatibility fallback.
+---
+ host/utils/uhd_images_downloader.py.in | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/host/utils/uhd_images_downloader.py.in b/host/utils/uhd_images_downloader.py.in
+index e0375fb..7a3ff8d 100644
+--- a/host/utils/uhd_images_downloader.py.in
++++ b/host/utils/uhd_images_downloader.py.in
+@@ -77,7 +77,11 @@ class uhd_images_downloader():
+ 
+     def download(self, images_url, filename, buffer_size=_DEFAULT_BUFFER_SIZE, print_progress=False):
+         """ Run the download, show progress """
+-        r = requests.get(images_url, stream=True, headers={'User-Agent': 'UHD Images Downloader'})
++        try:
++            r = requests.get(images_url, stream=True, headers={'User-Agent': 'UHD Images Downloader'})
++        except TypeError as te:
++            ## requests library versions pre-4c3b9df6091b65d8c72763222bd5fdefb7231149 (Dec.'12) workaround
++            r = requests.get(images_url, prefetch=False, headers={'User-Agent': 'UHD Images Downloader'})
+         filesize = float(r.headers['content-length'])
+         filesize_dl = 0
+         with open(filename, "wb") as f:
+-- 
+2.1.4
+

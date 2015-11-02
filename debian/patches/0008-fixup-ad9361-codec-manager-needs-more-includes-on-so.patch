@@ -1,0 +1,25 @@
+From 98de3794219fd4fe7f2359cb07c3c84ead8e8aec Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Mon, 12 Oct 2015 17:23:21 -0700
+Subject: [PATCH 08/14] fixup! ad9361: codec manager needs more includes on
+ some platforms
+
+---
+ host/lib/usrp/common/ad936x_manager.cpp | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/host/lib/usrp/common/ad936x_manager.cpp b/host/lib/usrp/common/ad936x_manager.cpp
+index e56fd3a..de8c4c7 100644
+--- a/host/lib/usrp/common/ad936x_manager.cpp
++++ b/host/lib/usrp/common/ad936x_manager.cpp
+@@ -19,6 +19,7 @@
+ #include <uhd/utils/msg.hpp>
+ #include <boost/foreach.hpp>
+ #include <boost/functional/hash.hpp>
++#include <boost/thread/thread.hpp>
+ 
+ using namespace uhd;
+ using namespace uhd::usrp;
+-- 
+2.1.4
+

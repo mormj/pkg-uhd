@@ -1,0 +1,26 @@
+From 3e973aec5b9d5d5e2b3a746843a6fc15fde79cd4 Mon Sep 17 00:00:00 2001
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Wed, 14 Oct 2015 10:27:53 -0700
+Subject: [PATCH 09/14] e3xx: sysfs: Drop reference when we're done.
+
+Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
+---
+ host/lib/usrp/e300/e300_sysfs_hooks.cpp | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/host/lib/usrp/e300/e300_sysfs_hooks.cpp b/host/lib/usrp/e300/e300_sysfs_hooks.cpp
+index fdeaf08..ee2ac21 100644
+--- a/host/lib/usrp/e300/e300_sysfs_hooks.cpp
++++ b/host/lib/usrp/e300/e300_sysfs_hooks.cpp
+@@ -67,6 +67,8 @@ std::string e300_get_sysfs_attr(const std::string &node, const std::string &attr
+        retstring = udev_device_get_sysattr_value(dev, attr.c_str());
+        if (retstring.size())
+            break;
++
++       udev_device_unref(dev);
+     }
+ 
+     udev_enumerate_unref(enumerate);
+-- 
+2.1.4
+

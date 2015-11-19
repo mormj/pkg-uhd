@@ -1,3 +1,10 @@
+uhd (3.9.1-5) unstable; urgency=medium
+
+  * update to release_003_009_001-17-g36c8e0f
+    examples-Fixed-error-code-variable-in-rx_samples_c
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 18 Nov 2015 21:46:15 -0500
+
 uhd (3.9.1-4) unstable; urgency=medium
 
   * update to release_003_009_001-14-geebbc01

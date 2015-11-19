@@ -12,6 +12,9 @@
 0012-E300-docs-Use-Release-3-to-rebuild-file-system.patch
 0013-docs-Install-info-updates.patch
 0014-If-we-are-cross-compiling-do-not-test-for-build-mach.patch
+0015-docs-Remove-some-doxygen-warnings-by-minor-refactori.patch
+0016-Updated-top-level-README.patch
+0017-examples-Fixed-error-code-variable-in-rx_samples_c.patch
 uhd-platform-hurd-kfreebsd
 timestamps_in_documentation_generated_by_doxygen
 display-correct-downloader-path

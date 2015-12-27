@@ -1,3 +1,11 @@
+uhd (3.9.2~rc1-1) unstable; urgency=medium
+
+  * New upstream release candidate
+  * uhd_images_downloader now depends upon python-requests
+  * B205mini: Added support
+  
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sun, 27 Dec 2015 10:09:56 -0500
+
 uhd (3.9.1-5) unstable; urgency=medium
 
   * update to release_003_009_001-17-g36c8e0f

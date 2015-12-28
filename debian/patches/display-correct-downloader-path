@@ -1,3 +1,6 @@
+Description: Display correct downloader path for Debian installations
+Author: A. Maitland Bottoms <bottoms@debian.org>
+
 --- a/host/lib/utils/paths.cpp
 +++ b/host/lib/utils/paths.cpp
 @@ -365,7 +365,7 @@

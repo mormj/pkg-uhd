@@ -1,3 +1,6 @@
+Description: Enable builds for Debain kFreeBSD and Hurd architectures
+Author: A. Maitland Bottoms <bottoms@debian.org>
+
 --- a/host/include/uhd/config.hpp
 +++ b/host/include/uhd/config.hpp
 @@ -89,13 +89,13 @@

@@ -1,3 +1,6 @@
+Description: Reproducable builds without timestamp
+Author: A. Maitland Bottoms <bottoms@debian.org>
+
 --- a/host/docs/Doxyfile.in
 +++ b/host/docs/Doxyfile.in
 @@ -958,7 +958,7 @@

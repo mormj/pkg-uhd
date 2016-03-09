@@ -10,7 +10,7 @@ GITREV=$(shell echo $(VER) | sed -rne 's,([0-9]).([0-9]).([0-9]),release_00\1_00
 	dh $@ --parallel --sourcedirectory=host --builddirectory=build
 
 override_dh_auto_configure:
-	dh_auto_configure -- -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" -DPKG_LIB_DIR="/usr/lib/uhd" -DENABLE_GPSD=ON
+	dh_auto_configure -- -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" -DPKG_LIB_DIR="/usr/lib/uhd"
 
 # The test suite for this package is busted on powerpc.
 override_dh_auto_test:

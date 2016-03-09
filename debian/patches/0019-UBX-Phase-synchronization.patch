@@ -1,0 +1,844 @@
+From ed4223d74cab604213b925da2eccb6055aa7aea2 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Thu, 28 Jan 2016 17:31:54 -0800
+Subject: [PATCH 19/21] UBX: Phase synchronization
+
+- Disabled MAX2871 VCO auto selection for phase sync
+- Added checks for new phase sync constraints recently published by Maxim
+- Added dboard_clock_rate option for X300
+- Adjusted timing of SYNC signal relative to dboard referenc clock
+---
+ host/lib/usrp/common/max287x.hpp       | 143 +++++++++++++++++++--
+ host/lib/usrp/cores/gpio_core_200.cpp  |  64 +++++++---
+ host/lib/usrp/dboard/db_ubx.cpp        | 220 ++++++++++++++++++++++-----------
+ host/lib/usrp/x300/x300_clock_ctrl.cpp |   9 +-
+ host/lib/usrp/x300/x300_clock_ctrl.hpp |   1 +
+ host/lib/usrp/x300/x300_impl.cpp       |   1 +
+ host/lib/usrp/x300/x300_impl.hpp       |   1 +
+ 7 files changed, 340 insertions(+), 99 deletions(-)
+
+diff --git a/host/lib/usrp/common/max287x.hpp b/host/lib/usrp/common/max287x.hpp
+index 3d43802..644ec72 100644
+--- a/host/lib/usrp/common/max287x.hpp
++++ b/host/lib/usrp/common/max287x.hpp
+@@ -22,6 +22,7 @@
+ #include <uhd/types/dict.hpp>
+ #include <uhd/types/ranges.hpp>
+ #include <uhd/utils/log.hpp>
++#include <uhd/utils/math.hpp>
+ #include <boost/assign.hpp>
+ #include <boost/function.hpp>
+ #include <boost/thread.hpp>
+@@ -216,6 +217,11 @@ public:
+      * Check whether this is in a state where it can be synchronized
+      */
+     virtual bool can_sync(void) = 0;
++
++    /**
++     * Configure synthesizer for phase synchronization
++     */
++    virtual void config_for_sync(bool enable) = 0;
+ };
+ 
+ /**
+@@ -247,10 +253,12 @@ public:
+     virtual void set_phase(boost::uint16_t phase);
+     virtual void commit();
+     virtual bool can_sync();
++    virtual void config_for_sync(bool enable);
+ 
+ protected:
+     max287x_regs_t _regs;
+     bool _can_sync;
++    bool _config_for_sync;
+     bool _write_all_regs;
+ 
+ private:
+@@ -290,6 +298,69 @@ public:
+ /**
+  * MAX2871
+  */
++// Table of frequency ranges for each VCO value.
++// The values were derived from sampling multiple
++// units over a temperature range of -10 to 40 deg C.
++typedef std::map<uint8_t,uhd::range_t> vco_map_t;
++static const vco_map_t max2871_vco_map =
++    boost::assign::map_list_of
++    (0,uhd::range_t(2767776024.0,2838472816.0))
++    (1,uhd::range_t(2838472816.0,2879070053.0))
++    (1,uhd::range_t(2879070053.0,2921202504.0))
++    (3,uhd::range_t(2921202504.0,2960407579.0))
++    (4,uhd::range_t(2960407579.0,3001687422.0))
++    (5,uhd::range_t(3001687422.0,3048662562.0))
++    (6,uhd::range_t(3048662562.0,3097511550.0))
++    (7,uhd::range_t(3097511550.0,3145085864.0))
++    (8,uhd::range_t(3145085864.0,3201050835.0))
++    (9,uhd::range_t(3201050835.0,3259581909.0))
++    (10,uhd::range_t(3259581909.0,3321408729.0))
++    (11,uhd::range_t(3321408729.0,3375217285.0))
++    (12,uhd::range_t(3375217285.0,3432807972.0))
++    (13,uhd::range_t(3432807972.0,3503759088.0))
++    (14,uhd::range_t(3503759088.0,3579011283.0))
++    (15,uhd::range_t(3579011283.0,3683570865.0))
++    (20,uhd::range_t(3683570865.0,3711845712.0))
++    (21,uhd::range_t(3711845712.0,3762188221.0))
++    (22,uhd::range_t(3762188221.0,3814209551.0))
++    (23,uhd::range_t(3814209551.0,3865820020.0))
++    (24,uhd::range_t(3865820020.0,3922520021.0))
++    (25,uhd::range_t(3922520021.0,3981682709.0))
++    (26,uhd::range_t(3981682709.0,4043154280.0))
++    (27,uhd::range_t(4043154280.0,4100400020.0))
++    (28,uhd::range_t(4100400020.0,4159647583.0))
++    (29,uhd::range_t(4159647583.0,4228164842.0))
++    (30,uhd::range_t(4228164842.0,4299359879.0))
++    (31,uhd::range_t(4299359879.0,4395947962.0))
++    (33,uhd::range_t(4395947962.0,4426512061.0))
++    (34,uhd::range_t(4426512061.0,4480333656.0))
++    (35,uhd::range_t(4480333656.0,4526297331.0))
++    (36,uhd::range_t(4526297331.0,4574689510.0))
++    (37,uhd::range_t(4574689510.0,4633102021.0))
++    (38,uhd::range_t(4633102021.0,4693755616.0))
++    (39,uhd::range_t(4693755616.0,4745624435.0))
++    (40,uhd::range_t(4745624435.0,4803922123.0))
++    (41,uhd::range_t(4803922123.0,4871523881.0))
++    (42,uhd::range_t(4871523881.0,4942111286.0))
++    (43,uhd::range_t(4942111286.0,5000192446.0))
++    (44,uhd::range_t(5000192446.0,5059567510.0))
++    (45,uhd::range_t(5059567510.0,5136258187.0))
++    (46,uhd::range_t(5136258187.0,5215827295.0))
++    (47,uhd::range_t(5215827295.0,5341282949.0))
++    (49,uhd::range_t(5341282949.0,5389819310.0))
++    (50,uhd::range_t(5389819310.0,5444868434.0))
++    (51,uhd::range_t(5444868434.0,5500079705.0))
++    (52,uhd::range_t(5500079705.0,5555329630.0))
++    (53,uhd::range_t(5555329630.0,5615049833.0))
++    (54,uhd::range_t(5615049833.0,5676098527.0))
++    (55,uhd::range_t(5676098527.0,5744191577.0))
++    (56,uhd::range_t(5744191577.0,5810869917.0))
++    (57,uhd::range_t(5810869917.0,5879176194.0))
++    (58,uhd::range_t(5879176194.0,5952430629.0))
++    (59,uhd::range_t(5952430629.0,6016743964.0))
++    (60,uhd::range_t(6016743964.0,6090658690.0))
++    (61,uhd::range_t(6090658690.0,6128133570.0));
++
+ class max2871 : public max287x<max2871_regs_t>
+ {
+ public:
+@@ -319,16 +390,66 @@ public:
+         _regs.feedback_select = max2871_regs_t::FEEDBACK_SELECT_DIVIDED;
+         double freq = max287x<max2871_regs_t>::set_frequency(target_freq, ref_freq, target_pfd_freq, is_int_n);
+ 
+-        // According to Maxim support, the following factors must be true to allow for synchronization
+-        if (_regs.r_counter_10_bit == 1 and
+-            _regs.reference_divide_by_2 == max2871_regs_t::REFERENCE_DIVIDE_BY_2_DISABLED and
+-            _regs.reference_doubler == max2871_regs_t::REFERENCE_DOUBLER_DISABLED and
++        // To support phase synchronization on MAX2871, the same VCO
++        // subband must be manually programmed on all synthesizers and
++        // several registers must be set to specific values.
++        if (_config_for_sync)
++        {
++            // Need to manually program VCO value
++            static const double MIN_VCO_FREQ = 3e9;
++            double vco_freq = target_freq;
++            while (vco_freq < MIN_VCO_FREQ)
++                vco_freq *=2;
++            uint8_t vco_index = 0xFF;
++            BOOST_FOREACH(const vco_map_t::value_type &vco, max2871_vco_map)
++            {
++                if (uhd::math::fp_compare::fp_compare_epsilon<double>(vco_freq) < vco.second.stop())
++                {
++                    vco_index = vco.first;
++                    break;
++                }
++            }
++            if (vco_index == 0xFF)
++                throw uhd::index_error("Invalid VCO frequency");
++
++            // Settings required for phase synchronization as per MAX2871 datasheet
++            _regs.shutdown_vas = max2871_regs_t::SHUTDOWN_VAS_DISABLED;
++            _regs.vco = vco_index;
++            _regs.low_noise_and_spur = max2871_regs_t::LOW_NOISE_AND_SPUR_LOW_NOISE;
++            _regs.f01 = max2871_regs_t::F01_FRAC_N;
++            _regs.aux_output_select = max2871_regs_t::AUX_OUTPUT_SELECT_DIVIDED;
++        }
++        else
++        {
++            // Reset values to defaults
++            _regs.shutdown_vas = max2871_regs_t::SHUTDOWN_VAS_ENABLED;  // turn VCO auto selection on
++            _regs.low_noise_and_spur = max2871_regs_t::LOW_NOISE_AND_SPUR_LOW_SPUR_2;
++            _regs.f01 = max2871_regs_t::F01_AUTO;
++            _regs.aux_output_select = max2871_regs_t::AUX_OUTPUT_SELECT_FUNDAMENTAL;
++        }
++
++        return freq;
++    }
++
++    void commit()
++    {
++        max287x<max2871_regs_t>::commit();
++
++        // According to Maxim support, the following factors must be true to allow for phase synchronization
++        if (_regs.int_n_mode == max2871_regs_t::INT_N_MODE_FRAC_N and
++            _regs.feedback_select == max2871_regs_t::FEEDBACK_SELECT_DIVIDED and
++            _regs.aux_output_select == max2871_regs_t::AUX_OUTPUT_SELECT_DIVIDED and
+             _regs.rf_divider_select <= max2871_regs_t::RF_DIVIDER_SELECT_DIV16 and
+-            _regs.low_noise_and_spur == max2871_regs_t::LOW_NOISE_AND_SPUR_LOW_NOISE)
++            _regs.low_noise_and_spur == max2871_regs_t::LOW_NOISE_AND_SPUR_LOW_NOISE and
++            _regs.f01 == max2871_regs_t::F01_FRAC_N and
++            _regs.reference_doubler == max2871_regs_t::REFERENCE_DOUBLER_DISABLED and
++            _regs.reference_divide_by_2 == max2871_regs_t::REFERENCE_DIVIDE_BY_2_DISABLED and
++            _regs.r_counter_10_bit == 1)
+         {
+             _can_sync = true;
++        } else {
++            _can_sync = false;
+         }
+-        return freq;
+     }
+ };
+ 
+@@ -342,6 +463,7 @@ public:
+ template <typename max287x_regs_t>
+ max287x<max287x_regs_t>::max287x(write_fn func) :
+         _can_sync(false),
++        _config_for_sync(false),
+         _write_all_regs(true),
+         _write(func),
+         _delay_after_write(true)
+@@ -397,8 +519,6 @@ double max287x<max287x_regs_t>::set_frequency(
+     double target_pfd_freq,
+     bool is_int_n)
+ {
+-    _can_sync = false;
+-
+     //map rf divider select output dividers to enums
+     static const uhd::dict<int, typename max287x_regs_t::rf_divider_select_t> rfdivsel_to_enum =
+         boost::assign::map_list_of
+@@ -791,11 +911,16 @@ void max287x<max287x_regs_t>::commit()
+     }
+ }
+ 
+-
+ template <typename max287x_regs_t>
+ bool max287x<max287x_regs_t>::can_sync(void)
+ {
+     return _can_sync;
+ }
+ 
++template <typename max287x_regs_t>
++void max287x<max287x_regs_t>::config_for_sync(bool enable)
++{
++    _config_for_sync = enable;
++}
++
+ #endif // MAX287X_HPP_INCLUDED
+diff --git a/host/lib/usrp/cores/gpio_core_200.cpp b/host/lib/usrp/cores/gpio_core_200.cpp
+index 4f1c25a..78ad00b 100644
+--- a/host/lib/usrp/cores/gpio_core_200.cpp
++++ b/host/lib/usrp/cores/gpio_core_200.cpp
+@@ -34,16 +34,23 @@ gpio_core_200::~gpio_core_200(void){
+ class gpio_core_200_impl : public gpio_core_200{
+ public:
+     gpio_core_200_impl(wb_iface::sptr iface, const size_t base, const size_t rb_addr):
+-        _iface(iface), _base(base), _rb_addr(rb_addr) { /* NOP */ }
++        _iface(iface), _base(base), _rb_addr(rb_addr), _first_atr(true) { /* NOP */ }
+ 
+     void set_pin_ctrl(const unit_t unit, const boost::uint16_t value){
+         _pin_ctrl[unit] = value; //shadow
+-        this->update(); //full update
++        update(); //full update
+     }
+ 
+     void set_atr_reg(const unit_t unit, const atr_reg_t atr, const boost::uint16_t value){
+         _atr_regs[unit][atr] = value;  //shadow
+-        this->update(); //full update
++        if (_first_atr)
++        {
++            // To preserve legacy behavior, update all registers the first time
++            update();
++            _first_atr = false;
++        }
++        else
++            update(atr);
+     }
+ 
+     void set_gpio_ddr(const unit_t unit, const boost::uint16_t value){
+@@ -67,6 +74,7 @@ private:
+     wb_iface::sptr _iface;
+     const size_t _base;
+     const size_t _rb_addr;
++    bool _first_atr;
+     uhd::dict<size_t, boost::uint32_t> _update_cache;
+ 
+     uhd::dict<unit_t, boost::uint16_t> _pin_ctrl, _gpio_out, _gpio_ddr;
+@@ -77,13 +85,31 @@ private:
+     }
+ 
+     void update(void){
+-        this->update(dboard_iface::ATR_REG_IDLE, REG_GPIO_IDLE);
+-        this->update(dboard_iface::ATR_REG_TX_ONLY, REG_GPIO_TX_ONLY);
+-        this->update(dboard_iface::ATR_REG_RX_ONLY, REG_GPIO_RX_ONLY);
+-        this->update(dboard_iface::ATR_REG_FULL_DUPLEX, REG_GPIO_BOTH);
++        update(dboard_iface::ATR_REG_IDLE);
++        update(dboard_iface::ATR_REG_TX_ONLY);
++        update(dboard_iface::ATR_REG_RX_ONLY);
++        update(dboard_iface::ATR_REG_FULL_DUPLEX);
+     }
+ 
+-    void update(const atr_reg_t atr, const size_t addr){
++    void update(const atr_reg_t atr){
++        size_t addr;
++        switch (atr)
++        {
++        case dboard_iface::ATR_REG_IDLE:
++            addr = REG_GPIO_IDLE;
++            break;
++        case dboard_iface::ATR_REG_TX_ONLY:
++            addr = REG_GPIO_TX_ONLY;
++            break;
++        case dboard_iface::ATR_REG_RX_ONLY:
++            addr = REG_GPIO_IDLE;
++            break;
++        case dboard_iface::ATR_REG_FULL_DUPLEX:
++            addr = REG_GPIO_RX_ONLY;
++            break;
++        default:
++            UHD_THROW_INVALID_CODE_PATH();
++        }
+         const boost::uint32_t atr_val =
+             (boost::uint32_t(_atr_regs[dboard_iface::UNIT_RX][atr]) << shift_by_unit(dboard_iface::UNIT_RX)) |
+             (boost::uint32_t(_atr_regs[dboard_iface::UNIT_TX][atr]) << shift_by_unit(dboard_iface::UNIT_TX));
+@@ -122,17 +148,23 @@ public:
+     }
+ 
+     void set_atr_reg(const atr_reg_t atr, const boost::uint32_t value){
+-        if (atr == dboard_iface::ATR_REG_IDLE)        _iface->poke32(REG_GPIO_IDLE, value);
+-        if (atr == dboard_iface::ATR_REG_TX_ONLY)     _iface->poke32(REG_GPIO_TX_ONLY, value);
+-        if (atr == dboard_iface::ATR_REG_RX_ONLY)     _iface->poke32(REG_GPIO_RX_ONLY, value);
+-        if (atr == dboard_iface::ATR_REG_FULL_DUPLEX) _iface->poke32(REG_GPIO_BOTH, value);
++        if (atr == dboard_iface::ATR_REG_IDLE)
++            _iface->poke32(REG_GPIO_IDLE, value);
++        else if (atr == dboard_iface::ATR_REG_TX_ONLY)
++            _iface->poke32(REG_GPIO_TX_ONLY, value);
++        else if (atr == dboard_iface::ATR_REG_RX_ONLY)
++            _iface->poke32(REG_GPIO_RX_ONLY, value);
++        else if (atr == dboard_iface::ATR_REG_FULL_DUPLEX)
++            _iface->poke32(REG_GPIO_BOTH, value);
++        else
++            UHD_THROW_INVALID_CODE_PATH();
+     }
+ 
+     void set_all_regs(const boost::uint32_t value){
+-        this->set_atr_reg(dboard_iface::ATR_REG_IDLE,        value);
+-        this->set_atr_reg(dboard_iface::ATR_REG_TX_ONLY,     value);
+-        this->set_atr_reg(dboard_iface::ATR_REG_RX_ONLY,     value);
+-        this->set_atr_reg(dboard_iface::ATR_REG_FULL_DUPLEX, value);
++        set_atr_reg(dboard_iface::ATR_REG_IDLE,        value);
++        set_atr_reg(dboard_iface::ATR_REG_TX_ONLY,     value);
++        set_atr_reg(dboard_iface::ATR_REG_RX_ONLY,     value);
++        set_atr_reg(dboard_iface::ATR_REG_FULL_DUPLEX, value);
+     }
+ 
+ private:
+diff --git a/host/lib/usrp/dboard/db_ubx.cpp b/host/lib/usrp/dboard/db_ubx.cpp
+index 7cb4b2d..0bf57cb 100644
+--- a/host/lib/usrp/dboard/db_ubx.cpp
++++ b/host/lib/usrp/dboard/db_ubx.cpp
+@@ -22,6 +22,7 @@
+ #include <uhd/types/dict.hpp>
+ #include <uhd/types/ranges.hpp>
+ #include <uhd/types/sensors.hpp>
++#include <uhd/types/direction.hpp>
+ #include <uhd/usrp/dboard_base.hpp>
+ #include <uhd/usrp/dboard_manager.hpp>
+ #include <uhd/utils/assert_has.hpp>
+@@ -92,43 +93,43 @@ struct ubx_gpio_field_info_t
+ {
+     ubx_gpio_field_id_t id;
+     dboard_iface::unit_t unit;
+-    boost::uint32_t offset;
+-    boost::uint32_t mask;
+-    boost::uint32_t width;
++    uint32_t offset;
++    uint32_t mask;
++    uint32_t width;
+     enum {OUTPUT,INPUT} direction;
+     bool is_atr_controlled;
+-    boost::uint32_t atr_idle;
+-    boost::uint32_t atr_tx;
+-    boost::uint32_t atr_rx;
+-    boost::uint32_t atr_full_duplex;
++    uint32_t atr_idle;
++    uint32_t atr_tx;
++    uint32_t atr_rx;
++    uint32_t atr_full_duplex;
+ };
+ 
+ struct ubx_gpio_reg_t
+ {
+     bool dirty;
+-    boost::uint32_t value;
+-    boost::uint32_t mask;
+-    boost::uint32_t ddr;
+-    boost::uint32_t atr_mask;
+-    boost::uint32_t atr_idle;
+-    boost::uint32_t atr_tx;
+-    boost::uint32_t atr_rx;
+-    boost::uint32_t atr_full_duplex;
++    uint32_t value;
++    uint32_t mask;
++    uint32_t ddr;
++    uint32_t atr_mask;
++    uint32_t atr_idle;
++    uint32_t atr_tx;
++    uint32_t atr_rx;
++    uint32_t atr_full_duplex;
+ };
+ 
+ struct ubx_cpld_reg_t
+ {
+-    void set_field(ubx_cpld_field_id_t field, boost::uint32_t val)
++    void set_field(ubx_cpld_field_id_t field, uint32_t val)
+     {
+         UHD_ASSERT_THROW(val == (val & 0x1));
+ 
+         if (val)
+-            value |= boost::uint32_t(1) << field;
++            value |= uint32_t(1) << field;
+         else
+-            value &= ~(boost::uint32_t(1) << field);
++            value &= ~(uint32_t(1) << field);
+     }
+ 
+-    boost::uint32_t value;
++    uint32_t value;
+ };
+ 
+ enum spi_dest_t {
+@@ -181,13 +182,13 @@ static const ubx_gpio_field_info_t ubx_v1_gpio_info[] = {
+     {RX_ANT,        dboard_iface::UNIT_TX,   4,  0x1<<4,     1,  ubx_gpio_field_info_t::INPUT,  false,  0,  0,  0,  0},
+     {TX_EN_N,       dboard_iface::UNIT_TX,   5,  0x1<<5,     1,  ubx_gpio_field_info_t::INPUT,  true,   1,  0,  1,  0},
+     {RX_EN_N,       dboard_iface::UNIT_TX,   6,  0x1<<6,     1,  ubx_gpio_field_info_t::INPUT,  true,   1,  1,  0,  0},
+-    {TXLO1_SYNC,    dboard_iface::UNIT_TX,   7,  0x1<<7,     1,  ubx_gpio_field_info_t::INPUT,  false,  0,  0,  0,  0},
+-    {TXLO2_SYNC,    dboard_iface::UNIT_TX,   9,  0x1<<9,     1,  ubx_gpio_field_info_t::INPUT,  false,  0,  0,  0,  0},
++    {TXLO1_SYNC,    dboard_iface::UNIT_TX,   7,  0x1<<7,     1,  ubx_gpio_field_info_t::INPUT,  true,   0,  0,  0,  0},
++    {TXLO2_SYNC,    dboard_iface::UNIT_TX,   9,  0x1<<9,     1,  ubx_gpio_field_info_t::INPUT,  true,   0,  0,  0,  0},
+     {TX_GAIN,       dboard_iface::UNIT_TX,   10, 0x3F<<10,   10, ubx_gpio_field_info_t::INPUT,  false,  0,  0,  0,  0},
+     {RX_LO_LOCKED,  dboard_iface::UNIT_RX,   0,  0x1,        1,  ubx_gpio_field_info_t::OUTPUT, false,  0,  0,  0,  0},
+     {TX_LO_LOCKED,  dboard_iface::UNIT_RX,   1,  0x1<<1,     1,  ubx_gpio_field_info_t::OUTPUT, false,  0,  0,  0,  0},
+-    {RXLO1_SYNC,    dboard_iface::UNIT_RX,   5,  0x1<<5,     1,  ubx_gpio_field_info_t::INPUT,  false,  0,  0,  0,  0},
+-    {RXLO2_SYNC,    dboard_iface::UNIT_RX,   7,  0x1<<7,     1,  ubx_gpio_field_info_t::INPUT,  false,  0,  0,  0,  0},
++    {RXLO1_SYNC,    dboard_iface::UNIT_RX,   5,  0x1<<5,     1,  ubx_gpio_field_info_t::INPUT,  true,   0,  0,  0,  0},
++    {RXLO2_SYNC,    dboard_iface::UNIT_RX,   7,  0x1<<7,     1,  ubx_gpio_field_info_t::INPUT,  true,   0,  0,  0,  0},
+     {RX_GAIN,       dboard_iface::UNIT_RX,   10, 0x3F<<10,   10, ubx_gpio_field_info_t::INPUT,  false,  0,  0,  0,  0}
+ };
+ 
+@@ -348,7 +349,6 @@ public:
+             BOOST_FOREACH(max287x_iface::sptr lo, los)
+             {
+                 lo->set_auto_retune(false);
+-                lo->set_clock_divider_mode(max287x_iface::CLOCK_DIV_MODE_CLOCK_DIVIDER_OFF);
+                 lo->set_muxout_mode(max287x_iface::MUXOUT_DLD);
+                 lo->set_ld_pin_mode(max287x_iface::LD_PIN_MODE_DLD);
+             }
+@@ -363,13 +363,10 @@ public:
+             BOOST_FOREACH(max287x_iface::sptr lo, los)
+             {
+                 lo->set_auto_retune(false);
+-                lo->set_clock_divider_mode(max287x_iface::CLOCK_DIV_MODE_CLOCK_DIVIDER_OFF);
+                 //lo->set_cycle_slip_mode(true);  // tried it - caused longer lock times
+                 lo->set_charge_pump_current(max287x_iface::CHARGE_PUMP_CURRENT_5_12MA);
+                 lo->set_muxout_mode(max287x_iface::MUXOUT_SYNC);
+                 lo->set_ld_pin_mode(max287x_iface::LD_PIN_MODE_DLD);
+-                lo->set_low_noise_and_spur(max287x_iface::LOW_NOISE_AND_SPUR_LOW_NOISE);
+-                lo->set_phase(0);
+             }
+         }
+         else
+@@ -395,6 +392,16 @@ public:
+         get_rx_subtree()->create<std::string>("xcvr_mode/value")
+             .subscribe(boost::bind(&ubx_xcvr::set_xcvr_mode, this, _1))
+             .set("FDX");
++        get_tx_subtree()->create<std::vector<std::string> >("power_mode/options")
++            .set(ubx_power_modes);
++        get_tx_subtree()->create<std::string>("power_mode/value")
++            .subscribe(boost::bind(&uhd::property<std::string>::set, &get_rx_subtree()->access<std::string>("power_mode/value"), _1))
++            .publish(boost::bind(&uhd::property<std::string>::get, &get_rx_subtree()->access<std::string>("power_mode/value")));
++        get_tx_subtree()->create<std::vector<std::string> >("xcvr_mode/options")
++            .set(ubx_xcvr_modes);
++        get_tx_subtree()->create<std::string>("xcvr_mode/value")
++            .subscribe(boost::bind(&uhd::property<std::string>::set, &get_rx_subtree()->access<std::string>("xcvr_mode/value"), _1))
++            .publish(boost::bind(&uhd::property<std::string>::get, &get_rx_subtree()->access<std::string>("xcvr_mode/value")));
+ 
+         ////////////////////////////////////////////////////////////////////
+         // Register TX properties
+@@ -428,6 +435,9 @@ public:
+             .set(bw);
+         get_tx_subtree()->create<meta_range_t>("bandwidth/range")
+             .set(freq_range_t(bw, bw));
++        get_tx_subtree()->create<int64_t>("sync_delay")
++            .subscribe(boost::bind(&ubx_xcvr::set_sync_delay, this, true, _1))
++            .set(-8);
+ 
+         ////////////////////////////////////////////////////////////////////
+         // Register RX properties
+@@ -461,6 +471,9 @@ public:
+             .set(bw);
+         get_rx_subtree()->create<meta_range_t>("bandwidth/range")
+             .set(freq_range_t(bw, bw));
++        get_rx_subtree()->create<int64_t>("sync_delay")
++            .subscribe(boost::bind(&ubx_xcvr::set_sync_delay, this, false, _1))
++            .set(-8);
+     }
+ 
+     ~ubx_xcvr(void)
+@@ -496,22 +509,22 @@ private:
+     /***********************************************************************
+     * Helper Functions
+     **********************************************************************/
+-    void write_spi_reg(spi_dest_t dest, boost::uint32_t value)
++    void write_spi_reg(spi_dest_t dest, uint32_t value)
+     {
+         boost::mutex::scoped_lock lock(_spi_mutex);
+         ROUTE_SPI(_iface, dest);
+         WRITE_SPI(_iface, value);
+     }
+ 
+-    void write_spi_regs(spi_dest_t dest, std::vector<boost::uint32_t> values)
++    void write_spi_regs(spi_dest_t dest, std::vector<uint32_t> values)
+     {
+         boost::mutex::scoped_lock lock(_spi_mutex);
+         ROUTE_SPI(_iface, dest);
+-        BOOST_FOREACH(boost::uint32_t value, values)
++        BOOST_FOREACH(uint32_t value, values)
+             WRITE_SPI(_iface, value);
+     }
+ 
+-    void set_cpld_field(ubx_cpld_field_id_t id, boost::uint32_t value)
++    void set_cpld_field(ubx_cpld_field_id_t id, uint32_t value)
+     {
+         _cpld_reg.set_field(id, value);
+     }
+@@ -525,7 +538,7 @@ private:
+         }
+     }
+ 
+-    void set_gpio_field(ubx_gpio_field_id_t id, boost::uint32_t value)
++    void set_gpio_field(ubx_gpio_field_id_t id, uint32_t value)
+     {
+         // Look up field info
+         std::map<ubx_gpio_field_id_t,ubx_gpio_field_info_t>::iterator entry = _gpio_map.find(id);
+@@ -535,8 +548,8 @@ private:
+         if (field_info.direction == ubx_gpio_field_info_t::OUTPUT)
+             return;
+         ubx_gpio_reg_t *reg = (field_info.unit == dboard_iface::UNIT_TX ? &_tx_gpio_reg : &_rx_gpio_reg);
+-        boost::uint32_t _value = reg->value;
+-        boost::uint32_t _mask = reg->mask;
++        uint32_t _value = reg->value;
++        uint32_t _mask = reg->mask;
+ 
+         // Set field and mask
+         _value &= ~field_info.mask;
+@@ -552,7 +565,7 @@ private:
+         }
+     }
+ 
+-    boost::uint32_t get_gpio_field(ubx_gpio_field_id_t id)
++    uint32_t get_gpio_field(ubx_gpio_field_id_t id)
+     {
+         // Look up field info
+         std::map<ubx_gpio_field_id_t,ubx_gpio_field_info_t>::iterator entry = _gpio_map.find(id);
+@@ -566,7 +579,7 @@ private:
+         }
+ 
+         // Read register
+-        boost::uint32_t value = _iface->read_gpio(field_info.unit);
++        uint32_t value = _iface->read_gpio(field_info.unit);
+         value &= field_info.mask;
+         value >>= field_info.offset;
+ 
+@@ -590,6 +603,61 @@ private:
+         }
+     }
+ 
++    void sync_phase(uhd::time_spec_t cmd_time, uhd::direction_t dir)
++    {
++        // Send phase sync signal only if the command time is set
++        if (cmd_time != uhd::time_spec_t(0.0))
++        {
++            // Delay 400 microseconds to allow LOs to lock
++            cmd_time += uhd::time_spec_t(0.0004);
++
++            // Phase synchronization for MAX2871 requires that the sync signal
++            // is at least 4/(N*PFD_freq) + 2.6ns before the rising edge of the
++            // ref clock and 4/(N*PFD_freq) after the rising edge of the ref clock.
++            // Since the ref clock, the radio clock, and the VITA time are all
++            // synchronized to the 10 MHz clock, use the time spec to move
++            // the rising edge of the sync signal away from the 10 MHz edge,
++            // which will move it away from the ref clock edge by the same amount.
++            // Since the MAX2871 requires the ref freq and PFD freq be the same
++            // for phase synchronization, the dboard clock rate is used as the PFD
++            // freq and the worst case value of 20 is used for the N value to
++            // calculate the offset.
++            double pfd_freq = _iface->get_clock_rate(dir == TX_DIRECTION ? dboard_iface::UNIT_TX : dboard_iface::UNIT_RX);
++            double tick_rate = _iface->get_codec_rate(dir == TX_DIRECTION ? dboard_iface::UNIT_TX : dboard_iface::UNIT_RX);
++            int64_t ticks = cmd_time.to_ticks(tick_rate);
++            ticks -= ticks % (int64_t)(tick_rate / 10e6);            // align to 10 MHz clock
++            ticks += dir == TX_DIRECTION ? _tx_sync_delay : _rx_sync_delay;
++            ticks += std::ceil(tick_rate*4/(20*pfd_freq));  // add required offset (using worst case N value of 20)
++            cmd_time = uhd::time_spec_t::from_ticks(ticks, tick_rate);
++            _iface->set_command_time(cmd_time);
++
++            // Assert SYNC
++            ubx_gpio_field_info_t lo1_field_info = _gpio_map.find(dir == TX_DIRECTION ? TXLO1_SYNC : RXLO1_SYNC)->second;
++            ubx_gpio_field_info_t lo2_field_info = _gpio_map.find(dir == TX_DIRECTION ? TXLO2_SYNC : RXLO2_SYNC)->second;
++            uint16_t value = (1 << lo1_field_info.offset) | (1 << lo2_field_info.offset);
++            uint16_t mask = lo1_field_info.mask | lo2_field_info.mask;
++            dboard_iface::unit_t unit = lo1_field_info.unit;
++            UHD_ASSERT_THROW(lo1_field_info.unit == lo2_field_info.unit);
++            _iface->set_atr_reg(unit, dboard_iface::ATR_REG_IDLE, value, mask);
++            cmd_time += uhd::time_spec_t(1/pfd_freq);
++            _iface->set_command_time(cmd_time);
++            _iface->set_atr_reg(unit, dboard_iface::ATR_REG_TX_ONLY, value, mask);
++            cmd_time += uhd::time_spec_t(1/pfd_freq);
++            _iface->set_command_time(cmd_time);
++            _iface->set_atr_reg(unit, dboard_iface::ATR_REG_RX_ONLY, value, mask);
++            cmd_time += uhd::time_spec_t(1/pfd_freq);
++            _iface->set_command_time(cmd_time);
++            _iface->set_atr_reg(unit, dboard_iface::ATR_REG_FULL_DUPLEX, value, mask);
++
++            // De-assert SYNC
++            // Head of line blocking means the command time does not need to be set.
++            _iface->set_atr_reg(unit, dboard_iface::ATR_REG_IDLE, 0, mask);
++            _iface->set_atr_reg(unit, dboard_iface::ATR_REG_TX_ONLY, 0, mask);
++            _iface->set_atr_reg(unit, dboard_iface::ATR_REG_RX_ONLY, 0, mask);
++            _iface->set_atr_reg(unit, dboard_iface::ATR_REG_FULL_DUPLEX, 0, mask);
++        }
++    }
++
+     /***********************************************************************
+      * Board Control Handling
+      **********************************************************************/
+@@ -695,6 +763,21 @@ private:
+         else if (freq >= 500*fMHz and _power_mode == POWERSAVE)
+             _txlo2->shutdown();
+ 
++        // Set up LOs for phase sync if command time is set
++        uhd::time_spec_t cmd_time = _iface->get_command_time();
++        if (cmd_time != uhd::time_spec_t(0.0))
++        {
++            _txlo1->config_for_sync(true);
++            if (not _txlo2->is_shutdown())
++                _txlo2->config_for_sync(true);
++        }
++        else
++        {
++            _txlo1->config_for_sync(false);
++            if (not _txlo2->is_shutdown())
++                _txlo2->config_for_sync(false);
++        }
++
+         // Set up registers for the requested frequency
+         if (freq < (500*fMHz))
+         {
+@@ -783,24 +866,9 @@ private:
+             break;
+         }
+ 
+-        if (_txlo1->can_sync())
++        if (cmd_time != uhd::time_spec_t(0.0) and _txlo1->can_sync())
+         {
+-            // Send phase sync signal only if the command time is set
+-            uhd::time_spec_t cmd_time = _iface->get_command_time();
+-            if (cmd_time != uhd::time_spec_t(0.0))
+-            {
+-                // Delay 400 microseconds to allow LOs to lock
+-                cmd_time += uhd::time_spec_t(0.0004);
+-                _iface->set_command_time(cmd_time);
+-                set_gpio_field(TXLO1_SYNC, 1);
+-                set_gpio_field(TXLO2_SYNC, 1);
+-                write_gpio();
+-                // De-assert SYNC
+-                // Head of line blocking means the time does not need to be set.
+-                set_gpio_field(TXLO1_SYNC, 0);
+-                set_gpio_field(TXLO2_SYNC, 0);
+-                write_gpio();
+-            }
++            sync_phase(cmd_time, TX_DIRECTION);
+         }
+ 
+         _tx_freq = freq_lo1 - freq_lo2;
+@@ -837,6 +905,21 @@ private:
+         else if (freq >= 500*fMHz and _power_mode == POWERSAVE)
+             _rxlo2->shutdown();
+ 
++        // Set up LOs for phase sync if command time is set
++        uhd::time_spec_t cmd_time = _iface->get_command_time();
++        if (cmd_time != uhd::time_spec_t(0.0))
++        {
++            _rxlo1->config_for_sync(true);
++            if (not _rxlo2->is_shutdown())
++                _rxlo2->config_for_sync(true);
++        }
++        else
++        {
++            _rxlo1->config_for_sync(false);
++            if (not _rxlo2->is_shutdown())
++                _rxlo2->config_for_sync(false);
++        }
++
+         // Work with frequencies
+         if (freq < 100*fMHz)
+         {
+@@ -965,24 +1048,9 @@ private:
+             break;
+         }
+ 
+-        if (_rxlo1->can_sync())
++        if (cmd_time != uhd::time_spec_t(0.0) and _rxlo1->can_sync())
+         {
+-            // Send phase sync signal only if the command time is set
+-            uhd::time_spec_t cmd_time = _iface->get_command_time();
+-            if (cmd_time != uhd::time_spec_t(0.0))
+-            {
+-                // Delay 400 microseconds to allow LOs to lock
+-                cmd_time += uhd::time_spec_t(0.0004);
+-                _iface->set_command_time(cmd_time);
+-                set_gpio_field(RXLO1_SYNC, 1);
+-                set_gpio_field(RXLO2_SYNC, 1);
+-                write_gpio();
+-                // De-assert SYNC
+-                // Head of line blocking means the time does not need to be set.
+-                set_gpio_field(RXLO1_SYNC, 0);
+-                set_gpio_field(RXLO2_SYNC, 0);
+-                write_gpio();
+-            }
++            sync_phase(cmd_time, RX_DIRECTION);
+         }
+ 
+         _rx_freq = freq_lo1 - freq_lo2;
+@@ -1051,6 +1119,14 @@ private:
+         _xcvr_mode = mode;
+     }
+ 
++    void set_sync_delay(bool is_tx, int64_t value)
++    {
++        if (is_tx)
++            _tx_sync_delay = value;
++        else
++            _rx_sync_delay = value;
++    }
++
+     /***********************************************************************
+     * Variables
+     **********************************************************************/
+@@ -1058,7 +1134,7 @@ private:
+     boost::mutex _spi_mutex;
+     boost::mutex _mutex;
+     ubx_cpld_reg_t _cpld_reg;
+-    boost::uint32_t _prev_cpld_value;
++    uint32_t _prev_cpld_value;
+     boost::shared_ptr<max287x_iface> _txlo1;
+     boost::shared_ptr<max287x_iface> _txlo2;
+     boost::shared_ptr<max287x_iface> _rxlo1;
+@@ -1086,6 +1162,8 @@ private:
+     std::map<ubx_gpio_field_id_t,ubx_gpio_field_info_t> _gpio_map;
+     ubx_gpio_reg_t _tx_gpio_reg;
+     ubx_gpio_reg_t _rx_gpio_reg;
++    int64_t _tx_sync_delay;
++    int64_t _rx_sync_delay;
+ };
+ 
+ /***********************************************************************
+diff --git a/host/lib/usrp/x300/x300_clock_ctrl.cpp b/host/lib/usrp/x300/x300_clock_ctrl.cpp
+index d5687f5..3df2b7c 100644
+--- a/host/lib/usrp/x300/x300_clock_ctrl.cpp
++++ b/host/lib/usrp/x300/x300_clock_ctrl.cpp
+@@ -28,7 +28,6 @@
+ 
+ static const double X300_REF_CLK_OUT_RATE  = 10e6;
+ static const boost::uint16_t X300_MAX_CLKOUT_DIV = 1045;
+-static const double X300_DEFAULT_DBOARD_CLK_RATE = 50e6;
+ 
+ struct x300_clk_delays {
+     x300_clk_delays() :
+@@ -70,11 +69,13 @@ public:
+         const size_t slaveno,
+         const size_t hw_rev,
+         const double master_clock_rate,
++        const double dboard_clock_rate,
+         const double system_ref_rate):
+         _spiface(spiface),
+         _slaveno(slaveno),
+         _hw_rev(hw_rev),
+         _master_clock_rate(master_clock_rate),
++        _dboard_clock_rate(dboard_clock_rate),
+         _system_ref_rate(system_ref_rate)
+     {
+         init();
+@@ -603,7 +604,7 @@ private:
+             std::ceil(_vco_freq / _master_clock_rate));
+ 
+         boost::uint16_t dboard_div = static_cast<boost::uint16_t>(
+-            std::ceil(_vco_freq / X300_DEFAULT_DBOARD_CLK_RATE));
++            std::ceil(_vco_freq / _dboard_clock_rate));
+ 
+         /* Reset the LMK clock controller. */
+         _lmk04816_regs.RESET = lmk04816_regs_t::RESET_RESET;
+@@ -731,6 +732,7 @@ private:
+     const size_t            _slaveno;
+     const size_t            _hw_rev;
+     const double            _master_clock_rate;
++    const double            _dboard_clock_rate;
+     const double            _system_ref_rate;
+     lmk04816_regs_t         _lmk04816_regs;
+     double                  _vco_freq;
+@@ -741,7 +743,8 @@ x300_clock_ctrl::sptr x300_clock_ctrl::make(uhd::spi_iface::sptr spiface,
+         const size_t slaveno,
+         const size_t hw_rev,
+         const double master_clock_rate,
++        const double dboard_clock_rate,
+         const double system_ref_rate) {
+     return sptr(new x300_clock_ctrl_impl(spiface, slaveno, hw_rev,
+-                master_clock_rate, system_ref_rate));
++                master_clock_rate, dboard_clock_rate, system_ref_rate));
+ }
+diff --git a/host/lib/usrp/x300/x300_clock_ctrl.hpp b/host/lib/usrp/x300/x300_clock_ctrl.hpp
+index 160a14e..7126f1b 100644
+--- a/host/lib/usrp/x300/x300_clock_ctrl.hpp
++++ b/host/lib/usrp/x300/x300_clock_ctrl.hpp
+@@ -48,6 +48,7 @@ public:
+             const size_t slaveno,
+             const size_t hw_rev,
+             const double master_clock_rate,
++            const double dboard_clock_rate,
+             const double system_ref_rate);
+ 
+     /*! Get the master clock rate of the device.
+diff --git a/host/lib/usrp/x300/x300_impl.cpp b/host/lib/usrp/x300/x300_impl.cpp
+index ebb9bf3..c13c2ac 100644
+--- a/host/lib/usrp/x300/x300_impl.cpp
++++ b/host/lib/usrp/x300/x300_impl.cpp
+@@ -672,6 +672,7 @@ void x300_impl::setup_mb(const size_t mb_i, const uhd::device_addr_t &dev_addr)
+         1 /*slaveno*/,
+         mb.hw_rev,
+         dev_addr.cast<double>("master_clock_rate", X300_DEFAULT_TICK_RATE),
++        dev_addr.cast<double>("dboard_clock_rate", X300_DEFAULT_DBOARD_CLK_RATE),
+         dev_addr.cast<double>("system_ref_rate", X300_DEFAULT_SYSREF_RATE));
+ 
+     //Initialize clock source to use internal reference and generate
+diff --git a/host/lib/usrp/x300/x300_impl.hpp b/host/lib/usrp/x300/x300_impl.hpp
+index 67afa77..e04b06d 100644
+--- a/host/lib/usrp/x300/x300_impl.hpp
++++ b/host/lib/usrp/x300/x300_impl.hpp
+@@ -54,6 +54,7 @@
+ static const std::string X300_FW_FILE_NAME  = "usrp_x300_fw.bin";
+ 
+ static const double X300_DEFAULT_TICK_RATE      = 200e6;        //Hz
++static const double X300_DEFAULT_DBOARD_CLK_RATE = 50e6;        //Hz
+ static const double X300_BUS_CLOCK_RATE         = 166.666667e6; //Hz
+ 
+ static const size_t X300_TX_HW_BUFF_SIZE        = 520*1024;      //512K SRAM buffer + 8K 2Clk FIFO
+-- 
+2.1.4
+

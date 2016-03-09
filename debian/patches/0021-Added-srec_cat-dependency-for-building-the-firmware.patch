@@ -1,0 +1,25 @@
+From f212665812b9d25b28a254bcb8d0203d80dd77c1 Mon Sep 17 00:00:00 2001
+From: Derek Kozel <derek.kozel@ettus.com>
+Date: Mon, 29 Feb 2016 11:50:58 -0800
+Subject: [PATCH 21/21] Added srec_cat dependency for building the firmware
+
+---
+ firmware/e300/battery/README.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/firmware/e300/battery/README.md b/firmware/e300/battery/README.md
+index fc4d504..a107442 100644
+--- a/firmware/e300/battery/README.md
++++ b/firmware/e300/battery/README.md
+@@ -5,7 +5,7 @@ Welcome to the NI Ettus Research USRP E310/E312 Firmware distribution.
+ 
+ # Dependencies
+ 
+-In order to build you'll *avr-gcc* and *avr-libc*.
++In order to build you'll *avr-gcc*, *avr-libc*, and *srec_cat*.
+ 
+ # Building
+ 
+-- 
+2.1.4
+

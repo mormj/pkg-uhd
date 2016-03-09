@@ -1,0 +1,41 @@
+From 147f287c9b177918749f17dd1245be817553b821 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Fri, 5 Feb 2016 11:26:08 -0800
+Subject: [PATCH 12/21] cmake: fixed Boost.Thread check for MinGW
+
+* MinGW builds check for libboost_thread_win32 instead of libboost_thread
+* Checks for other platforms unaffected
+---
+ host/CMakeLists.txt | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/host/CMakeLists.txt b/host/CMakeLists.txt
+index 6ac281c..8a3d661 100644
+--- a/host/CMakeLists.txt
++++ b/host/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ #
+-# Copyright 2010-2015 Ettus Research LLC
++# Copyright 2010-2016 Ettus Research LLC
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+@@ -187,10 +187,14 @@ SET(BOOST_REQUIRED_COMPONENTS
+     program_options
+     regex
+     system
+-    thread
+     unit_test_framework
+     serialization
+ )
++IF(MINGW)
++    LIST(APPEND BOOST_REQUIRED_COMPONENTS thread_win32)
++ELSE()
++    LIST(APPEND BOOST_REQUIRED_COMPONENTS thread)
++ENDIF()
+ 
+ IF(UNIX AND NOT BOOST_ROOT AND EXISTS "/usr/lib64")
+     LIST(APPEND BOOST_LIBRARYDIR "/usr/lib64") #fedora 64-bit fix
+-- 
+2.1.4
+

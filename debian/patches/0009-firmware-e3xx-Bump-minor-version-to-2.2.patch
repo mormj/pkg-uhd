@@ -1,0 +1,25 @@
+From 69be2678f7ff97ea844136f40f3be18084357d38 Mon Sep 17 00:00:00 2001
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Tue, 26 Jan 2016 17:31:05 +0100
+Subject: [PATCH 09/21] firmware: e3xx: Bump minor version to 2.2
+
+Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
+---
+ firmware/e300/battery/mcu_settings.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/firmware/e300/battery/mcu_settings.h b/firmware/e300/battery/mcu_settings.h
+index 1472c18..75f3151 100644
+--- a/firmware/e300/battery/mcu_settings.h
++++ b/firmware/e300/battery/mcu_settings.h
+@@ -23,6 +23,6 @@
+ #define F_CPU 8000000UL
+ 
+ #define VERSION_MAJ 2
+-#define VERSION_MIN 1
++#define VERSION_MIN 2
+ 
+ #endif /* MCU_SETTINGS_H */
+-- 
+2.1.4
+

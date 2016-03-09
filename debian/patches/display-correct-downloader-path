@@ -3,7 +3,7 @@ Author: A. Maitland Bottoms <bottoms@debian.org>
 
 --- a/host/lib/utils/paths.cpp
 +++ b/host/lib/utils/paths.cpp
-@@ -365,7 +365,7 @@
+@@ -361,7 +361,7 @@
  }
  
  std::string uhd::find_utility(const std::string &name) {

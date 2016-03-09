@@ -1,0 +1,42 @@
+From 106405aace27889a4012a918846432d8f70df37b Mon Sep 17 00:00:00 2001
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Wed, 14 Oct 2015 10:03:26 -0700
+Subject: [PATCH 04/21] firmware: e3xx: Turn off overzealous shutdown.
+
+Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
+---
+ firmware/e300/battery/bq2419x.c | 4 ++--
+ firmware/e300/battery/pmu.c     | 1 -
+ 2 files changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/firmware/e300/battery/bq2419x.c b/firmware/e300/battery/bq2419x.c
+index 11b3936..0545fcf 100644
+--- a/firmware/e300/battery/bq2419x.c
++++ b/firmware/e300/battery/bq2419x.c
+@@ -571,9 +571,9 @@ int8_t bq2419x_init(void)
+ 	ir_comp &= ~BQ2419X_BAT_COMP_MASK;
+ 	ir_comp |= (0x02 << BQ2419X_BAT_COMP_SHIFT);
+ 
+-	/* set thermal regulation to 60 C */
++	/* set thermal regulation to 120 C */
+ 	ir_comp &= ~BQ2419X_TREG_MASK;
+-	ir_comp |= (0x00 << BQ2419X_TREG_SHIFT);
++	ir_comp |= (0x03 << BQ2419X_TREG_SHIFT);
+ 
+ 	ret = bq2419x_write(BQ2419X_REG_THERMAL_REG_CTRL, ir_comp);
+ 	if (ret)
+diff --git a/firmware/e300/battery/pmu.c b/firmware/e300/battery/pmu.c
+index bd33778..afd5036 100644
+--- a/firmware/e300/battery/pmu.c
++++ b/firmware/e300/battery/pmu.c
+@@ -588,7 +588,6 @@ void pmu_handle_events(void)
+ 				uint8_t health = pmu_battery_get_health(charger);
+ 				switch (health) {
+ 				case PMU_HEALTH_OVERHEAT:
+-					pmu_power_down();
+ 					pmu_error = PMU_ERROR_CHARGER_TEMP;
+ 					break;
+ 				default:
+-- 
+2.1.4
+

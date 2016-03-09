@@ -1,0 +1,25 @@
+From 71bce47ecfc34a4caa0fc508b4ee8e27974e19b7 Mon Sep 17 00:00:00 2001
+From: Moritz Fischer <moritz.fischer@ettus.com>
+Date: Wed, 21 Oct 2015 18:09:16 -0700
+Subject: [PATCH 06/21] firmware: e3xx: Bump minor version.
+
+Signed-off-by: Moritz Fischer <moritz.fischer@ettus.com>
+---
+ firmware/e300/battery/mcu_settings.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/firmware/e300/battery/mcu_settings.h b/firmware/e300/battery/mcu_settings.h
+index 175cb8f..1472c18 100644
+--- a/firmware/e300/battery/mcu_settings.h
++++ b/firmware/e300/battery/mcu_settings.h
+@@ -23,6 +23,6 @@
+ #define F_CPU 8000000UL
+ 
+ #define VERSION_MAJ 2
+-#define VERSION_MIN 0
++#define VERSION_MIN 1
+ 
+ #endif /* MCU_SETTINGS_H */
+-- 
+2.1.4
+

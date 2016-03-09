@@ -1,0 +1,32 @@
+From db3db1e2f031b543dccfb946afa311553e86f79c Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Fri, 8 Jan 2016 11:23:30 -0800
+Subject: [PATCH 02/21] cmake: removed unnecessary include
+
+---
+ host/lib/usrp/common/CMakeLists.txt | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
+
+diff --git a/host/lib/usrp/common/CMakeLists.txt b/host/lib/usrp/common/CMakeLists.txt
+index e63a099..9dabc4e 100644
+--- a/host/lib/usrp/common/CMakeLists.txt
++++ b/host/lib/usrp/common/CMakeLists.txt
+@@ -1,5 +1,5 @@
+ #
+-# Copyright 2011-2013 Ettus Research LLC
++# Copyright 2011-2013,2016 Ettus Research LLC
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+@@ -19,8 +19,6 @@
+ # This file included, use CMake directory variables
+ ########################################################################
+ IF(ENABLE_USB)
+-    INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/../firmware/fx2/common)
+-
+     LIBUHD_APPEND_SOURCES(
+         ${CMAKE_CURRENT_SOURCE_DIR}/fx2_ctrl.cpp
+     )
+-- 
+2.1.4
+

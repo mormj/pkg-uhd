@@ -1,3 +1,13 @@
+uhd (3.9.2-2) unstable; urgency=medium
+
+  * update to release_003_009_002-21-gf212665
+    B200: Fix for increasing retune times
+    Corrected the UHD behavior in the event of a USB disconnect
+    UBX: Phase synchronization
+  * build with ENABLE_GPSD OFF (Closes: #811916)
+    
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 09 Mar 2016 11:33:47 -0500
+
 uhd (3.9.2-1) unstable; urgency=medium
 
   * more robust postinst (Closes: #808863)

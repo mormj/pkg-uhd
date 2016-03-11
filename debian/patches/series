@@ -19,6 +19,12 @@
 0019-UBX-Phase-synchronization.patch
 0020-Enable-multiple-programs-to-use-USB-USRPs-on-Windows.patch
 0021-Added-srec_cat-dependency-for-building-the-firmware.patch
+0022-e300-Fixed-a-memory-leak-in-udev-code.patch
+0023-x300-Added-power-cycle-message-to-uhd_image_loader.patch
+0024-examples-TX-RX-loopback-could-run-forever-if-the-exa.patch
+0025-examples-TX-RX-loopback-stopping-condition-was-rever.patch
+0026-Fixed-minor-warnings.patch
+0027-Added-cstddef-includes-to-support-more-platforms.patch
 uhd-platform-hurd-kfreebsd
 timestamps_in_documentation_generated_by_doxygen
 display-correct-downloader-path

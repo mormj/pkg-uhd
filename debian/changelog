@@ -1,3 +1,11 @@
+uhd (3.9.2-3) unstable; urgency=medium
+
+  * update to release_003_009_002-27-gccc8acb
+    x300: Added power cycle message to uhd_image_loader
+    Added <cstddef> includes to support more platforms
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 11 Mar 2016 15:42:34 -0500
+
 uhd (3.9.2-2) unstable; urgency=medium
 
   * update to release_003_009_002-21-gf212665

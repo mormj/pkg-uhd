@@ -1,0 +1,32 @@
+From 59433663b1de1fb142d77da52aab99763577f79a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marcus=20M=C3=BCller?= <marcus.mueller@ettus.com>
+Date: Wed, 2 Mar 2016 20:12:06 +0100
+Subject: [PATCH 22/27] e300: Fixed a memory leak in udev code
+
+When querying temp mboard sensor on e300, sysfs attributes are read
+through udev.
+---
+ host/lib/usrp/e300/e300_sysfs_hooks.cpp | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/host/lib/usrp/e300/e300_sysfs_hooks.cpp b/host/lib/usrp/e300/e300_sysfs_hooks.cpp
+index ee2ac21..7bd1d6d 100644
+--- a/host/lib/usrp/e300/e300_sysfs_hooks.cpp
++++ b/host/lib/usrp/e300/e300_sysfs_hooks.cpp
+@@ -65,10 +65,11 @@ std::string e300_get_sysfs_attr(const std::string &node, const std::string &attr
+         dev = udev_device_new_from_syspath(udev, path);
+ 
+        retstring = udev_device_get_sysattr_value(dev, attr.c_str());
+-       if (retstring.size())
+-           break;
+ 
+        udev_device_unref(dev);
++
++       if (retstring.size())
++           break;
+     }
+ 
+     udev_enumerate_unref(enumerate);
+-- 
+2.1.4
+

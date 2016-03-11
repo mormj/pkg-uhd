@@ -1,0 +1,27 @@
+From 7b268bdb82959dd1df3657697dc26594b1ffd2d6 Mon Sep 17 00:00:00 2001
+From: Paul David <DaulPavid@users.noreply.github.com>
+Date: Thu, 3 Mar 2016 16:10:17 -0800
+Subject: [PATCH 25/27] examples: TX/RX loopback stopping condition was
+ reversed
+
+No data was getting stored.
+---
+ host/examples/txrx_loopback_to_file.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/examples/txrx_loopback_to_file.cpp b/host/examples/txrx_loopback_to_file.cpp
+index 0ce7ac5..eb2cd72 100644
+--- a/host/examples/txrx_loopback_to_file.cpp
++++ b/host/examples/txrx_loopback_to_file.cpp
+@@ -149,7 +149,7 @@ template<typename samp_type> void recv_to_file(
+     stream_cmd.time_spec = uhd::time_spec_t(settling_time);
+     rx_stream->issue_stream_cmd(stream_cmd);
+ 
+-    while(not stop_signal_called and (num_requested_samples < num_total_samps or num_requested_samples == 0)){
++    while(not stop_signal_called and (num_requested_samples > num_total_samps or num_requested_samples == 0)){
+         size_t num_rx_samps = rx_stream->recv(buff_ptrs, samps_per_buff, md, timeout);
+         timeout = 0.1f; //small timeout for subsequent recv
+ 
+-- 
+2.1.4
+

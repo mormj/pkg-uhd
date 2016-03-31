@@ -1,3 +1,26 @@
+uhd (3.9.3-1) unstable; urgency=medium
+
+  * New upstream release
+  * Add C API to debian/patches/uhd-platform-hurd-kfreebsd
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 29 Mar 2016 21:11:24 -0400
+
+uhd (3.9.3-0ubuntu1) trusty; urgency=low
+
+  * UBX: Fixed a phase synchronization issue on the sub-1GHz band
+  * USB: Fixed transport issue that crashed when multiple USB devices were
+    connected on a Windows machine, more graceful handling of USB disconnects,,
+    provided .cdf file for installing on Windows
+  * B200: Fixed memory growth/increasing tune times issue
+  * E300: Fixed memory leak with udev, fixed issue with autoboot value, fixes
+    to button behaviour
+  * usrp2, usrp3: Fixed IQ imbalance and DC bias in DDC chain
+  * CMake: Windows registry fixes
+  * Fixed several compiler warnings and minor bugs
+  * Examples: Updated benchmark_rate for improved thread safety
+
+ -- Ettus Research <packages@ettus.com>  Mon, 21 Mar 2016 11:40:26 -0800
+
 uhd (3.9.2-3) unstable; urgency=medium
 
   * update to release_003_009_002-27-gccc8acb

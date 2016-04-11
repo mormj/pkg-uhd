@@ -1,0 +1,32 @@
+From 68bf02f9cc9b387f3d3c74a726c822e4da6c59aa Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Tue, 5 Apr 2016 17:27:11 -0700
+Subject: [PATCH 09/12] cmake: Removed setting of CPACK_SET_DESTDIR
+
+---
+ fpga-src                            | 2 +-
+ host/cmake/Modules/UHDPackage.cmake | 3 ---
+ 2 files changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/fpga-src b/fpga-src
+index b91465a..b859659 160000
+--- a/fpga-src
++++ b/fpga-src
+@@ -1 +1 @@
+-Subproject commit b91465a5cef377d94e9d1a37c7ff2540b594ff6a
++Subproject commit b859659c12db508911639981ab3c750ff971df86
+diff --git a/host/cmake/Modules/UHDPackage.cmake b/host/cmake/Modules/UHDPackage.cmake
+index 08c2a6c..b9fcdf9 100644
+--- a/host/cmake/Modules/UHDPackage.cmake
++++ b/host/cmake/Modules/UHDPackage.cmake
+@@ -218,7 +218,4 @@ IF(WIN32)
+ ENDIF(WIN32)
+ 
+ ########################################################################
+-IF(NOT ${CPACK_GENERATOR} STREQUAL NSIS)
+-    SET(CPACK_SET_DESTDIR "ON")
+-ENDIF(NOT ${CPACK_GENERATOR} STREQUAL NSIS)
+ INCLUDE(CPack) #include after setting vars
+-- 
+2.1.4
+

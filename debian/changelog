@@ -1,3 +1,21 @@
+uhd (3.9.3-2) unstable; urgency=medium
+
+  * update to release_003_009_003-12-g62f80e2
+    Added missing stdint.h include
+    Unroll the loops in the NEON float to-from integer c
+    cmake Added installation of .reg file
+    utils Updated query_gpsdo_sensors
+    query_gpsdo_sensors fixed sleep time
+    ubx Changed member declaration to satisfy debug build
+    Removed mention of OSX PPC support
+    Updated URL for USRP image files
+    Fixed spelling errors mostly in documentation
+    gpio core Fixed a mismatch in the address assignment
+    cmake Enable use of dot for Doxygen
+  * Enable use of dot for Doxygen in Debian .doc package build
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Mon, 11 Apr 2016 15:12:01 -0400
+
 uhd (3.9.3-1) unstable; urgency=medium
 
   * New upstream release

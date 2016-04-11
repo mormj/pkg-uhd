@@ -1,0 +1,51 @@
+From 62f80e22b22eb076e649fc0aee8bbb2c292fa17b Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Thu, 7 Apr 2016 21:43:54 -0700
+Subject: [PATCH 12/12] cmake: Enable use of dot for Doxygen
+
+---
+ host/docs/CMakeLists.txt | 7 +++++++
+ host/docs/Doxyfile.in    | 2 +-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/host/docs/CMakeLists.txt b/host/docs/CMakeLists.txt
+index 3090d3f..96f388b 100644
+--- a/host/docs/CMakeLists.txt
++++ b/host/docs/CMakeLists.txt
+@@ -66,6 +66,7 @@ ENDIF(ENABLE_MANUAL)
+ MESSAGE(STATUS "")
+ LIBUHD_REGISTER_COMPONENT("API/Doxygen" ENABLE_DOXYGEN ON "DOXYGEN_FOUND" OFF OFF)
+ OPTION(ENABLE_DOXYGEN_FULL "Use Doxygen to document the entire source tree (not just API)" OFF)
++OPTION(ENABLE_DOXYGEN_DOT "Let Doxygen use dot (requires graphviz)" OFF)
+ 
+ IF(LIBUHDDEV_PKG)
+     SET(PKG_DOC_DIR share/doc/libuhd-dev)
+@@ -94,6 +95,12 @@ MESSAGE(STATUS "")
+ IF(ENABLE_MANUAL_OR_DOXYGEN)
+     #generate the doxygen configuration file
+     SET(CMAKE_CURRENT_BINARY_DIR_DOXYGEN ${CMAKE_CURRENT_BINARY_DIR}/doxygen)
++    IF(ENABLE_DOXYGEN_DOT)
++        SET(DOXYGEN_HAVE_DOT "YES")
++    ELSE(ENABLE_DOXYGEN_DOT)
++        SET(DOXYGEN_HAVE_DOT "NO")
++    ENDIF(ENABLE_DOXYGEN_DOT)
++
+     CONFIGURE_FILE(
+         ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+         ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+diff --git a/host/docs/Doxyfile.in b/host/docs/Doxyfile.in
+index d984b6f..8aa6299 100644
+--- a/host/docs/Doxyfile.in
++++ b/host/docs/Doxyfile.in
+@@ -1686,7 +1686,7 @@ HIDE_UNDOC_RELATIONS   = YES
+ # toolkit from AT&T and Lucent Bell Labs. The other options in this section
+ # have no effect if this option is set to NO (the default)
+ 
+-HAVE_DOT               = NO
++HAVE_DOT               = @DOXYGEN_HAVE_DOT@
+ 
+ # The DOT_NUM_THREADS specifies the number of dot invocations doxygen is
+ # allowed to run in parallel. When set to 0 (the default) doxygen will
+-- 
+2.1.4
+

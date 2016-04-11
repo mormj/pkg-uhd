@@ -1,0 +1,33 @@
+From 1ea5f72544b974b6a700d65cfae0f380494c438a Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Tue, 29 Mar 2016 17:21:49 -0700
+Subject: [PATCH 06/12] ubx: Changed member declaration to satisfy debug builds
+ on Windows
+
+---
+ host/lib/usrp/dboard/db_ubx.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/lib/usrp/dboard/db_ubx.cpp b/host/lib/usrp/dboard/db_ubx.cpp
+index 0bf57cb..2966cad 100644
+--- a/host/lib/usrp/dboard/db_ubx.cpp
++++ b/host/lib/usrp/dboard/db_ubx.cpp
+@@ -1135,6 +1135,7 @@ private:
+     boost::mutex _mutex;
+     ubx_cpld_reg_t _cpld_reg;
+     uint32_t _prev_cpld_value;
++    std::map<ubx_gpio_field_id_t,ubx_gpio_field_info_t> _gpio_map;
+     boost::shared_ptr<max287x_iface> _txlo1;
+     boost::shared_ptr<max287x_iface> _txlo2;
+     boost::shared_ptr<max287x_iface> _rxlo1;
+@@ -1159,7 +1160,6 @@ private:
+     size_t _rev;
+     double _prev_tx_freq;
+     double _prev_rx_freq;
+-    std::map<ubx_gpio_field_id_t,ubx_gpio_field_info_t> _gpio_map;
+     ubx_gpio_reg_t _tx_gpio_reg;
+     ubx_gpio_reg_t _rx_gpio_reg;
+     int64_t _tx_sync_delay;
+-- 
+2.1.4
+

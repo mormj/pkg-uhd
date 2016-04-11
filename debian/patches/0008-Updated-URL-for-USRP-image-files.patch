@@ -1,0 +1,28 @@
+From acb0a2eaee94e467db2970cfdf868be3f06a8265 Mon Sep 17 00:00:00 2001
+From: Derek Kozel <derek.kozel@ettus.com>
+Date: Mon, 28 Mar 2016 18:03:32 -0700
+Subject: [PATCH 08/12] Updated URL for USRP image files
+
+Previously there were separate maint and master images. Since 3.8.1
+these have been combined at a new URL.
+---
+ host/docs/images.dox | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/host/docs/images.dox b/host/docs/images.dox
+index 1ff9fa7..c6f48bc 100644
+--- a/host/docs/images.dox
++++ b/host/docs/images.dox
+@@ -24,8 +24,7 @@ The methods of loading images into the device vary among devices:
+ 
+ Pre-built images are available for download.
+ 
+-- <a href="http://files.ettus.com/binaries/master_images/">Master Branch images</a>
+-- <a href="http://files.ettus.com/binaries/maint_images/">Maint Branch images</a>
++- <a href="http://files.ettus.com/binaries/images/">Images</a>
+ 
+ The pre-built images come in two forms:
+ 
+-- 
+2.1.4
+

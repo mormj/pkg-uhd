@@ -1,0 +1,30 @@
+From 1a002d38ac27656d0bae4a06314add0f586195d1 Mon Sep 17 00:00:00 2001
+From: Paul David <paul.david@ettus.com>
+Date: Wed, 6 Apr 2016 16:54:55 -0700
+Subject: [PATCH 11/12] gpio core: Fixed a mismatch in the address assignment
+ for RX and full duplex
+
+---
+ host/lib/usrp/cores/gpio_core_200.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/host/lib/usrp/cores/gpio_core_200.cpp b/host/lib/usrp/cores/gpio_core_200.cpp
+index 78ad00b..704a71d 100644
+--- a/host/lib/usrp/cores/gpio_core_200.cpp
++++ b/host/lib/usrp/cores/gpio_core_200.cpp
+@@ -102,10 +102,10 @@ private:
+             addr = REG_GPIO_TX_ONLY;
+             break;
+         case dboard_iface::ATR_REG_RX_ONLY:
+-            addr = REG_GPIO_IDLE;
++            addr = REG_GPIO_RX_ONLY;
+             break;
+         case dboard_iface::ATR_REG_FULL_DUPLEX:
+-            addr = REG_GPIO_RX_ONLY;
++            addr = REG_GPIO_BOTH;
+             break;
+         default:
+             UHD_THROW_INVALID_CODE_PATH();
+-- 
+2.1.4
+

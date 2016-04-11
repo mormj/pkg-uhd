@@ -1,3 +1,14 @@
+0001-Added-missing-stdint.h-include.patch
+0002-Unroll-the-loops-in-the-NEON-float-to-from-integer-c.patch
+0003-cmake-Added-installation-of-.reg-file.patch
+0004-utils-Updated-query_gpsdo_sensors.patch
+0005-query_gpsdo_sensors-fixed-sleep-time.patch
+0006-ubx-Changed-member-declaration-to-satisfy-debug-buil.patch
+0007-Removed-mention-of-OSX-PPC-support.patch
+0008-Updated-URL-for-USRP-image-files.patch
+0010-Fixed-spelling-errors-mostly-in-documentation.patch
+0011-gpio-core-Fixed-a-mismatch-in-the-address-assignment.patch
+0012-cmake-Enable-use-of-dot-for-Doxygen.patch
 uhd-platform-hurd-kfreebsd
 timestamps_in_documentation_generated_by_doxygen
 display-correct-downloader-path

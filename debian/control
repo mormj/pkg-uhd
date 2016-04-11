@@ -5,6 +5,7 @@ Maintainer: A. Maitland Bottoms <bottoms@debian.org>
 Build-Depends: cmake (>= 2.8.4+dfsg.1-3),
                debhelper (>= 9),
                doxygen,
+	       graphviz,
                libboost-date-time-dev,
                libboost-dev,
                libboost-filesystem-dev,

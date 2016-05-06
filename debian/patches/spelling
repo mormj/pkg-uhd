@@ -1,0 +1,63 @@
+From: A. Maitland Bottoms <bottoms@debian.org>
+Subject: uhd spelling
+ Transistion -> Transition
+ retrive -> retrieve
+ 
+--- a/host/lib/usrp/dboard/db_tvrx2.cpp
++++ b/host/lib/usrp/dboard/db_tvrx2.cpp
+@@ -1529,7 +1529,7 @@
+ void tvrx2::transition_0(void){
+     //Transition 0: Initialize Tuner and place in standby
+     UHD_LOGV(often) << boost::format(
+-        "\nTVRX2 (%s): Transistion 0: Initialize Tuner, Calibrate and Standby\n") % (get_subdev_name()) << std::endl;
++        "\nTVRX2 (%s): Transition 0: Initialize Tuner, Calibrate and Standby\n") % (get_subdev_name()) << std::endl;
+ 
+     //Check for Power-On Reset, if reset, initialze tuner
+     if (get_power_reset()) {
+@@ -1583,7 +1583,7 @@
+ void tvrx2::transition_1(void){
+     //Transition 1: Select TV Standard
+     UHD_LOGV(often) << boost::format(
+-        "\nTVRX2 (%s): Transistion 1: Select TV Standard\n") % (get_subdev_name()) << std::endl;
++        "\nTVRX2 (%s): Transition 1: Select TV Standard\n") % (get_subdev_name()) << std::endl;
+ 
+     //send magic xtal_cal_dac setting
+     send_reg(0x65, 0x65);
+@@ -1614,7 +1614,7 @@
+ void tvrx2::transition_2(int rf_freq){
+     //Transition 2: Select RF Frequency after changing TV Standard
+     UHD_LOGV(often) << boost::format(
+-        "\nTVRX2 (%s): Transistion 2: Select RF Frequency after changing TV Standard\n") % (get_subdev_name()) << std::endl;
++        "\nTVRX2 (%s): Transition 2: Select RF Frequency after changing TV Standard\n") % (get_subdev_name()) << std::endl;
+ 
+     //send magic xtal_cal_dac setting
+     send_reg(0x65, 0x65);
+@@ -1652,7 +1652,7 @@
+ void tvrx2::transition_3(void){
+     //Transition 3: Standby Mode
+     UHD_LOGV(often) << boost::format(
+-        "\nTVRX2 (%s): Transistion 3: Standby Mode\n") % (get_subdev_name()) << std::endl;
++        "\nTVRX2 (%s): Transition 3: Standby Mode\n") % (get_subdev_name()) << std::endl;
+ 
+     //send magic xtal_cal_dac setting
+     send_reg(0x65, 0x65);
+@@ -1671,7 +1671,7 @@
+ void tvrx2::transition_4(int rf_freq){
+     //Transition 4: Change RF Frequency without changing TV Standard
+     UHD_LOGV(often) << boost::format(
+-        "\nTVRX2 (%s): Transistion 4: Change RF Frequency without changing TV Standard\n") % (get_subdev_name()) << std::endl;
++        "\nTVRX2 (%s): Transition 4: Change RF Frequency without changing TV Standard\n") % (get_subdev_name()) << std::endl;
+ 
+     //send magic xtal_cal_dac setting
+     send_reg(0x65, 0x65);
+--- a/host/lib/usrp_clock/octoclock/octoclock_impl.cpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_impl.cpp
+@@ -336,7 +336,7 @@
+     if(UHD_OCTOCLOCK_PACKET_MATCHES(OCTOCLOCK_QUERY_ACK, pkt_out, pkt_in, len)){
+         return pkt_in->proto_ver;
+     }
+-    else throw uhd::runtime_error("Failed to retrive firmware version from OctoClock.");
++    else throw uhd::runtime_error("Failed to retrieve firmware version from OctoClock.");
+ }
+ 
+ void octoclock_impl::_get_state(const std::string &oc){

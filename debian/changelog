@@ -1,3 +1,9 @@
+uhd (3.9.4-2) unstable; urgency=medium
+
+  * revert Build-Depends-Indep change
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Thu, 05 May 2016 23:34:12 -0400
+
 uhd (3.9.4-1) unstable; urgency=medium
 
   * New upstream release

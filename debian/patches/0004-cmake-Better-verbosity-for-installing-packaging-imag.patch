@@ -1,0 +1,28 @@
+From 1aa5d7e2360d2d3d6e843ebe970cd89a9ecc3c0b Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Thu, 19 May 2016 13:18:05 -0700
+Subject: [PATCH 04/29] cmake: Better verbosity for installing/packaging
+ images.
+
+---
+ host/CMakeLists.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/host/CMakeLists.txt b/host/CMakeLists.txt
+index 29e89b8..12cb916 100644
+--- a/host/CMakeLists.txt
++++ b/host/CMakeLists.txt
+@@ -403,8 +403,9 @@ UHD_INSTALL(
+ # Handle pre-built UHD Images for packaging
+ ########################################################################
+ IF(DEFINED UHD_IMAGES_SRC_DIR AND EXISTS "${UHD_IMAGES_SRC_DIR}")
++    MESSAGE(STATUS "Reading images from directory `${UHD_IMAGES_SRC_DIR}'")
+     FILE(GLOB_RECURSE _image_files "${UHD_IMAGES_SRC_DIR}/*")
+-    MESSAGE(STATUS "Using images:")
++    MESSAGE(STATUS "These images files will be installed/packaged:")
+     FOREACH(_img ${_image_files})
+         MESSAGE(STATUS "  ${_img}")
+     ENDFOREACH(_img)
+-- 
+2.1.4
+

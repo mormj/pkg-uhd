@@ -1,0 +1,28 @@
+From 9cc4e16b77d074c8d416725ead1afb8898007eb3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marcus=20M=C3=BCller?= <marcus.mueller@ettus.com>
+Date: Sat, 4 Jun 2016 14:30:51 +0200
+Subject: [PATCH 22/29] Added the option to disable ADC self-test
+
+This proved helpful on devices where the EEPROM is wrong about hardware
+revision, and the EEPROM writing doesn't work, because the ADC self-test
+fails due to being run for the wrong board revision.
+---
+ host/lib/usrp/x300/x300_impl.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/lib/usrp/x300/x300_impl.cpp b/host/lib/usrp/x300/x300_impl.cpp
+index c13c2ac..ce81d5f 100644
+--- a/host/lib/usrp/x300/x300_impl.cpp
++++ b/host/lib/usrp/x300/x300_impl.cpp
+@@ -743,7 +743,7 @@ void x300_impl::setup_mb(const size_t mb_i, const uhd::device_addr_t &dev_addr)
+     }
+     if (dev_addr.has_key("ext_adc_self_test")) {
+         extended_adc_test(mb, dev_addr.cast<double>("ext_adc_self_test", 30));
+-    } else {
++    } else if ( ! dev_addr.has_key("disable_adc_self_test") ) {
+         self_test_adcs(mb);
+     }
+ 
+-- 
+2.1.4
+

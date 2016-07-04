@@ -1,0 +1,387 @@
+From e1139b25429f41092bef76584dbd5912014b8768 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Mon, 27 Jun 2016 10:48:29 -0700
+Subject: [PATCH 29/29] Octoclock: Fix firmware version compatibility
+
+---
+ host/include/uhd/usrp_clock/octoclock_eeprom.hpp     |  4 +++-
+ host/lib/usrp_clock/octoclock/common.h               |  4 ++--
+ host/lib/usrp_clock/octoclock/octoclock_eeprom.cpp   |  9 +++++----
+ .../usrp_clock/octoclock/octoclock_image_loader.cpp  | 10 +++++-----
+ host/lib/usrp_clock/octoclock/octoclock_impl.cpp     | 20 ++++++++++----------
+ host/lib/usrp_clock/octoclock/octoclock_impl.hpp     |  3 ++-
+ host/lib/usrp_clock/octoclock/octoclock_uart.cpp     | 13 +++++++------
+ host/lib/usrp_clock/octoclock/octoclock_uart.hpp     |  5 +++--
+ host/utils/octoclock_firmware_burner.cpp             | 14 +++++++-------
+ 9 files changed, 44 insertions(+), 38 deletions(-)
+
+diff --git a/host/include/uhd/usrp_clock/octoclock_eeprom.hpp b/host/include/uhd/usrp_clock/octoclock_eeprom.hpp
+index a521000..aaa6296 100644
+--- a/host/include/uhd/usrp_clock/octoclock_eeprom.hpp
++++ b/host/include/uhd/usrp_clock/octoclock_eeprom.hpp
+@@ -40,8 +40,9 @@ public:
+     /*!
+      * Make a new OctoClock EEPROM handler.
+      * \param transport the UDP transport to the OctoClock
++     * \param proto_ver firmware protocol version
+      */
+-    octoclock_eeprom_t(transport::udp_simple::sptr transport);
++    octoclock_eeprom_t(transport::udp_simple::sptr transport, boost::uint32_t proto_ver);
+ 
+     /*!
+      * Write the contents of this object to the EEPROM.
+@@ -50,6 +51,7 @@ public:
+ 
+ private:
+     transport::udp_simple::sptr xport;
++    boost::uint32_t _proto_ver;
+     void _load();
+     void _store() const;
+ 
+diff --git a/host/lib/usrp_clock/octoclock/common.h b/host/lib/usrp_clock/octoclock/common.h
+index 191b93d..43c098e 100644
+--- a/host/lib/usrp_clock/octoclock/common.h
++++ b/host/lib/usrp_clock/octoclock/common.h
+@@ -25,8 +25,8 @@
+  */
+ #ifdef __cplusplus
+ 
+-#define UHD_OCTOCLOCK_SEND_AND_RECV(xport, pkt_code, pkt_out, len, data) do {\
+-                                                                            pkt_out.proto_ver = OCTOCLOCK_FW_COMPAT_NUM; \
++#define UHD_OCTOCLOCK_SEND_AND_RECV(xport, fw_version, pkt_code, pkt_out, len, data) do {\
++                                                                            pkt_out.proto_ver = fw_version; \
+                                                                             pkt_out.code = pkt_code; \
+                                                                             xport->send(boost::asio::buffer(&pkt_out, sizeof(octoclock_packet_t))); \
+                                                                             len = xport->recv(boost::asio::buffer(data), 2);\
+diff --git a/host/lib/usrp_clock/octoclock/octoclock_eeprom.cpp b/host/lib/usrp_clock/octoclock/octoclock_eeprom.cpp
+index 8ac3801..b39bc4b 100644
+--- a/host/lib/usrp_clock/octoclock/octoclock_eeprom.cpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_eeprom.cpp
+@@ -50,7 +50,7 @@ void octoclock_eeprom_t::_load(){
+     pkt_out.sequence = boost::uint32_t(std::rand());
+     size_t len = 0;
+ 
+-    UHD_OCTOCLOCK_SEND_AND_RECV(xport, SEND_EEPROM_CMD, pkt_out, len, octoclock_data);
++    UHD_OCTOCLOCK_SEND_AND_RECV(xport, _proto_ver, SEND_EEPROM_CMD, pkt_out, len, octoclock_data);
+     if(UHD_OCTOCLOCK_PACKET_MATCHES(SEND_EEPROM_ACK, pkt_out, pkt_in, len)){
+         //MAC address
+         byte_vector_t mac_bytes(eeprom_in->mac_addr, eeprom_in->mac_addr+6);
+@@ -144,7 +144,7 @@ void octoclock_eeprom_t::_store() const {
+         eeprom_out->revision = (*this)["revision"][0]-'0';
+     }
+ 
+-    UHD_OCTOCLOCK_SEND_AND_RECV(xport, BURN_EEPROM_CMD, pkt_out, len, octoclock_data);
++    UHD_OCTOCLOCK_SEND_AND_RECV(xport, _proto_ver, BURN_EEPROM_CMD, pkt_out, len, octoclock_data);
+     if(not UHD_OCTOCLOCK_PACKET_MATCHES(BURN_EEPROM_SUCCESS_ACK, pkt_out, pkt_in, len))
+         throw uhd::runtime_error("Error writing to OctoClock EEPROM.");
+ }
+@@ -156,8 +156,9 @@ octoclock_eeprom_t::octoclock_eeprom_t(void){
+     /* NOP */
+ }
+ 
+-octoclock_eeprom_t::octoclock_eeprom_t(udp_simple::sptr transport){
+-    xport = transport;
++octoclock_eeprom_t::octoclock_eeprom_t(udp_simple::sptr transport, uint32_t proto_ver) :
++	xport(transport), _proto_ver(proto_ver)
++{
+     _load();
+ }
+ 
+diff --git a/host/lib/usrp_clock/octoclock/octoclock_image_loader.cpp b/host/lib/usrp_clock/octoclock/octoclock_image_loader.cpp
+index e12256c..3f89a92 100644
+--- a/host/lib/usrp_clock/octoclock/octoclock_image_loader.cpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_image_loader.cpp
+@@ -178,7 +178,7 @@ static void octoclock_setup_session(octoclock_session_t &session,
+     octoclock_packet_t pkt_out;
+     const octoclock_packet_t* pkt_in = reinterpret_cast<const octoclock_packet_t*>(session.data_in);
+     size_t len = 0;
+-    UHD_OCTOCLOCK_SEND_AND_RECV(session.ctrl_xport, OCTOCLOCK_QUERY_CMD, pkt_out, len, session.data_in);
++    UHD_OCTOCLOCK_SEND_AND_RECV(session.ctrl_xport, OCTOCLOCK_FW_COMPAT_NUM, OCTOCLOCK_QUERY_CMD, pkt_out, len, session.data_in);
+     if(UHD_OCTOCLOCK_PACKET_MATCHES(OCTOCLOCK_QUERY_ACK, pkt_out, pkt_in, len)){
+         session.starting_firmware_version = uhd::htonx<boost::uint32_t>(pkt_in->proto_ver);
+     } else {
+@@ -244,7 +244,7 @@ static void octoclock_burn(octoclock_session_t &session){
+     std::cout << " -- Preparing OctoClock for firmware load..." << std::flush;
+     pkt_out.len = session.image.size();
+     pkt_out.crc = session.crc;
+-    UHD_OCTOCLOCK_SEND_AND_RECV(session.fw_xport, PREPARE_FW_BURN_CMD, pkt_out, len, session.data_in);
++    UHD_OCTOCLOCK_SEND_AND_RECV(session.fw_xport, OCTOCLOCK_FW_COMPAT_NUM, PREPARE_FW_BURN_CMD, pkt_out, len, session.data_in);
+     if(UHD_OCTOCLOCK_PACKET_MATCHES(FW_BURN_READY_ACK, pkt_out, pkt_in, len)){
+         std::cout << "successful." << std::endl;
+     }
+@@ -265,7 +265,7 @@ static void octoclock_burn(octoclock_session_t &session){
+ 
+         memset(pkt_out.data, 0, OCTOCLOCK_BLOCK_SIZE);
+         memcpy((char*)pkt_out.data, &session.image[pkt_out.addr], OCTOCLOCK_BLOCK_SIZE);
+-        UHD_OCTOCLOCK_SEND_AND_RECV(session.fw_xport, FILE_TRANSFER_CMD, pkt_out, len, session.data_in);
++        UHD_OCTOCLOCK_SEND_AND_RECV(session.fw_xport, OCTOCLOCK_FW_COMPAT_NUM, FILE_TRANSFER_CMD, pkt_out, len, session.data_in);
+         if(not UHD_OCTOCLOCK_PACKET_MATCHES(FILE_TRANSFER_ACK, pkt_out, pkt_in, len)){
+             std::cout << std::endl;
+             throw uhd::runtime_error("Failed to load firmware.");
+@@ -299,7 +299,7 @@ static void octoclock_verify(octoclock_session_t &session){
+         memcpy((char*)image_part, &session.image[pkt_out.addr], OCTOCLOCK_BLOCK_SIZE);
+         cmp_len = std::min<size_t>(OCTOCLOCK_BLOCK_SIZE, session.image.size() - size_t(pkt_out.addr));
+ 
+-        UHD_OCTOCLOCK_SEND_AND_RECV(session.fw_xport, READ_FW_CMD, pkt_out, len, session.data_in);
++        UHD_OCTOCLOCK_SEND_AND_RECV(session.fw_xport, OCTOCLOCK_FW_COMPAT_NUM, READ_FW_CMD, pkt_out, len, session.data_in);
+         if(UHD_OCTOCLOCK_PACKET_MATCHES(READ_FW_ACK, pkt_out, pkt_in, len)){
+             if(memcmp(pkt_in->data, image_part, cmp_len)){
+                 std::cout << std::endl;
+@@ -325,7 +325,7 @@ static void octoclock_finalize(octoclock_session_t &session){
+     size_t len = 0;
+ 
+     std::cout << " -- Finalizing firmware load..." << std::flush;
+-    UHD_OCTOCLOCK_SEND_AND_RECV(session.fw_xport, FINALIZE_BURNING_CMD, pkt_out, len, session.data_in);
++    UHD_OCTOCLOCK_SEND_AND_RECV(session.fw_xport, OCTOCLOCK_FW_COMPAT_NUM, FINALIZE_BURNING_CMD, pkt_out, len, session.data_in);
+     if(UHD_OCTOCLOCK_PACKET_MATCHES(FINALIZE_BURNING_ACK, pkt_out, pkt_in, len)){
+         std::cout << "successful." << std::endl;
+     }
+diff --git a/host/lib/usrp_clock/octoclock/octoclock_impl.cpp b/host/lib/usrp_clock/octoclock/octoclock_impl.cpp
+index 4f70a82..15d9192 100644
+--- a/host/lib/usrp_clock/octoclock/octoclock_impl.cpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_impl.cpp
+@@ -138,7 +138,7 @@ device_addrs_t octoclock_find(const device_addr_t &hint){
+                                               new_addr["addr"],
+                                               BOOST_STRINGIZE(OCTOCLOCK_UDP_CTRL_PORT)
+                                           );
+-            UHD_OCTOCLOCK_SEND_AND_RECV(ctrl_xport, OCTOCLOCK_QUERY_CMD, pkt_out, len, octoclock_data);
++            UHD_OCTOCLOCK_SEND_AND_RECV(ctrl_xport, OCTOCLOCK_FW_COMPAT_NUM, OCTOCLOCK_QUERY_CMD, pkt_out, len, octoclock_data);
+             if(UHD_OCTOCLOCK_PACKET_MATCHES(OCTOCLOCK_QUERY_ACK, pkt_out, pkt_in, len)){
+                 //If the OctoClock is in its bootloader, don't ask for details
+                 if(pkt_in->proto_ver == OCTOCLOCK_BOOTLOADER_PROTO_VER){
+@@ -149,7 +149,7 @@ device_addrs_t octoclock_find(const device_addr_t &hint){
+                     new_addr["type"] = "octoclock";
+ 
+                     if(pkt_in->proto_ver >= OCTOCLOCK_FW_MIN_COMPAT_NUM and pkt_in->proto_ver <= OCTOCLOCK_FW_COMPAT_NUM) {
+-                        octoclock_eeprom_t oc_eeprom(ctrl_xport);
++                        octoclock_eeprom_t oc_eeprom(ctrl_xport, pkt_in->proto_ver);
+                         new_addr["name"] = oc_eeprom["name"];
+                         new_addr["serial"] = oc_eeprom["serial"];
+                     } else {
+@@ -226,21 +226,21 @@ octoclock_impl::octoclock_impl(const device_addr_t &_device_addr){
+         ////////////////////////////////////////////////////////////////////
+         // Check the firmware compatibility number
+         ////////////////////////////////////////////////////////////////////
+-        boost::uint32_t fw_version = _get_fw_version(oc);
+-        if(fw_version < OCTOCLOCK_FW_MIN_COMPAT_NUM or fw_version > OCTOCLOCK_FW_COMPAT_NUM){
++        _proto_ver = _get_fw_version(oc);
++        if(_proto_ver < OCTOCLOCK_FW_MIN_COMPAT_NUM or _proto_ver > OCTOCLOCK_FW_COMPAT_NUM){
+             throw uhd::runtime_error(str(boost::format(
+                     "\n\nPlease update your OctoClock's firmware.\n"
+                     "Expected firmware compatibility number %d, but got %d:\n"
+                     "The firmware build is not compatible with the host code build.\n\n"
+                     "%s\n"
+-                ) % int(OCTOCLOCK_FW_COMPAT_NUM) % int(fw_version) % _get_images_help_message(addr)));
++                ) % int(OCTOCLOCK_FW_COMPAT_NUM) % int(_proto_ver) % _get_images_help_message(addr)));
+         }
+-        _tree->create<std::string>(oc_path / "fw_version").set(boost::lexical_cast<std::string>(int(fw_version)));
++        _tree->create<std::string>(oc_path / "fw_version").set(boost::lexical_cast<std::string>(int(_proto_ver)));
+ 
+         ////////////////////////////////////////////////////////////////////
+         // Set up EEPROM
+         ////////////////////////////////////////////////////////////////////
+-        _oc_dict[oc].eeprom = octoclock_eeprom_t(_oc_dict[oc].ctrl_xport);
++        _oc_dict[oc].eeprom = octoclock_eeprom_t(_oc_dict[oc].ctrl_xport, _proto_ver);
+         _tree->create<octoclock_eeprom_t>(oc_path / "eeprom")
+             .set(_oc_dict[oc].eeprom)
+             .subscribe(boost::bind(&octoclock_impl::_set_eeprom, this, oc, _1));
+@@ -272,7 +272,7 @@ octoclock_impl::octoclock_impl(const device_addr_t &_device_addr){
+         _get_state(oc);
+         if(_oc_dict[oc].state.gps_detected){
+             try{
+-                _oc_dict[oc].gps = gps_ctrl::make(octoclock_make_uart_iface(_oc_dict[oc].gpsdo_xport));
++                _oc_dict[oc].gps = gps_ctrl::make(octoclock_make_uart_iface(_oc_dict[oc].gpsdo_xport, _proto_ver));
+ 
+                 if(_oc_dict[oc].gps and _oc_dict[oc].gps->gps_detected()){
+                     BOOST_FOREACH(const std::string &name, _oc_dict[oc].gps->get_sensors()){
+@@ -339,7 +339,7 @@ boost::uint32_t octoclock_impl::_get_fw_version(const std::string &oc){
+     boost::uint8_t octoclock_data[udp_simple::mtu];
+     const octoclock_packet_t *pkt_in = reinterpret_cast<octoclock_packet_t*>(octoclock_data);
+ 
+-    UHD_OCTOCLOCK_SEND_AND_RECV(_oc_dict[oc].ctrl_xport, OCTOCLOCK_QUERY_CMD, pkt_out, len, octoclock_data);
++    UHD_OCTOCLOCK_SEND_AND_RECV(_oc_dict[oc].ctrl_xport, OCTOCLOCK_FW_COMPAT_NUM, OCTOCLOCK_QUERY_CMD, pkt_out, len, octoclock_data);
+     if(UHD_OCTOCLOCK_PACKET_MATCHES(OCTOCLOCK_QUERY_ACK, pkt_out, pkt_in, len)){
+         return pkt_in->proto_ver;
+     }
+@@ -355,7 +355,7 @@ void octoclock_impl::_get_state(const std::string &oc){
+     boost::uint8_t octoclock_data[udp_simple::mtu];
+     const octoclock_packet_t *pkt_in = reinterpret_cast<octoclock_packet_t*>(octoclock_data);
+ 
+-    UHD_OCTOCLOCK_SEND_AND_RECV(_oc_dict[oc].ctrl_xport, SEND_STATE_CMD, pkt_out, len, octoclock_data);
++    UHD_OCTOCLOCK_SEND_AND_RECV(_oc_dict[oc].ctrl_xport, _proto_ver, SEND_STATE_CMD, pkt_out, len, octoclock_data);
+     if(UHD_OCTOCLOCK_PACKET_MATCHES(SEND_STATE_ACK, pkt_out, pkt_in, len)){
+         const octoclock_state_t *state = reinterpret_cast<const octoclock_state_t*>(pkt_in->data);
+         _oc_dict[oc].state = *state;
+diff --git a/host/lib/usrp_clock/octoclock/octoclock_impl.hpp b/host/lib/usrp_clock/octoclock/octoclock_impl.hpp
+index 453e75e..2c74b9b 100644
+--- a/host/lib/usrp_clock/octoclock/octoclock_impl.hpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_impl.hpp
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2014 Ettus Research LLC
++// Copyright 2014,2016 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -57,6 +57,7 @@ private:
+     };
+     uhd::dict<std::string, oc_container_type> _oc_dict;
+     boost::uint32_t _sequence;
++	boost::uint32_t _proto_ver;
+ 
+     void _set_eeprom(const std::string &oc, const uhd::usrp_clock::octoclock_eeprom_t &oc_eeprom);
+ 
+diff --git a/host/lib/usrp_clock/octoclock/octoclock_uart.cpp b/host/lib/usrp_clock/octoclock/octoclock_uart.cpp
+index e0a9f08..bc2c9b6 100644
+--- a/host/lib/usrp_clock/octoclock/octoclock_uart.cpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_uart.cpp
+@@ -41,12 +41,13 @@ using namespace uhd::transport;
+                            (NUM_WRAPS_EQUAL && _state.pos > _device_state.pos))
+ 
+ namespace uhd{
+-    octoclock_uart_iface::octoclock_uart_iface(udp_simple::sptr udp): uart_iface(){
++    octoclock_uart_iface::octoclock_uart_iface(udp_simple::sptr udp, uint32_t proto_ver): uart_iface(){
+         _udp = udp;
+         _state.num_wraps = 0;
+         _state.pos = 0;
+         _device_state.num_wraps = 0;
+         _device_state.pos = 0;
++        _proto_ver = proto_ver;
+         // To avoid replicating sequence numbers between sessions
+         _sequence = boost::uint32_t(std::rand());
+         size_t len = 0;
+@@ -59,7 +60,7 @@ namespace uhd{
+         boost::uint8_t octoclock_data[udp_simple::mtu];
+         const octoclock_packet_t *pkt_in = reinterpret_cast<octoclock_packet_t*>(octoclock_data);
+ 
+-        UHD_OCTOCLOCK_SEND_AND_RECV(_udp, SEND_POOLSIZE_CMD, pkt_out, len, octoclock_data);
++        UHD_OCTOCLOCK_SEND_AND_RECV(_udp, _proto_ver, SEND_POOLSIZE_CMD, pkt_out, len, octoclock_data);
+         if(UHD_OCTOCLOCK_PACKET_MATCHES(SEND_POOLSIZE_ACK, pkt_out, pkt_in, len)){
+             _poolsize = pkt_in->poolsize;
+             _cache.resize(_poolsize);
+@@ -79,7 +80,7 @@ namespace uhd{
+         boost::uint8_t octoclock_data[udp_simple::mtu];
+         const octoclock_packet_t *pkt_in = reinterpret_cast<octoclock_packet_t*>(octoclock_data);
+ 
+-        UHD_OCTOCLOCK_SEND_AND_RECV(_udp, HOST_SEND_TO_GPSDO_CMD, pkt_out, len, octoclock_data);
++        UHD_OCTOCLOCK_SEND_AND_RECV(_udp, _proto_ver, HOST_SEND_TO_GPSDO_CMD, pkt_out, len, octoclock_data);
+         if(not UHD_OCTOCLOCK_PACKET_MATCHES(HOST_SEND_TO_GPSDO_ACK, pkt_out, pkt_in, len)){
+             throw uhd::runtime_error("Failed to send commands to GPSDO.");
+         }
+@@ -120,7 +121,7 @@ namespace uhd{
+ 
+         if(STATES_EQUAL or LOCAL_STATE_AHEAD){
+             pkt_out.sequence = uhd::htonx<boost::uint32_t>(++_sequence);
+-            UHD_OCTOCLOCK_SEND_AND_RECV(_udp, SEND_GPSDO_CACHE_CMD, pkt_out, len, octoclock_data);
++            UHD_OCTOCLOCK_SEND_AND_RECV(_udp, _proto_ver, SEND_GPSDO_CACHE_CMD, pkt_out, len, octoclock_data);
+             if(UHD_OCTOCLOCK_PACKET_MATCHES(SEND_GPSDO_CACHE_ACK, pkt_out, pkt_in, len)){
+                 memcpy(&_cache[0], pkt_in->data, _poolsize);
+                 _device_state = pkt_in->state;
+@@ -158,7 +159,7 @@ namespace uhd{
+         return ch;
+     }
+ 
+-    uart_iface::sptr octoclock_make_uart_iface(udp_simple::sptr udp){
+-        return uart_iface::sptr(new octoclock_uart_iface(udp));
++    uart_iface::sptr octoclock_make_uart_iface(udp_simple::sptr udp, uint32_t proto_ver){
++        return uart_iface::sptr(new octoclock_uart_iface(udp, proto_ver));
+     }
+ }
+diff --git a/host/lib/usrp_clock/octoclock/octoclock_uart.hpp b/host/lib/usrp_clock/octoclock/octoclock_uart.hpp
+index d7a7728..360e536 100644
+--- a/host/lib/usrp_clock/octoclock/octoclock_uart.hpp
++++ b/host/lib/usrp_clock/octoclock/octoclock_uart.hpp
+@@ -31,7 +31,7 @@
+ namespace uhd{
+ class octoclock_uart_iface : public uhd::uart_iface{
+ public:
+-    octoclock_uart_iface(uhd::transport::udp_simple::sptr udp);
++    octoclock_uart_iface(uhd::transport::udp_simple::sptr udp, uint32_t proto_ver);
+     ~octoclock_uart_iface(void) {};
+ 
+     void write_uart(const std::string &buf);
+@@ -46,12 +46,13 @@ private:
+     std::vector<boost::uint8_t> _cache;
+     std::string _rxbuff;
+     boost::uint32_t _sequence;
++	boost::uint32_t _proto_ver;
+ 
+     void _update_cache();
+     char _getchar();
+ };
+ 
+-uart_iface::sptr octoclock_make_uart_iface(uhd::transport::udp_simple::sptr udp);
++uart_iface::sptr octoclock_make_uart_iface(uhd::transport::udp_simple::sptr udp, uint32_t proto_ver);
+ 
+ }
+ 
+diff --git a/host/utils/octoclock_firmware_burner.cpp b/host/utils/octoclock_firmware_burner.cpp
+index 326985d..7bf1057 100644
+--- a/host/utils/octoclock_firmware_burner.cpp
++++ b/host/utils/octoclock_firmware_burner.cpp
+@@ -123,7 +123,7 @@ void print_image_loader_warning(const std::string &fw_path, const po::variables_
+               << uhd_image_loader << std::endl
+               << std::endl
+               << "************************************************************************************************" << std::endl
+-              << std::endl; 
++              << std::endl;
+ }
+ 
+ /*
+@@ -144,7 +144,7 @@ device_addrs_t bootloader_find(const std::string &ip_addr){
+     boost::system_time comm_timeout = boost::get_system_time() + boost::posix_time::milliseconds(3000);
+ 
+     while(boost::get_system_time() < comm_timeout){
+-        UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, OCTOCLOCK_QUERY_CMD, pkt_out, len, octoclock_data);
++        UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, OCTOCLOCK_FW_COMPAT_NUM, OCTOCLOCK_QUERY_CMD, pkt_out, len, octoclock_data);
+         if(UHD_OCTOCLOCK_PACKET_MATCHES(OCTOCLOCK_QUERY_ACK, pkt_out, pkt_in, len) and
+            pkt_in->proto_ver == OCTOCLOCK_BOOTLOADER_PROTO_VER){
+             addrs.push_back(device_addr_t());
+@@ -181,7 +181,7 @@ void burn_firmware(udp_simple::sptr udp_transport){
+ 
+     //Tell OctoClock not to jump to application, wait for us instead
+     std::cout << "Telling OctoClock to prepare for firmware download..." << std::flush;
+-    UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, PREPARE_FW_BURN_CMD, pkt_out, len, octoclock_data);
++    UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, OCTOCLOCK_FW_COMPAT_NUM, PREPARE_FW_BURN_CMD, pkt_out, len, octoclock_data);
+     if(UHD_OCTOCLOCK_PACKET_MATCHES(FW_BURN_READY_ACK, pkt_out, pkt_in, len)) std::cout << "ready." << std::endl;
+     else{
+         std::cout << std::endl;
+@@ -206,7 +206,7 @@ void burn_firmware(udp_simple::sptr udp_transport){
+ 
+         bool success = false;
+         while(num_tries <= 5){
+-            UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, FILE_TRANSFER_CMD, pkt_out, len, octoclock_data);
++            UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, OCTOCLOCK_FW_COMPAT_NUM, FILE_TRANSFER_CMD, pkt_out, len, octoclock_data);
+             if(UHD_OCTOCLOCK_PACKET_MATCHES(FILE_TRANSFER_ACK, pkt_out, pkt_in, len)){
+                 success = true;
+                 break;
+@@ -240,7 +240,7 @@ void verify_firmware(udp_simple::sptr udp_transport){
+         std::cout << "\r * Progress: " << int(double(i)/double(num_blocks)*100)
+                   << "% (" << (i+1) << "/" << num_blocks << " blocks)" << std::flush;
+ 
+-        UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, READ_FW_CMD, pkt_out, len, octoclock_data);
++        UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, OCTOCLOCK_FW_COMPAT_NUM, READ_FW_CMD, pkt_out, len, octoclock_data);
+         if(UHD_OCTOCLOCK_PACKET_MATCHES(READ_FW_ACK, pkt_out, pkt_in, len)){
+             if(memcmp((void*)(pkt_in->data), &firmware_image[i*BLOCK_SIZE],
+                       std::min(int(firmware_size-current_pos), BLOCK_SIZE))){
+@@ -266,7 +266,7 @@ bool reset_octoclock(const std::string &ip_addr){
+     pkt_out.sequence = uhd::htonx<boost::uint32_t>(std::rand());
+     size_t len;
+ 
+-    UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, RESET_CMD, pkt_out, len, octoclock_data);
++    UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, OCTOCLOCK_FW_COMPAT_NUM, RESET_CMD, pkt_out, len, octoclock_data);
+     if(not UHD_OCTOCLOCK_PACKET_MATCHES(RESET_ACK, pkt_out, pkt_in, len)){
+         std::cout << std::endl;
+         if(hex) fs::remove(actual_firmware_path);
+@@ -283,7 +283,7 @@ void finalize(udp_simple::sptr udp_transport){
+     pkt_out.sequence = uhd::htonx<boost::uint32_t>(std::rand());
+     size_t len = 0;
+ 
+-    UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, FINALIZE_BURNING_CMD, pkt_out, len, octoclock_data);
++    UHD_OCTOCLOCK_SEND_AND_RECV(udp_transport, OCTOCLOCK_FW_COMPAT_NUM, FINALIZE_BURNING_CMD, pkt_out, len, octoclock_data);
+     if(not UHD_OCTOCLOCK_PACKET_MATCHES(FINALIZE_BURNING_ACK, pkt_out, pkt_in, len)){
+         std::cout << std::endl;
+         if(hex) fs::remove(actual_firmware_path);
+-- 
+2.1.4
+

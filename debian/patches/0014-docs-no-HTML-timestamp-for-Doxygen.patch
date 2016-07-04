@@ -1,0 +1,25 @@
+From 938a1b5c9fdeba069a060733f4a6f84dce1762c6 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Tue, 14 Jun 2016 09:07:03 -0700
+Subject: [PATCH 14/29] docs: no HTML timestamp for Doxygen
+
+---
+ host/docs/Doxyfile.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/docs/Doxyfile.in b/host/docs/Doxyfile.in
+index d230352..1533f7e 100644
+--- a/host/docs/Doxyfile.in
++++ b/host/docs/Doxyfile.in
+@@ -958,7 +958,7 @@ HTML_COLORSTYLE_GAMMA  = 65
+ # page will contain the date and time when the page was generated. Setting
+ # this to NO can help when comparing the output of multiple runs.
+ 
+-HTML_TIMESTAMP         = YES
++HTML_TIMESTAMP         = NO
+ 
+ # If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
+ # documentation will contain sections that can be hidden and shown after the
+-- 
+2.1.4
+

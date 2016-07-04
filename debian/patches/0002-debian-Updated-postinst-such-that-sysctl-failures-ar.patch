@@ -1,0 +1,26 @@
+From d3a08aaa3fcda892ed03efc235d3cc2a36ca6117 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Wed, 11 May 2016 16:54:37 -0700
+Subject: [PATCH 02/29] debian: Updated postinst such that sysctl failures are
+ non-fatal to installation
+
+---
+ host/cmake/debian/uhd-host.postinst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/cmake/debian/uhd-host.postinst b/host/cmake/debian/uhd-host.postinst
+index 1d9d31c..c97d6be 100644
+--- a/host/cmake/debian/uhd-host.postinst
++++ b/host/cmake/debian/uhd-host.postinst
+@@ -8,7 +8,7 @@ if [ "$1" = "configure" ]; then
+  fi
+  # Apply usrp2 networking optimization
+  if [ -x "`which sysctl 2>/dev/null`" ]; then
+-   sysctl -p /etc/sysctl.d/uhd-usrp2.conf
++   sysctl -p /etc/sysctl.d/uhd-usrp2.conf || echo "Warning: Could not update sysctl settings for network devices."
+  fi
+ fi
+ 
+-- 
+2.1.4
+

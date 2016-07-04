@@ -1,0 +1,47 @@
+From 984a18a75bd73fecafa9050fbec7e8bf58ac3084 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Wed, 25 May 2016 10:58:57 -0700
+Subject: [PATCH 05/29] cmake: When git describe fails, just use defaults
+ instead of printing warnings.
+
+---
+ host/cmake/Modules/UHDVersion.cmake | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/host/cmake/Modules/UHDVersion.cmake b/host/cmake/Modules/UHDVersion.cmake
+index a344969..4b26efd 100644
+--- a/host/cmake/Modules/UHDVersion.cmake
++++ b/host/cmake/Modules/UHDVersion.cmake
+@@ -69,16 +69,27 @@ EXECUTE_PROCESS(
+ IF(_git_describe_result EQUAL 0)
+     EXECUTE_PROCESS(
+         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+-        COMMAND ${PYTHON_EXECUTABLE} -c "print('${_git_describe}'.split('-')[-2])"
++        COMMAND ${PYTHON_EXECUTABLE} -c "
++try:
++    print('${_git_describe}'.split('-')[-2])
++except IndexError:
++    print('0')
++"
+         OUTPUT_VARIABLE UHD_GIT_COUNT OUTPUT_STRIP_TRAILING_WHITESPACE
+     )
+     EXECUTE_PROCESS(
+         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+-        COMMAND ${PYTHON_EXECUTABLE} -c "print('${_git_describe}'.split('-')[-1])"
++        COMMAND ${PYTHON_EXECUTABLE} -c "
++try:
++    print('${_git_describe}'.split('-')[-1])
++except IndexError:
++    print('unknown')
++"
+         OUTPUT_VARIABLE UHD_GIT_HASH OUTPUT_STRIP_TRAILING_WHITESPACE
+     )
+ ENDIF()
+ 
++## Set default values if all fails. Make sure they're identical to the ones above.
+ IF(NOT UHD_GIT_COUNT)
+     SET(UHD_GIT_COUNT "0")
+ ENDIF()
+-- 
+2.1.4
+

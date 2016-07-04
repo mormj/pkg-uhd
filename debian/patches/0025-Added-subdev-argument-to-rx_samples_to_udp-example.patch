@@ -1,0 +1,28 @@
+From fb2cbe6e8dd39c9964490fc53849c388c19d0ea4 Mon Sep 17 00:00:00 2001
+From: Derek Kozel <derek.kozel@ettus.com>
+Date: Tue, 21 Jun 2016 18:54:16 -0700
+Subject: [PATCH 25/29] Added subdev argument to rx_samples_to_udp example
+
+---
+ host/examples/rx_samples_to_udp.cpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/host/examples/rx_samples_to_udp.cpp b/host/examples/rx_samples_to_udp.cpp
+index 9a8a3f4..a3f5624 100644
+--- a/host/examples/rx_samples_to_udp.cpp
++++ b/host/examples/rx_samples_to_udp.cpp
+@@ -74,6 +74,11 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+     //Lock mboard clocks
+     usrp->set_clock_source(ref);
+ 
++    //always select the subdevice first, the channel mapping affects the other settings
++    if (vm.count("subdev")) {
++        usrp->set_rx_subdev_spec(subdev);
++    }
++
+     //set the rx sample rate
+     std::cout << boost::format("Setting RX Rate: %f Msps...") % (rate/1e6) << std::endl;
+     usrp->set_rx_rate(rate);
+-- 
+2.1.4
+

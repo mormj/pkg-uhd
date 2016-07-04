@@ -1,3 +1,9 @@
+uhd (3.9.4-3) unstable; urgency=medium
+
+  * update to release_003_009_004-29-ge1139b2
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sun, 03 Jul 2016 20:16:24 -0400
+
 uhd (3.9.4-2) unstable; urgency=medium
 
   * revert Build-Depends-Indep change

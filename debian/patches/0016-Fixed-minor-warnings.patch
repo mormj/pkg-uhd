@@ -1,0 +1,145 @@
+From ec75303792bfecfcc921295f0f48517b8dc26d35 Mon Sep 17 00:00:00 2001
+From: Nicholas Corgan <nick.corgan@ettus.com>
+Date: Thu, 16 Jun 2016 08:02:11 -0700
+Subject: [PATCH 16/29] Fixed minor warnings
+
+* Mismatched printf format strings
+* Number truncation
+* Unreferenced variables
+---
+ host/examples/tx_samples_c.c       | 2 +-
+ host/tests/ranges_c_test.c         | 4 ++--
+ host/tests/string_vector_c_test.c  | 4 ++--
+ host/tests/subdev_spec_c_test.c    | 5 +++--
+ host/utils/query_gpsdo_sensors.cpp | 6 +++---
+ host/utils/uhd_usrp_probe.cpp      | 4 ++--
+ 6 files changed, 13 insertions(+), 12 deletions(-)
+
+diff --git a/host/examples/tx_samples_c.c b/host/examples/tx_samples_c.c
+index ebf368e..c052d80 100644
+--- a/host/examples/tx_samples_c.c
++++ b/host/examples/tx_samples_c.c
+@@ -189,7 +189,7 @@ int main(int argc, char* argv[]){
+     buffs_ptr = (const void**)&buff;
+     size_t i = 0;
+     for(i = 0; i < (samps_per_buff*2); i+=2){
+-        buff[i] = 0.1;
++        buff[i]   = 0.1f;
+         buff[i+1] = 0;
+     }
+ 
+diff --git a/host/tests/ranges_c_test.c b/host/tests/ranges_c_test.c
+index da9c86a..2398588 100644
+--- a/host/tests/ranges_c_test.c
++++ b/host/tests/ranges_c_test.c
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2015 Ettus Research LLC
++// Copyright 2015-2016 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -155,7 +155,7 @@ int main(){
+     if(size != 2){
+         fprintf(stderr, "%s:%d: Invalid size: %lu vs. 2",
+                         __FILE__, __LINE__,
+-                        size);
++                        (unsigned long)size);
+         goto free_meta_range1;
+     }
+ 
+diff --git a/host/tests/string_vector_c_test.c b/host/tests/string_vector_c_test.c
+index fe055fd..f7f2f7b 100644
+--- a/host/tests/string_vector_c_test.c
++++ b/host/tests/string_vector_c_test.c
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2015 Ettus Research LLC
++// Copyright 2015-2016 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -60,7 +60,7 @@ int main(){
+     if(size != 2){
+         return_code = EXIT_FAILURE;
+         fprintf(stderr, "%s:%d: Invalid size: %lu vs. 2",
+-                        __FILE__, __LINE__,size);
++                        __FILE__, __LINE__, (unsigned long)size);
+         goto free_string_vector;
+     }
+ 
+diff --git a/host/tests/subdev_spec_c_test.c b/host/tests/subdev_spec_c_test.c
+index 7663ba3..f69b825 100644
+--- a/host/tests/subdev_spec_c_test.c
++++ b/host/tests/subdev_spec_c_test.c
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2015 Ettus Research LLC
++// Copyright 2015-2016 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -71,7 +71,8 @@ int main(){
+         uhd_subdev_spec_size(subdev_spec2, &size2)
+     )
+     if(size1 != size2){
+-        printf("%s:%d: Sizes do not match. %lu vs. %lu\n", __FILE__, __LINE__, size1, size2);
++        printf("%s:%d: Sizes do not match. %lu vs. %lu\n", __FILE__, __LINE__,
++               (unsigned long)size1, (unsigned long)size2);
+         return_code = EXIT_FAILURE;
+         goto free_subdev_spec2;
+     }
+diff --git a/host/utils/query_gpsdo_sensors.cpp b/host/utils/query_gpsdo_sensors.cpp
+index 21d26e8..01a5ade 100644
+--- a/host/utils/query_gpsdo_sensors.cpp
++++ b/host/utils/query_gpsdo_sensors.cpp
+@@ -91,7 +91,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+       std::cout << "trying \"external\"..." <<std::endl;
+       try {
+           usrp->set_time_source("external");
+-      } catch (uhd::value_error &e) {
++      } catch (uhd::value_error&) {
+           std::cout << "\"external\" failed, too." << std::endl;
+       }
+   }
+@@ -115,7 +115,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+       std::cout << "trying \"external\"..." <<std::endl;
+       try{
+           usrp->set_clock_source("external");
+-      } catch (uhd::value_error &e) {
++      } catch (uhd::value_error&) {
+           std::cout << "\"external\" failed, too." << std::endl;
+       }
+   }
+@@ -179,7 +179,7 @@ int UHD_SAFE_MAIN(int argc, char *argv[]){
+       uhd::sensor_value_t rmc_string = usrp->get_mboard_sensor("gps_gprmc");
+       std::cout << boost::format("Printing available NMEA strings:\n");
+       std::cout << boost::format("%s\n%s\n") % gga_string.to_pp_string() % rmc_string.to_pp_string();
+-  } catch (uhd::lookup_error &e) {
++  } catch (uhd::lookup_error&) {
+       std::cout << "NMEA strings not implemented for this device." << std::endl;
+   }
+   std::cout << boost::format("GPS Epoch time at last PPS: %.5f seconds\n") % usrp->get_mboard_sensor("gps_time").to_real();
+diff --git a/host/utils/uhd_usrp_probe.cpp b/host/utils/uhd_usrp_probe.cpp
+index 4a84fef..ae86b0d 100644
+--- a/host/utils/uhd_usrp_probe.cpp
++++ b/host/utils/uhd_usrp_probe.cpp
+@@ -1,5 +1,5 @@
+ //
+-// Copyright 2010-2011,2015 Ettus Research LLC
++// Copyright 2010-2011,2015-2016 Ettus Research LLC
+ //
+ // This program is free software: you can redistribute it and/or modify
+ // it under the terms of the GNU General Public License as published by
+@@ -172,7 +172,7 @@ static std::string get_mboard_pp_string(property_tree::sptr tree, const fs_path
+             ss << make_border(get_dboard_pp_string("TX", tree, path / "dboards" / name));
+         }
+     }
+-    catch (const uhd::lookup_error &e) {
++    catch (const uhd::lookup_error&) {
+         /* nop */
+     }
+     return ss.str();
+-- 
+2.1.4
+

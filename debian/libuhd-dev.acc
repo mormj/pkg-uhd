@@ -9,4 +9,8 @@ debian/libuhd-dev/usr/include/uhd/
 debian/libuhd003/usr/lib/
 </libs>
 
+<skip_headers>
+  debian/libuhd-dev/usr/include/uhd/utils/math.hpp
+</skip_headers>
+
 </descriptor>

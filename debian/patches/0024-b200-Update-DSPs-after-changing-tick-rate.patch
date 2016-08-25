@@ -1,7 +1,7 @@
 From 8d2262f6b324c7a441956f2c4e805f79bd55c70b Mon Sep 17 00:00:00 2001
 From: Martin Braun <martin.braun@ettus.com>
 Date: Wed, 15 Jun 2016 19:21:55 -0700
-Subject: [PATCH 24/29] b200: Update DSPs after changing tick rate
+Subject: [PATCH 24/42] b200: Update DSPs after changing tick rate
 
 Reviewed-By: Andrew Lynch <andrew.lynch@ni.com>
 Reviewed-By: Michael West <michael.west@ettus.com>

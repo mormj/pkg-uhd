@@ -1,7 +1,7 @@
 From 23a04bf3ed4c4745492c5316d8921ecba1fb6499 Mon Sep 17 00:00:00 2001
 From: 211217613 <rubenavazquez@gmail.com>
 Date: Thu, 23 Jun 2016 20:35:46 -0500
-Subject: [PATCH 28/29] Close file handlers the python way, changed var bytes
+Subject: [PATCH 28/42] Close file handlers the python way, changed var bytes
  to out_bytes
 
 ---

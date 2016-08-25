@@ -1,7 +1,7 @@
 From 8c3996d12b5fac3b64fb68ed62c1b1bc1da59dc1 Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Tue, 14 Jun 2016 08:41:21 -0700
-Subject: [PATCH 13/29] Spelling fixes
+Subject: [PATCH 13/42] Spelling fixes
 
 ---
  host/lib/usrp/dboard/db_tvrx2.cpp                | 12 ++++++------

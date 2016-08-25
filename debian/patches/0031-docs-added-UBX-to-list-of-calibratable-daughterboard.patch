@@ -1,0 +1,24 @@
+From 7872bad482b6edc8b57e7a6b92eb483b179d5d42 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marcus=20M=C3=BCller?= <marcus.mueller@ettus.com>
+Date: Sun, 17 Jul 2016 16:03:58 +0200
+Subject: [PATCH 31/42] docs: added UBX to list of calibratable daughterboards
+
+---
+ host/docs/calibration.dox | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/host/docs/calibration.dox b/host/docs/calibration.dox
+index 02ad416..b4454aa 100644
+--- a/host/docs/calibration.dox
++++ b/host/docs/calibration.dox
+@@ -33,6 +33,7 @@ utilities:
+ -   WBX Series transceiver boards
+ -   SBX Series transceiver boards
+ -   CBX Series transceiver boards
++-   UBX Series transceiver boards
+ 
+ \subsection calibration_self_utils Calibration Utilities
+ 
+-- 
+2.1.4
+

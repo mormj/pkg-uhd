@@ -1,7 +1,7 @@
 From 938a1b5c9fdeba069a060733f4a6f84dce1762c6 Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Tue, 14 Jun 2016 09:07:03 -0700
-Subject: [PATCH 14/29] docs: no HTML timestamp for Doxygen
+Subject: [PATCH 14/42] docs: no HTML timestamp for Doxygen
 
 ---
  host/docs/Doxyfile.in | 2 +-

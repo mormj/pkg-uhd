@@ -1,7 +1,7 @@
 From b2167e1ae42cb4afc1d474723028e50fa8aef48b Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Marcus=20M=C3=BCller?= <marcus.mueller@ettus.com>
 Date: Sat, 4 Jun 2016 00:17:53 +0200
-Subject: [PATCH 09/29] added Wireshark Dissector for Octoclock packets
+Subject: [PATCH 09/42] added Wireshark Dissector for Octoclock packets
 
 ---
  tools/octoclock-dissector/.gitignore               |   2 +

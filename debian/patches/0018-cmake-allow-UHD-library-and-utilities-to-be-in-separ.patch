@@ -1,7 +1,7 @@
 From d53fd56c70531aa1cc7feaa5a3dffdb130bb2e95 Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Wed, 15 Jun 2016 09:44:54 -0700
-Subject: [PATCH 18/29] cmake: allow UHD library and utilities to be in
+Subject: [PATCH 18/42] cmake: allow UHD library and utilities to be in
  separate lib directories
 
 ---

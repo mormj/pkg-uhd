@@ -1,7 +1,7 @@
 From 82f4822651adca3e8e384c744bc6eb58cfe6945a Mon Sep 17 00:00:00 2001
 From: Derek Kozel <derek.kozel@ettus.com>
 Date: Wed, 22 Jun 2016 18:03:45 -0700
-Subject: [PATCH 26/29] docs: Clarified available clock rates for X310 (should
+Subject: [PATCH 26/42] docs: Clarified available clock rates for X310 (should
  not list 120 MHz)
 
 Reviewed-By: Martin Braun <martin.braun@ettus.com>

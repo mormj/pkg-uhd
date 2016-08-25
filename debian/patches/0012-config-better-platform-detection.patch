@@ -1,7 +1,7 @@
 From 49c79b8d4a8f797d85d29e13b3568f9dffda9f4a Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Tue, 14 Jun 2016 08:37:38 -0700
-Subject: [PATCH 12/29] config: better platform detection
+Subject: [PATCH 12/42] config: better platform detection
 
 ---
  host/include/uhd/config.h   | 6 +++---

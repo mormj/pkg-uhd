@@ -1,7 +1,7 @@
 From 8426569f5c6ee954c5f0345351bd8239725a8fee Mon Sep 17 00:00:00 2001
 From: Martin Braun <martin.braun@ettus.com>
 Date: Thu, 5 May 2016 16:32:37 -0700
-Subject: [PATCH 01/29] doxygen/cmake: Allow Doxygen to use shorter filenames
+Subject: [PATCH 01/42] doxygen/cmake: Allow Doxygen to use shorter filenames
 
 This fixes cases where automatic builds fail on operating systems with
 character limits in paths, such as Windows.

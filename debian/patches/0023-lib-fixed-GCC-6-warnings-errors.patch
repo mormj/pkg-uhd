@@ -1,7 +1,7 @@
 From f28a52b652d4234aa88db7c2df80f8b4a6ce6535 Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Tue, 21 Jun 2016 09:10:06 -0700
-Subject: [PATCH 23/29] lib: fixed GCC 6 warnings/errors
+Subject: [PATCH 23/42] lib: fixed GCC 6 warnings/errors
 
 * gpsd_iface: fixed ambiguity in boost::assign::list_of usage
 * b100/clock_ctrl: fixed "misleading indentation" warning

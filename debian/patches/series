@@ -27,4 +27,16 @@
 0027-converters-Clarifying-comment-re-packing.patch
 0028-Close-file-handlers-the-python-way-changed-var-bytes.patch
 0029-Octoclock-Fix-firmware-version-compatibility.patch
-display-correct-downloader-path
+0030-Octoclock-Fixed-issues-related-to-missing-strings-fr.patch
+0031-docs-added-UBX-to-list-of-calibratable-daughterboard.patch
+0032-usrp_e3x0.dox-Example-cmake-line-should-enable-GPSD-.patch
+0033-WBX-Make-frequencies-100-MHz-work-for-v2-and-v3-boar.patch
+0034-cmake-make-uninstall-now-removes-symlinks-CMake-2.8..patch
+0035-examples-test_dboard_coercion-did-not-check-the-corr.patch
+0036-Fix-lib64-detection-for-cross-builds.patch
+0037-Updated-submodule-pointer-to-track-UHD-3.9.LTS-branc.patch
+0038-cores-Fixed-typo-in-time_core_3000.patch
+0039-docs-Minor-updates-to-device-synchronization-manual-.patch
+0040-utils-Added-missing-newline-to-query_gpsdo_sensor-ou.patch
+0041-ubx-Added-codes-for-the-rev2-and-LP-versions.patch
+0042-Preparing-branch-for-3.9.5-Release.patch

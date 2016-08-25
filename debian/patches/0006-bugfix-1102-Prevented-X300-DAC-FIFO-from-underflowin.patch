@@ -1,7 +1,7 @@
 From bf74b4e85d6d2b8833c35b1f243eb36b99432250 Mon Sep 17 00:00:00 2001
 From: Ashish Chaudhari <ashish@ettus.com>
 Date: Wed, 25 May 2016 16:08:12 -0700
-Subject: [PATCH 06/29] bugfix#1102: Prevented X300 DAC FIFO from underflowing
+Subject: [PATCH 06/42] bugfix#1102: Prevented X300 DAC FIFO from underflowing
 
 - The spectral distortion was begin caused by the DAC FIFO
   underflowing. The fix was to run through the DAC sync

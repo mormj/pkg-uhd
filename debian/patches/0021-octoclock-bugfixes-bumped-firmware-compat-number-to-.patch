@@ -1,7 +1,7 @@
 From aa1665958756ab02342bb13c41f14aec6f0ef3f4 Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Fri, 17 Jun 2016 09:09:25 -0700
-Subject: [PATCH 21/29] octoclock: bugfixes, bumped firmware compat number to 4
+Subject: [PATCH 21/42] octoclock: bugfixes, bumped firmware compat number to 4
 
 * host: consistency in setting packet sequence numbers
 * firmware: populate packet length field when setting GPSDO cache

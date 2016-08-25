@@ -1,7 +1,7 @@
 From f86c263682c8250b206abfe8e439e95bef947636 Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Wed, 15 Jun 2016 07:19:58 -0700
-Subject: [PATCH 17/29] query_gpsdo_sensors: added OctoClock-G support
+Subject: [PATCH 17/42] query_gpsdo_sensors: added OctoClock-G support
 
 ---
  host/utils/query_gpsdo_sensors.cpp | 39 ++++++++++++++++++++++++++++++++++++++

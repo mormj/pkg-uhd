@@ -1,7 +1,7 @@
 From ec75303792bfecfcc921295f0f48517b8dc26d35 Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Thu, 16 Jun 2016 08:02:11 -0700
-Subject: [PATCH 16/29] Fixed minor warnings
+Subject: [PATCH 16/42] Fixed minor warnings
 
 * Mismatched printf format strings
 * Number truncation

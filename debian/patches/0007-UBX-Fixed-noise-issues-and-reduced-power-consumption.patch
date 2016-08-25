@@ -1,7 +1,7 @@
 From c83e7f747c4060f9196c5c1ee247fc3b18f49975 Mon Sep 17 00:00:00 2001
 From: michael-west <michael.west@ettus.com>
 Date: Mon, 23 May 2016 17:51:37 -0700
-Subject: [PATCH 07/29] UBX: Fixed noise issues and reduced power consumption
+Subject: [PATCH 07/42] UBX: Fixed noise issues and reduced power consumption
  and heat - Removed force on of components to reduce noise, power consumption,
  and heat - Set TX PA force on only when RX antenna set to RX2 to remove long
  TX transient caused by HW issue on TX path

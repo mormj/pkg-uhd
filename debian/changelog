@@ -1,3 +1,10 @@
+uhd (3.9.4-4) unstable; urgency=medium
+
+  * update to UHD-3.9.LTS) 003_009_005_rc1
+    The value of constant UHD_VERSION has been changed from 30904 to 30905.
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Wed, 24 Aug 2016 23:26:43 -0400
+
 uhd (3.9.4-3) unstable; urgency=medium
 
   * update to release_003_009_004-29-ge1139b2

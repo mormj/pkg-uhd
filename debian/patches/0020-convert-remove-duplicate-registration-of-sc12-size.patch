@@ -1,7 +1,7 @@
 From 56e987d41cf8468291d3f680a4ac10fead22095e Mon Sep 17 00:00:00 2001
 From: Nicholas Corgan <nick.corgan@ettus.com>
 Date: Thu, 16 Jun 2016 15:35:59 -0700
-Subject: [PATCH 20/29] convert: remove duplicate registration of sc12 size
+Subject: [PATCH 20/42] convert: remove duplicate registration of sc12 size
 
 ---
  host/lib/convert/convert_impl.cpp | 3 +--

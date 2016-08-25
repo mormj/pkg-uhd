@@ -1,7 +1,7 @@
 From 3ed076048259cbb993e3989bf84726048478195c Mon Sep 17 00:00:00 2001
 From: michael-west <michael.west@ettus.com>
 Date: Thu, 26 May 2016 12:47:17 -0700
-Subject: [PATCH 08/29] UBX: Force RX LNAs on to reduce RX settling time
+Subject: [PATCH 08/42] UBX: Force RX LNAs on to reduce RX settling time
 
 ---
  host/lib/usrp/dboard/db_ubx.cpp | 33 ++++++++++++++++++++++++++-------

@@ -1,7 +1,7 @@
 From 86630133e42592b045823903a5db9618e9576a1c Mon Sep 17 00:00:00 2001
 From: michael-west <michael.west@ettus.com>
 Date: Thu, 16 Jun 2016 10:17:24 -0700
-Subject: [PATCH 19/29] Octoclock: Fix off by one errors in uart code
+Subject: [PATCH 19/42] Octoclock: Fix off by one errors in uart code
 
 ---
  host/lib/usrp_clock/octoclock/octoclock_uart.cpp | 4 ++--

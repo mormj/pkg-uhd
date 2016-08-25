@@ -1,7 +1,7 @@
 From d2586e45441a7c72e9aaab1220c655ebd5b24e16 Mon Sep 17 00:00:00 2001
 From: Jonathan Wakely <github@kayari.org>
 Date: Wed, 25 May 2016 12:49:36 +0100
-Subject: [PATCH 11/29] Fix off-by-one error
+Subject: [PATCH 11/42] Fix off-by-one error
 
 There's an off-by-one error in base64_decode_value that results in undefined behaviour when it's passed `'\x7b'`
 ---

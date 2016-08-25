@@ -1,7 +1,7 @@
 From 984a18a75bd73fecafa9050fbec7e8bf58ac3084 Mon Sep 17 00:00:00 2001
 From: Martin Braun <martin.braun@ettus.com>
 Date: Wed, 25 May 2016 10:58:57 -0700
-Subject: [PATCH 05/29] cmake: When git describe fails, just use defaults
+Subject: [PATCH 05/42] cmake: When git describe fails, just use defaults
  instead of printing warnings.
 
 ---

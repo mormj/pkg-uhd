@@ -1,7 +1,7 @@
 From d3a08aaa3fcda892ed03efc235d3cc2a36ca6117 Mon Sep 17 00:00:00 2001
 From: Martin Braun <martin.braun@ettus.com>
 Date: Wed, 11 May 2016 16:54:37 -0700
-Subject: [PATCH 02/29] debian: Updated postinst such that sysctl failures are
+Subject: [PATCH 02/42] debian: Updated postinst such that sysctl failures are
  non-fatal to installation
 
 ---

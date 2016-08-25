@@ -1,7 +1,7 @@
 From 9caf20c29956be283b032110096a81f99a121da7 Mon Sep 17 00:00:00 2001
 From: Martin Braun <martin.braun@ettus.com>
 Date: Wed, 22 Jun 2016 19:08:19 -0700
-Subject: [PATCH 27/29] converters: Clarifying comment re packing
+Subject: [PATCH 27/42] converters: Clarifying comment re packing
 
 ---
  host/lib/convert/convert_pack_sc12.cpp   | 5 +++++

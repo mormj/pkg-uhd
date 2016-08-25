@@ -1,7 +1,7 @@
 From 1325cdd1fa530be473de39f171acba309d00b270 Mon Sep 17 00:00:00 2001
 From: Paul David <paul.david@ettus.com>
 Date: Tue, 17 May 2016 10:15:29 -0700
-Subject: [PATCH 03/29] examples: Increased the reference locking timeout in
+Subject: [PATCH 03/42] examples: Increased the reference locking timeout in
  benchmark_rate
 
 ---

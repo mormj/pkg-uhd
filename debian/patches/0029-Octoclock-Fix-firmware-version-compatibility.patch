@@ -1,7 +1,7 @@
 From e1139b25429f41092bef76584dbd5912014b8768 Mon Sep 17 00:00:00 2001
 From: michael-west <michael.west@ettus.com>
 Date: Mon, 27 Jun 2016 10:48:29 -0700
-Subject: [PATCH 29/29] Octoclock: Fix firmware version compatibility
+Subject: [PATCH 29/42] Octoclock: Fix firmware version compatibility
 
 ---
  host/include/uhd/usrp_clock/octoclock_eeprom.hpp     |  4 +++-

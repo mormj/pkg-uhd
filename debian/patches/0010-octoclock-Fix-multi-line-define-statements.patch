@@ -1,7 +1,7 @@
 From 2004bbdb0298d7a2ce9aa274e4a9bbdd22792567 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Marcus=20M=C3=BCller?= <marcus.mueller@ettus.com>
 Date: Sat, 4 Jun 2016 16:10:54 +0200
-Subject: [PATCH 10/29] octoclock: Fix multi-line #define statements
+Subject: [PATCH 10/42] octoclock: Fix multi-line #define statements
 
 Now, use `do{...} while(0)` to pack multiple statements
 into a single one that isn't fragile.

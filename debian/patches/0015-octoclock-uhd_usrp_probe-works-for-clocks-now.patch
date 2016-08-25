@@ -1,7 +1,7 @@
 From ab8d81bc3372cd17800377717470283401d7aafa Mon Sep 17 00:00:00 2001
 From: Martin Braun <martin.braun@ettus.com>
 Date: Tue, 14 Jun 2016 18:24:54 -0700
-Subject: [PATCH 15/29] octoclock: uhd_usrp_probe works for clocks now
+Subject: [PATCH 15/42] octoclock: uhd_usrp_probe works for clocks now
 
 ---
  host/utils/uhd_usrp_probe.cpp | 39 +++++++++++++++++++++++++--------------

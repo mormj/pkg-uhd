@@ -1,7 +1,7 @@
 From 9cc4e16b77d074c8d416725ead1afb8898007eb3 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Marcus=20M=C3=BCller?= <marcus.mueller@ettus.com>
 Date: Sat, 4 Jun 2016 14:30:51 +0200
-Subject: [PATCH 22/29] Added the option to disable ADC self-test
+Subject: [PATCH 22/42] Added the option to disable ADC self-test
 
 This proved helpful on devices where the EEPROM is wrong about hardware
 revision, and the EEPROM writing doesn't work, because the ADC self-test

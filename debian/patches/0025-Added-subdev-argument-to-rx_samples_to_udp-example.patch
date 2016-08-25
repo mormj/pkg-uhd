@@ -1,7 +1,7 @@
 From fb2cbe6e8dd39c9964490fc53849c388c19d0ea4 Mon Sep 17 00:00:00 2001
 From: Derek Kozel <derek.kozel@ettus.com>
 Date: Tue, 21 Jun 2016 18:54:16 -0700
-Subject: [PATCH 25/29] Added subdev argument to rx_samples_to_udp example
+Subject: [PATCH 25/42] Added subdev argument to rx_samples_to_udp example
 
 ---
  host/examples/rx_samples_to_udp.cpp | 5 +++++

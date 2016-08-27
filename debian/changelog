@@ -1,3 +1,9 @@
+uhd (3.9.4-5) unstable; urgency=medium
+
+  * avoid neon asm code on armhf
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 26 Aug 2016 23:29:17 -0400
+
 uhd (3.9.4-4) unstable; urgency=medium
 
   * update to UHD-3.9.LTS) 003_009_005_rc1

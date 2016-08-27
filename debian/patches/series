@@ -40,3 +40,4 @@
 0040-utils-Added-missing-newline-to-query_gpsdo_sensor-ou.patch
 0041-ubx-Added-codes-for-the-rev2-and-LP-versions.patch
 0042-Preparing-branch-for-3.9.5-Release.patch
+debian-armhf-convert-without-neon

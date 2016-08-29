@@ -1,3 +1,9 @@
+uhd (3.9.5-1) unstable; urgency=medium
+
+  * New upstream release
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Mon, 29 Aug 2016 17:20:19 -0400
+
 uhd (3.9.4-5) unstable; urgency=medium
 
   * avoid neon asm code on armhf

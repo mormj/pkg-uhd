@@ -1,0 +1,45 @@
+From 2144e95d3e1625dd1d83b33b430bb62c3948395a Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Tue, 27 Sep 2016 17:08:41 -0700
+Subject: [PATCH 24/30] docs: Comments on B2x0 + GPSDO
+
+---
+ host/docs/gpsdo_b2x0.dox | 7 +++++++
+ host/docs/usrp_b200.dox  | 3 ++-
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/host/docs/gpsdo_b2x0.dox b/host/docs/gpsdo_b2x0.dox
+index a546654..97d9713 100644
+--- a/host/docs/gpsdo_b2x0.dox
++++ b/host/docs/gpsdo_b2x0.dox
+@@ -69,5 +69,12 @@ using the **gps_gprmc**, and **gps_gpgga** sensors. Location
+ information can be parsed out of the **gps_gpgga** sensor by using **gpsd**
+ or another NMEA parser.
+ 
++\section gpsdob_power Using a power supply with the B2x0 and GPSDO
++
++The GPSDOs for the B2x0 draw extra power, and when running off of bus power
++only, brownouts are possible (although not guaranteed to happen).
++It is recommended to use a wall power connector when using a B2x0 in
++conjunction with a GPSDO.
++
+ */
+ // vim:ft=doxygen:
+diff --git a/host/docs/usrp_b200.dox b/host/docs/usrp_b200.dox
+index 248f07e..fb08a87 100644
+--- a/host/docs/usrp_b200.dox
++++ b/host/docs/usrp_b200.dox
+@@ -19,8 +19,9 @@
+     -   Timed sampling in FPGA
+ 
+ \section b200_power Power
++
+ In most cases, USB 3.0 bus power will be sufficient to power the device.
+-If using USB 2.0 or an internal GPSDO, an external power supply or a cable designed
++If using USB 2.0 or a GPSDO, an external power supply or a cable designed
+ to pull power from 2 USB ports (USB 3.0 dual A to micro-B or B) must be used.
+ 
+ \section b200_imgs Specifying a Non-standard Image
+-- 
+2.1.4
+

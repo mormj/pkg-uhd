@@ -1,0 +1,27 @@
+From 02b67d8dad7602036afca8ede9b1fe28f01cf215 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Mon, 26 Sep 2016 16:24:02 -0700
+Subject: [PATCH 27/30] xcvr: Query ref clock, not ADC/DAC clock
+
+On the USRP2 and N2x0, these values are the same, but on the X3x0, they
+might differ.
+---
+ host/lib/usrp/dboard/db_xcvr2450.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/host/lib/usrp/dboard/db_xcvr2450.cpp b/host/lib/usrp/dboard/db_xcvr2450.cpp
+index 50c6799..301a11f 100644
+--- a/host/lib/usrp/dboard/db_xcvr2450.cpp
++++ b/host/lib/usrp/dboard/db_xcvr2450.cpp
+@@ -371,7 +371,7 @@ double xcvr2450::set_lo_freq_core(double target_freq){
+ 
+     //variables used in the calculation below
+     double scaler = xcvr2450::is_highband(target_freq)? (4.0/5.0) : (4.0/3.0);
+-    double ref_freq = this->get_iface()->get_codec_rate(dboard_iface::UNIT_TX);
++    double ref_freq = this->get_iface()->get_clock_rate(dboard_iface::UNIT_TX);
+     int R, intdiv, fracdiv;
+ 
+     //loop through values until we get a match
+-- 
+2.1.4
+

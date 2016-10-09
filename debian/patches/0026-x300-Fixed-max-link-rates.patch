@@ -1,0 +1,33 @@
+From b75fb7cb3da3f6dc3933e80f315575813836fdf3 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Wed, 28 Sep 2016 16:22:50 -0700
+Subject: [PATCH 26/30] x300: Fixed max link rates
+
+---
+ host/lib/usrp/x300/x300_impl.hpp | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/host/lib/usrp/x300/x300_impl.hpp b/host/lib/usrp/x300/x300_impl.hpp
+index e04b06d..c7f2556 100644
+--- a/host/lib/usrp/x300/x300_impl.hpp
++++ b/host/lib/usrp/x300/x300_impl.hpp
+@@ -92,8 +92,14 @@ static const size_t X300_RX_MAX_HDR_LEN             =           // bytes
+     + sizeof(uhd::transport::vrt::if_packet_info_t().tsf); // Timestamp
+ 
+ static const size_t X300_MAX_RATE_PCIE              = 800000000; // bytes/s
+-static const size_t X300_MAX_RATE_10GIGE            = 800000000; // bytes/s
+-static const size_t X300_MAX_RATE_1GIGE             = 100000000; // bytes/s
++static const size_t X300_MAX_RATE_10GIGE            = (size_t)(  // bytes/s
++        10e9 / 8 *                                               // wire speed multiplied by percentage of packets that is sample data
++        ( float(X300_10GE_DATA_FRAME_MAX_SIZE - 16 /* max CHDR len */) /
++          float(X300_10GE_DATA_FRAME_MAX_SIZE + 8 /* UDP header */ + 20 /* Ethernet header length */ )));
++static const size_t X300_MAX_RATE_1GIGE            = (size_t)(  // bytes/s
++        10e9 / 8 *                                               // wire speed multiplied by percentage of packets that is sample data
++        ( float(X300_1GE_DATA_FRAME_MAX_SIZE - 16 /* max CHDR len */) /
++          float(X300_1GE_DATA_FRAME_MAX_SIZE + 8 /* UDP header */ + 20 /* Ethernet header length */ )));
+ 
+ #define X300_RADIO_DEST_PREFIX_TX 0
+ #define X300_RADIO_DEST_PREFIX_CTRL 1
+-- 
+2.1.4
+

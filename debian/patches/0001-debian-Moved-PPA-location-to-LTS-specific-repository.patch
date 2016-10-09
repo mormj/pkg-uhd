@@ -1,0 +1,25 @@
+From 809440a85c75d391731027b9d3ef2f93100ab1f8 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Tue, 30 Aug 2016 14:58:58 -0700
+Subject: [PATCH 01/30] debian: Moved PPA location to LTS specific repository
+
+---
+ tools/debs/upload_debs.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/debs/upload_debs.sh b/tools/debs/upload_debs.sh
+index c140969..efc49ca 100755
+--- a/tools/debs/upload_debs.sh
++++ b/tools/debs/upload_debs.sh
+@@ -46,7 +46,7 @@ ORIG_RELEASE=`head -1 host/cmake/debian/changelog | sed 's/.*) \(.*\);.*/\1/'`
+ # https://launchpad.net/ubuntu/+ppas
+ #
+ RELEASES="precise trusty vivid wily xenial"
+-PPA=ppa:ettusresearch/uhd
++PPA=ppa:ettusresearch/uhd-3.9.lts
+ 
+ #
+ # Make sure this is the intended version.
+-- 
+2.1.4
+

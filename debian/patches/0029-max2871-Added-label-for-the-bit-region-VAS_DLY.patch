@@ -1,0 +1,56 @@
+From 278bad82394a4cc98911719e7209b559a3296bdb Mon Sep 17 00:00:00 2001
+From: Paul David <paul.david@ettus.com>
+Date: Thu, 29 Sep 2016 14:36:04 -0700
+Subject: [PATCH 29/30] max2871: Added label for the bit region VAS_DLY - Also
+ added a template specialization for enabling the VAS_DLY bit locations based
+ on VAS_TEMP setting (aka retune)
+
+---
+ host/lib/ic_reg_maps/gen_max2871_regs.py | 5 ++++-
+ host/lib/usrp/common/max287x.hpp         | 7 +++++++
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/host/lib/ic_reg_maps/gen_max2871_regs.py b/host/lib/ic_reg_maps/gen_max2871_regs.py
+index f591c16..f500d8a 100755
+--- a/host/lib/ic_reg_maps/gen_max2871_regs.py
++++ b/host/lib/ic_reg_maps/gen_max2871_regs.py
+@@ -74,6 +74,7 @@ counter_reset           0x02[3]         0       normal, reset
+ vco                     0x03[26:31]     0
+ ## VCO autoselect
+ shutdown_vas            0x03[25]        0       enabled, disabled
++## should actually be called vas_temp ...
+ retune                  0x03[24]        1       disabled, enabled
+ res3                    0x3[19:23]      0
+ csm                     0x3[18]         0       disabled, enabled
+@@ -107,7 +108,9 @@ output_power            0x04[3:4]       3       m4dBm, m1dBm, 2dBm, 5dBm
+ ## Misc
+ ## Write only, default = 0x18400005
+ ########################################################################
+-res5_26_31              0x05[26:31]     0x18
++res5_31                 0x05[31]        0
++vas_dly                 0x05[29:30]     3       disabled, res0, res1, enabled
++res5_26_28              0x05[26:28]     0
+ shutdown_pll            0x05[25]        0       enabled, disabled
+ f01                     0x05[24]        1       frac_n, auto
+ ld_pin_mode             0x05[22:23]     1       low, dld, ald, high
+diff --git a/host/lib/usrp/common/max287x.hpp b/host/lib/usrp/common/max287x.hpp
+index 596d992..540f520 100644
+--- a/host/lib/usrp/common/max287x.hpp
++++ b/host/lib/usrp/common/max287x.hpp
+@@ -824,6 +824,13 @@ void max287x<max287x_regs_t>::set_auto_retune(bool enabled)
+     _regs.retune = enabled ? max287x_regs_t::RETUNE_ENABLED : max287x_regs_t::RETUNE_DISABLED;
+ }
+ 
++template <>
++inline void max287x<max2871_regs_t>::set_auto_retune(bool enabled)
++{
++    _regs.retune = enabled ? max2871_regs_t::RETUNE_ENABLED : max2871_regs_t::RETUNE_DISABLED;
++    _regs.vas_dly = enabled ? max2871_regs_t::VAS_DLY_ENABLED : max2871_regs_t::VAS_DLY_DISABLED;
++}
++
+ template <typename max287x_regs_t>
+ void max287x<max287x_regs_t>::set_clock_divider_mode(clock_divider_mode_t mode)
+ {
+-- 
+2.1.4
+

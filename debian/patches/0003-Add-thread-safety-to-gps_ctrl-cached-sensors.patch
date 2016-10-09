@@ -1,0 +1,35 @@
+From 196e93a387dea47ab8a3ad600b90446e98840a54 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Thu, 14 Jul 2016 17:57:15 -0700
+Subject: [PATCH 03/30] Add thread safety to gps_ctrl cached sensors
+
+---
+ host/lib/usrp/gps_ctrl.cpp | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/host/lib/usrp/gps_ctrl.cpp b/host/lib/usrp/gps_ctrl.cpp
+index 207ef10..32ed80d 100644
+--- a/host/lib/usrp/gps_ctrl.cpp
++++ b/host/lib/usrp/gps_ctrl.cpp
+@@ -28,6 +28,7 @@
+ #include <boost/tokenizer.hpp>
+ #include <boost/format.hpp>
+ #include <boost/regex.hpp>
++#include <boost/thread/mutex.hpp>
+ 
+ #include "boost/tuple/tuple.hpp"
+ #include "boost/foreach.hpp"
+@@ -49,8 +50,10 @@ gps_ctrl::~gps_ctrl(void){
+ class gps_ctrl_impl : public gps_ctrl{
+ private:
+   std::map<std::string, boost::tuple<std::string, boost::system_time, bool> > sensors;
++    boost::mutex cache_mutex;
+ 
+   std::string get_cached_sensor(const std::string sensor, const int freshness, const bool once, const bool touch=true) {
++    boost::mutex::scoped_lock lock(cache_mutex);
+     boost::system_time time = boost::get_system_time();
+     try {
+       // this is nasty ...
+-- 
+2.1.4
+

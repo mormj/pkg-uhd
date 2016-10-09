@@ -1,3 +1,10 @@
+uhd (3.9.5-2) unstable; urgency=medium
+
+  * update to release_003_009_005-30-gdde6c90
+  * revert upstream d53fd56 commit (Closes: #837504)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 08 Oct 2016 16:45:28 -0400
+
 uhd (3.9.5-1) unstable; urgency=medium
 
   * New upstream release

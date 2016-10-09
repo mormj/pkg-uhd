@@ -1,0 +1,34 @@
+From: A. Maitland Bottoms <bottoms@debian.org>
+Subject: default uhd module dir
+
+Search for modules using the path with LIB_SUFFIX
+defined first, as that is where SoapyUHD and Debian
+expect to place modules by default.
+
+--- a/host/lib/utils/CMakeLists.txt
++++ b/host/lib/utils/CMakeLists.txt
+@@ -126,11 +126,13 @@
+     SET(UHD_LIB_DIR "lib")
+ ENDIF(SLASH STREQUAL "")
+ 
++SET(UHD_LIBARCH_DIR "lib${LIB_SUFFIX}")
++
+ SET_SOURCE_FILES_PROPERTIES(
+     ${CMAKE_CURRENT_SOURCE_DIR}/paths.cpp
+     ${CMAKE_CURRENT_SOURCE_DIR}/images.cpp
+     PROPERTIES COMPILE_DEFINITIONS
+-    "UHD_PKG_PATH=\"${UHD_PKG_PATH}\";UHD_LIB_DIR=\"${UHD_LIB_DIR}\""
++    "UHD_PKG_PATH=\"${UHD_PKG_PATH}\";UHD_LIB_DIR=\"${UHD_LIB_DIR}\";UHD_LIBARCH_DIR=\"{UHD_LIBARCH_DIR}\""
+ )
+ 
+ ########################################################################
+--- a/host/lib/utils/paths.cpp
++++ b/host/lib/utils/paths.cpp
+@@ -195,6 +195,7 @@
+         paths.push_back(str_path);
+     }
+ 
++    paths.push_back(fs::path(uhd::get_pkg_path()) / UHD_LIBARCH_DIR / "uhd" / "modules");
+     paths.push_back(fs::path(uhd::get_pkg_path()) / UHD_LIB_DIR / "uhd" / "modules");
+     paths.push_back(fs::path(uhd::get_pkg_path()) / "share" / "uhd" / "modules");
+ 

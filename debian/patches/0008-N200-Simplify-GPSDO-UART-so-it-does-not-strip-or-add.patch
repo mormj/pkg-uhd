@@ -1,0 +1,32 @@
+From 27d0c654ac11158827d17d338da42db1549e56d4 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Mon, 15 Aug 2016 11:25:05 -0700
+Subject: [PATCH 08/30] N200: Simplify GPSDO UART so it does not strip or add
+ characters
+
+---
+ host/lib/transport/udp_simple.cpp | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+diff --git a/host/lib/transport/udp_simple.cpp b/host/lib/transport/udp_simple.cpp
+index 8b6e5eb..43414fe 100644
+--- a/host/lib/transport/udp_simple.cpp
++++ b/host/lib/transport/udp_simple.cpp
+@@ -115,13 +115,10 @@ public:
+             //drain anything in current buffer
+             while (_off < _len){
+                 const char ch = _buf[_off++];
+-                if (ch == '\r') continue;
+-                if (ch == '\n' and _line.empty()) continue;
+                 _line += ch;
+                 if (ch == '\n')
+                 {
+-                    line = _line;
+-                    _line.clear();
++                    line.swap(_line);
+                     return line;
+                 }
+             }
+-- 
+2.1.4
+

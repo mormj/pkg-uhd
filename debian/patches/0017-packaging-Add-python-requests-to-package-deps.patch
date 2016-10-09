@@ -1,0 +1,34 @@
+From 944f5cc8df49ea3aa852f6f873ee3d3e845c0066 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Tue, 24 Nov 2015 10:54:29 -0800
+Subject: [PATCH 17/30] packaging: Add python-requests to package deps
+
+---
+ host/cmake/Modules/UHDPackage.cmake | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/host/cmake/Modules/UHDPackage.cmake b/host/cmake/Modules/UHDPackage.cmake
+index b9fcdf9..ef16949 100644
+--- a/host/cmake/Modules/UHDPackage.cmake
++++ b/host/cmake/Modules/UHDPackage.cmake
+@@ -167,7 +167,7 @@ SET(CPACK_COMPONENTS_ALL libraries headers utilities examples manual doxygen rea
+ ########################################################################
+ # Setup CPack Debian
+ ########################################################################
+-SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-all-dev")
++SET(CPACK_DEBIAN_PACKAGE_DEPENDS "libboost-all-dev, python-requests")
+ SET(CPACK_DEBIAN_PACKAGE_RECOMMENDS "python, python-tk")
+ FOREACH(filename preinst postinst prerm postrm)
+     LIST(APPEND CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA ${CMAKE_BINARY_DIR}/debian/${filename})
+@@ -185,7 +185,7 @@ CONFIGURE_FILE(
+ ########################################################################
+ # Setup CPack RPM
+ ########################################################################
+-SET(CPACK_RPM_PACKAGE_REQUIRES "boost-devel")
++SET(CPACK_RPM_PACKAGE_REQUIRES "boost-devel, python-requests")
+ 
+ FOREACH(filename post_install post_uninstall pre_install pre_uninstall)
+     STRING(TOUPPER ${filename} filename_upper)
+-- 
+2.1.4
+

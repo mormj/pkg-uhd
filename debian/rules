@@ -4,10 +4,9 @@ export DEB_HOST_MULTIARCH
 DEB_DEBIAN_DIR=$(dir $(firstword $(MAKEFILE_LIST)))
 VER=$(shell dpkg-parsechangelog -l$(DEB_DEBIAN_DIR)/changelog \
               | sed -rne 's,^Version: ([^-]+).*,\1,p')
-GITREV=$(shell echo $(VER) | sed -rne 's,([0-9]).([0-9]).([0-9]),release_00\1_00\2_00\3,p')
-
+GITREV=$(shell echo $(VER) | sed -rne 's,([0-9]).([0-9].).([0-9]).([0-9]),release_00\1_0\2_00\3_00\4,p')
 %:
-	dh $@ --parallel --sourcedirectory=host --builddirectory=build
+	dh $@ --parallel --sourcedirectory=host --builddirectory=build --with acc
 
 override_dh_acc:
 	- dh_acc $@
@@ -27,9 +26,14 @@ override_dh_auto_install:
 	dh_auto_install
 	- rm -f debian/tmp/usr/share/doc/uhd/doxygen/html/jquery.js
 	ln -s /usr/share/javascript/jquery/jquery.js debian/tmp/usr/share/doc/uhd/doxygen/html/jquery.js
+	chmod a-x debian/tmp/usr/lib/uhd/tests/devtest/devtest_x3x0.py
+	chmod a-x debian/tmp/usr/lib/uhd/tests/devtest/devtest_e3xx.py
+	chmod a-x debian/tmp/usr/lib/uhd/tests/devtest/devtest_b2xx.py
+	chmod a-x debian/tmp/usr/lib/uhd/tests/devtest/bitbang_test.py
+	chmod a-x debian/tmp/usr/lib/uhd/tests/devtest/gpio_test.py
 
-override_dh_makeshlibs:
-	dh_makeshlibs -V 'libuhd003 (>= 3.9.5)'
+#override_dh_makeshlibs:
+#	dh_makeshlibs -V 'libuhd003 (>= 3.9.10)'
 
 get-orig-source:
 	git clone git://github.com/EttusResearch/uhd.git

@@ -6,11 +6,7 @@ debian/libuhd-dev/usr/include/uhd/
 </headers>
 
 <libs>
-debian/libuhd003/usr/lib/
+debian/libuhd003.010.001/usr/lib/
 </libs>
-
-<skip_headers>
-  debian/libuhd-dev/usr/include/uhd/utils/math.hpp
-</skip_headers>
 
 </descriptor>

@@ -1,3 +1,98 @@
+uhd (3.10.1.1-1) unstable; urgency=medium
+
+  * change library package name and soname on every API and ABI change
+  * allow UHD library and utilities to be in separate lib directories
+  * debian upload
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sun, 07 May 2017 10:41:14 -0400
+
+uhd (3.10.1.1-0ubuntu1) trusty; urgency=low
+
+  - Docs: The protocol for Gen-3 devices is now consistently referred to as CHDR.
+  - X300: Fixed EEPROM corruption bug (happened when two processes would access
+    find routines on the same device at the same time). Improved initialization
+    time. CE clock is now 214 MHz. Fixed channel list generation. Find routines
+    now more lenient in case one devices fails (others can still be found then).
+    Improve PCIe behaviour. Fix timed commands for non-TwinRX dboards. Improve
+    AXI Interconnect (faster, improved build timing).
+  - N230: Use second_addr (like X300).
+  - C API: Added UHD_VERSION macro. Fixed online rate change.
+  - Utils: Minor fixes to uhd_images_downloader.
+  - Build/CMake: Fixed some Py3k build issues. Fixed many compiler warnings. Allow
+    to specify package names.
+  - RFNoC: Fixed sampling rate mismatch error. Noc-Shell uses a non-cascaded 2-clk
+    FIFO. Increase default FIFO sizes on DUC and DDC blocks.
+  - UBX: Force on RX driver to eliminate transient.
+  - Transport code: Fixed memory leak.
+  - FPGA repository: Merged usrp3_rfnoc and usrp3 directories again. Cleaned up
+    superfluous files. Clean separation between Gen-3 and other devices in usrp3.
+
+ -- Ettus Research <packages@ettus.com>  Thu, 26 Jan 2017 04:15:56 -0800
+
+uhd (3.10.1.0-1) experimental; urgency=medium
+
+  * New upstream release
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 04 Nov 2016 19:21:30 -0500
+
+uhd (3.10.1.0-0ubuntu1) trusty; urgency=low
+
+  - Fixed multiple compiler warnings
+  - Multiple documentation fixes
+  - X300: RX strobe lines are always in sync on device initialization. DB EEPROM
+    now properly written. ignore-cal-file no longer ignored. Fixed case where too
+    large recv_frame_size settings could break things. Reduced ZPU clock speed
+    (helps FPGA timing). Added area constraints for AXI interconnect. Improved
+    halfband scaling in rx_frontend. Improved PCIe streaming reliability
+  - B2xx: Clear sequence numbers in idle state.
+  - RFNoC: Nodes disconnect on destruction. Fixed setting of correct bits on
+    sr_error_policy. DDC does no longer clear timed commands on EOB. DUC fixed
+    timed CORDIC tuning. Enable Noc-Shell response FIFOs (fixes simultaneous
+    commands on multiple channels).
+  - UBX: Changed default performance parameters
+  - TwinRX: LEDs properly light up depending on channels. Fixed issue of multiple
+    (redundant) writes. Simplified API steps for phase synchronization
+  - XCVR: Query dboard clock instead of DAC clock. Helps in X3x0s.
+  - GPS: Fixed message for case when no GPS is present. Fixed multiple GPS-related
+    issues.
+  - Converters: Fixed floating point rounding error in tests.
+  - Utils: uhd_usrp_probe can now query vectors
+  - Fixed issue that prevented soft_regs working on 32-bit systems
+  - Tools: Merged dissectors into common directory.
+  - CMake: -Og is the default now for gcc-based Debug builds.
+
+ -- Ettus Research <packages@ettus.com>  Wed, 02 Nov 2016 01:20:07 -0800
+
+uhd (3.10.0.0-1) unstable; urgency=medium
+
+  * New upstream release, update to release_003_010_000_000-1-g7fbf0e5
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 12 Aug 2016 18:32:12 -0400
+
+uhd (3.10.0.0-0ubuntu1) trusty; urgency=low
+
+  - Changed version string to quadruplets (Major.API.ABI.Patch)
+  - Minimum dependencies bumped for gcc, Boost, CMake, clang and Python.
+  - TwinRX: Added support. Includes LO API for multi_usrp.
+  - N230: Added support
+  - Added expert framework
+  - X300: Completely restructured to use RFNoC
+  - X300: FPGA builds include git hash, dual 10GigE receive is now supported
+    (allows 2x200 Msps receive over 2x10GigE connections), DMA FIFO (over DRAM)
+    now part of builds, added Aurora support
+  - WBX: Fixed bug that prevented LO locking with 50 MHz ref clock
+  - pkg-config: Added boost_system
+  - Utils: uhd_usrp_probe can query sensors, query_gpsdo_sensors: minor fixes,
+    and cleanup
+  - Examples: Bugfixes in tx_waveforms, benchmark_rate measures timeouts,
+  - USB subsystem: Cleanups and minor bugfixes
+  - Added devtest infrastructure
+  - Converters: Added s8 and s16 data types
+  - Added more aggressive optimization strategies for FPGA builds
+  - Xilinx IP tool upgrade scripts cleaned up
+
+ -- Ettus Research <packages@ettus.com>  Thu, 11 Aug 2016 04:48:49 -0800
+
 uhd (3.9.5-2) unstable; urgency=medium
 
   * update to release_003_009_005-30-gdde6c90

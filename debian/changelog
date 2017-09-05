@@ -1,3 +1,10 @@
+uhd (3.10.2.0-2) unstable; urgency=medium
+
+  * avoid gcc 7 and armhf neon for now (Closes: 873608)
+    by bringing back debian-armhf-convert-without-neon patch
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 05 Sep 2017 18:48:41 -0400
+
 uhd (3.10.2.0-1) unstable; urgency=medium
 
   * update Debian copyright

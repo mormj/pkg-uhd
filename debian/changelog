@@ -1,3 +1,13 @@
+uhd (3.10.2.0-3) unstable; urgency=medium
+
+  * update to release_003_010_002_000-3-g122bfae1a
+    x300 impl: fix bytes/s for 1GigE
+    C API: Dboard EEPROM revision error handling fix
+    UDP transport: Utilize poll instead of select
+  * Doxygen FULL_PATH_NAMES = NO
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 21 Nov 2017 00:30:26 -0500
+
 uhd (3.10.2.0-2) unstable; urgency=medium
 
   * avoid gcc 7 and armhf neon for now (Closes: 873608)

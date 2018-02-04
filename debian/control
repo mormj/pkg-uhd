@@ -4,7 +4,6 @@ Priority: optional
 Maintainer: A. Maitland Bottoms <bottoms@debian.org>
 Build-Depends: cmake,
                debhelper (>= 9),
-	       dh-acc,
 	       doxygen,
 	       graphviz [!powerpcspe],
                libboost-date-time-dev,

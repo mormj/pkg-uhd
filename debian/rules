@@ -6,7 +6,7 @@ VER=$(shell dpkg-parsechangelog -l$(DEB_DEBIAN_DIR)/changelog \
               | sed -rne 's,^Version: ([^-]+).*,\1,p')
 GITREV=$(shell echo $(VER) | sed -rne 's,([0-9]).([0-9].).([0-9]).([0-9]),release_00\1_0\2_00\3_00\4,p')
 %:
-	dh $@ --parallel --sourcedirectory=host --builddirectory=build --with acc
+	dh $@ --parallel --sourcedirectory=host --builddirectory=build
 
 override_dh_acc:
 	- dh_acc $@

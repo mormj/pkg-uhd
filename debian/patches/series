@@ -1,7 +1,5 @@
-0001-x300-impl-fix-bytes-s-for-1GigE.patch
-0002-C-API-Dboard-EEPROM-revision-error-handling-fix.patch
-0003-UDP-transport-Utilize-poll-instead-of-select.patch
 revert-cmake-allow-UHD-library-and-utilities-to-be-in-separ
 debian-change-abi-change-soname
 debian-armhf-convert-without-neon
 reproducible-doxygen-settings
+n230-hurd

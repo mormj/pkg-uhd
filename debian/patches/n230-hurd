@@ -1,0 +1,18 @@
+From: A. Maitland Bottoms <bottoms@debian.org>
+Subject: n230 hurd
+
+Hack to make Hurd like BSD and MACOS, since there is
+no UHD_PLATFORM_HURD definition.
+Needed for Debian hurd-i386 builds.
+
+--- a/host/lib/usrp/n230/n230_defaults.h
++++ b/host/lib/usrp/n230/n230_defaults.h
+@@ -54,7 +54,7 @@
+ //radio 0.5MiB minus 8 packets worth of buffering to ensure
+ //that the FIFO does not overflow
+ static const size_t DEFAULT_SEND_BUFF_SIZE  = 500*1024;
+-#if defined(UHD_PLATFORM_MACOS) || defined(UHD_PLATFORM_BSD)
++#if defined(UHD_PLATFORM_MACOS) || defined(UHD_PLATFORM_BSD) || defined(__GNU__)
+ static const size_t DEFAULT_RECV_BUFF_SIZE  = 0x100000; //1Mib
+ #elif defined(UHD_PLATFORM_LINUX) || defined(UHD_PLATFORM_WIN32)
+ static const size_t DEFAULT_RECV_BUFF_SIZE  = 0x2000000;//32MiB

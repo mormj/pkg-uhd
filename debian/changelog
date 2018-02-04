@@ -1,3 +1,45 @@
+uhd (3.10.3.0-1) unstable; urgency=medium
+
+  * New upstream release
+  * update debian/libuhd-dev.abi.tar.gz.amd64
+  * Keep Doxygen's jquery.js (Closes: #887510)
+  * X300
+   Fix max rate calculation for 1 GbE
+   Fix for DAC synchronization errors (unexpected FIFO depth)
+   Reduced CPU usage during TX
+  * N230
+   Properly initialize request structure before discovery
+  * B200
+   FX3 firmware performance opitimizations
+   Fixed sequence error on second TX burst
+  * TwinRX
+   Added ADF5356 synth and Rev C support
+  * UBX
+   Add implementation of TDD xcvr_mode and for TX PA on in TDD mode
+    (to reduce transient on older revs)
+   Add support for UBX-TDD
+  * C API
+   Fixed dboard EEPROM revision error handling
+   Make uhd_rx_streamer_last_error use SAFE_C
+   Better error handling in uhd_usrp_get_[t/r]x_stream
+  * RFNoC
+   Fix ctrl_iface to pop sequence numbers only after success
+   Fix sequence number error message in ctrl_iface
+   FPGA fix for sr_read() failure to ack errors
+   FPGA fix for repeated sequence number for RX packets with 1 sample
+   FPGA fix for axi_serializer edge case
+  * Docs
+   Fixed B200 power LED description
+   Update README application links
+  * UHD
+   Utilize poll() instead of select() for UDP transports where possible to
+    avoid descriptor limits
+   Fix build with Boost 1.66
+   Add EEPROM info to dboard_base class so daughterboard code can access all
+    EEPROM info
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 03 Feb 2018 15:57:57 -0500
+
 uhd (3.10.2.0-3) unstable; urgency=medium
 
   * update to release_003_010_002_000-3-g122bfae1a

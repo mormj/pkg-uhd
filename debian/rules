@@ -30,9 +30,6 @@ override_dh_auto_install:
 	chmod a-x debian/tmp/usr/lib/uhd/tests/devtest/bitbang_test.py
 	chmod a-x debian/tmp/usr/lib/uhd/tests/devtest/gpio_test.py
 
-override_dh_makeshlibs:
-	dh_makeshlibs -V 'libuhd003 (>= 3.9.10.3)'
-
 get-orig-source:
 	echo $(VER) $(GITREV)
 	git clone git://github.com/EttusResearch/uhd.git

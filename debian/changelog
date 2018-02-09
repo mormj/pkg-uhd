@@ -1,3 +1,9 @@
+uhd (3.10.3.0-2) unstable; urgency=medium
+
+  * Udo botched shlibs setting (Closes: #889894)
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Thu, 08 Feb 2018 20:14:46 -0500
+
 uhd (3.10.3.0-1) unstable; urgency=medium
 
   * New upstream release

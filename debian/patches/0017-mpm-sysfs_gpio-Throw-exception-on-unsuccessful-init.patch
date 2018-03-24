@@ -1,0 +1,39 @@
+From 7c4c3ad524ea0f80797a924b1432085fefe6f7ca Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Thu, 8 Mar 2018 10:54:19 -0800
+Subject: [PATCH 17/40] mpm: sysfs_gpio: Throw exception on unsuccessful init
+
+In case of a lost connection to a sysfs-gpio device, this will trigger
+the correct errors.
+---
+ mpm/python/usrp_mpm/sys_utils/sysfs_gpio.py | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/mpm/python/usrp_mpm/sys_utils/sysfs_gpio.py b/mpm/python/usrp_mpm/sys_utils/sysfs_gpio.py
+index ccc597785..d30898a50 100644
+--- a/mpm/python/usrp_mpm/sys_utils/sysfs_gpio.py
++++ b/mpm/python/usrp_mpm/sys_utils/sysfs_gpio.py
+@@ -107,12 +107,17 @@ class SysFSGPIO(object):
+         self._use_mask = use_mask
+         self._ddr = ddr
+         self._init_value = init_value
+-        self.log.trace("Generating SysFSGPIO object for label `{}'...".format(label))
++        self.log.trace("Generating SysFSGPIO object for label `{}'..."
++                       .format(label))
+         self._gpio_dev, self._map_info = \
+                 find_gpio_device(label, parent_dev, self.log)
+         if self._gpio_dev is None:
+-            self.log.error("Could not find GPIO device with label `{}'.".format(label))
+-        self.log.trace("GPIO base number is {}".format(self._map_info.get("sys_number")))
++            error_msg = \
++                "Could not find GPIO device with label `{}'.".format(label)
++            self.log.error(error_msg)
++            raise RuntimeError(error_msg)
++        self.log.trace("GPIO base number is {}"
++                       .format(self._map_info.get("sys_number")))
+         self._base_gpio = self._map_info.get("sys_number")
+         self.init(self._map_info['ngpio'],
+                   self._base_gpio,
+-- 
+2.11.0
+

@@ -1,0 +1,74 @@
+From a06eaad1f0133524daf0a40100ebeb3e06fd7498 Mon Sep 17 00:00:00 2001
+From: michael-west <michael.west@ettus.com>
+Date: Mon, 12 Mar 2018 18:47:36 -0700
+Subject: [PATCH 37/40]  Prepare branch for 3.11.0.1 release
+
+ - Updated version string
+ - Updated CHANGELOG
+---
+ CHANGELOG                           | 9 +++++++++
+ host/cmake/Modules/UHDVersion.cmake | 2 +-
+ images/manifest.txt                 | 4 ++--
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/CHANGELOG b/CHANGELOG
+index 87ff944ae..e6bcfb7da 100644
+--- a/CHANGELOG
++++ b/CHANGELOG
+@@ -1,6 +1,7 @@
+ Change Log for Releases
+ ==============================
+ 
++## 003.011.000.001
+ 
+ * N300: Added driver support (includes some refactoring of N3xx
+   codebase)
+@@ -8,9 +9,17 @@ Change Log for Releases
+   errors, Fix printout of AD9371 version
+ * uhd_images_downloader: Create unique archive names for images archives
+   (now include git hashes in the filename)
++* uhd_images_downloader: Fix SHA256 check
++* utils: Add support for N3xx filesystem images to images downloader
+ * UHD: Minor logging fixes
++* UHD: fix legacy compat to work with 2TX radio block
++* X300: improve lvbitx bitstream md5 read time
++* examples: Enhance benchmark_rate with more stats and timestamps for errors
++* cmake: Correctly fail when an unavailable component is requested
++* debian: Add UHDConfig.cmake to install list for libuhd-dev
+ 
+ ## 003.011.000.000
++
+ * N310: Added driver
+ * UBX: Add support for CAL antenna for Rev E
+ * Added the module peripheral manager (MPM) with all subcomponents (N310
+diff --git a/host/cmake/Modules/UHDVersion.cmake b/host/cmake/Modules/UHDVersion.cmake
+index a4ad23188..658b9b1c4 100644
+--- a/host/cmake/Modules/UHDVersion.cmake
++++ b/host/cmake/Modules/UHDVersion.cmake
+@@ -20,7 +20,7 @@ FIND_PACKAGE(Git QUIET)
+ SET(UHD_VERSION_MAJOR   3)
+ SET(UHD_VERSION_API    11)
+ SET(UHD_VERSION_ABI     0)
+-SET(UHD_VERSION_PATCH   0)
++SET(UHD_VERSION_PATCH   1)
+ SET(UHD_VERSION_DEVEL TRUE)
+ 
+ ########################################################################
+diff --git a/images/manifest.txt b/images/manifest.txt
+index e2675ea41..7e6648acb 100644
+--- a/images/manifest.txt
++++ b/images/manifest.txt
+@@ -1,8 +1,8 @@
+ # UHD Image Manifest File
+ # Target    hash    url     SHA256
+ # X300-Series
+-x3xx_x310_fpga_default          fpga-1791847        x3xx/fpga-1791847/x3xx_x310_fpga_default-g1791847.zip                   b18622e48f8a7e762c07ec90a563a5925f6098fe9a905fe1689c246696678142
+-x3xx_x300_fpga_default          fpga-1791847        x3xx/fpga-1791847/x3xx_x300_fpga_default-g1791847.zip                   2e184533f90abe17ce931848c8d2ca628b497399ac9bdd069f685ba9ce50aa3c
++x3xx_x310_fpga_default          fpga-f93ddb5        x3xx/fpga-f93ddb5/x3xx_x310_fpga_default-gf93ddb5.zip                   876c0d154987e6a85e85ac70e6d7090bb1e2ec915f5f22d0c37398f0dbdcff11
++x3xx_x300_fpga_default          fpga-f93ddb5        x3xx/fpga-f93ddb5/x3xx_x300_fpga_default-gf93ddb5.zip                   7d4b9477cf724251ea0e5675fd9855f0b4070993a9edb037136973b55d2bd58c
+ # Example daughterboard targets (none currently exist)
+ #x3xx_twinrx_cpld_default   example_target
+ #dboard_ubx_cpld_default    example_target
+-- 
+2.11.0
+

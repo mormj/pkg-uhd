@@ -1,0 +1,42 @@
+From 73ac5c95d79754c630cee279de23c5b61fc45014 Mon Sep 17 00:00:00 2001
+From: Andrej Rode <andrej.rode@ettus.com>
+Date: Mon, 27 Feb 2017 10:14:27 -0800
+Subject: [PATCH 15/40] cmake: add manual override option to UHD_VERSION
+
+---
+ host/CMakeLists.txt                 | 3 +++
+ host/cmake/Modules/UHDVersion.cmake | 4 +++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/host/CMakeLists.txt b/host/CMakeLists.txt
+index 55f78ac30..ab7f41fb5 100644
+--- a/host/CMakeLists.txt
++++ b/host/CMakeLists.txt
+@@ -14,6 +14,9 @@
+ # Project setup
+ ########################################################################
+ CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
++IF(POLICY CMP0048)
++  CMAKE_POLICY(SET CMP0048 NEW) # Suppress Version warnings
++ENDIF(POLICY CMP0048)
+ PROJECT(UHD CXX C)
+ ENABLE_TESTING()
+ 
+diff --git a/host/cmake/Modules/UHDVersion.cmake b/host/cmake/Modules/UHDVersion.cmake
+index a15d03ddf..a4ad23188 100644
+--- a/host/cmake/Modules/UHDVersion.cmake
++++ b/host/cmake/Modules/UHDVersion.cmake
+@@ -125,7 +125,9 @@ ENDIF()
+ 
+ 
+ ########################################################################
+-IF(TRIM_UHD_VERSION STREQUAL "True")
++IF(DEFINED UHD_VERSION)
++    SET(UHD_VERSION "${UHD_VERSION}" CACHE STRING "Set UHD_VERSION to a custom value")
++ELSEIF(TRIM_UHD_VERSION STREQUAL "True")
+     SET(UHD_VERSION "${UHD_VERSION_MAJOR}.${UHD_VERSION_API}.${UHD_VERSION_ABI}.${UHD_VERSION_PATCH}-${UHD_GIT_HASH}")
+ ELSE()
+     SET(UHD_VERSION "${UHD_VERSION_MAJOR}.${UHD_VERSION_API}.${UHD_VERSION_ABI}.${UHD_VERSION_PATCH}-${UHD_GIT_COUNT}-${UHD_GIT_HASH}")
+-- 
+2.11.0
+

@@ -1,0 +1,323 @@
+From cf9b97bcd9710e667685dd0e2e7e8906a806b5cd Mon Sep 17 00:00:00 2001
+From: Brent Stapleton <brent.stapleton@ettus.com>
+Date: Tue, 6 Mar 2018 15:49:03 -0800
+Subject: [PATCH 16/40] utils: package_images: adding Git hash to packages
+
+Adding Git hash (from source repository) to the package filename.
+These filenames will now end with -g<GITHASH>.
+---
+ images/image_package_mapping.py | 48 ++++++++++++++---------------
+ images/manifest.txt             | 67 +++++++++++++++++++++++------------------
+ images/package_images.py        | 13 ++++++--
+ 3 files changed, 71 insertions(+), 57 deletions(-)
+
+diff --git a/images/image_package_mapping.py b/images/image_package_mapping.py
+index 5a1137980..f826d430a 100644
+--- a/images/image_package_mapping.py
++++ b/images/image_package_mapping.py
+@@ -10,7 +10,7 @@ Container for the list of image package targets, and the information about them
+ PACKAGE_MAPPING = {
+     "e310": {
+         "type": "e3xx",
+-        "package_name": "e3xx_e310_fpga_default.zip",
++        "package_name": "e3xx_e310_fpga_default-g{}.zip",
+         "files": ["usrp_e310_fpga.bin",
+                   "usrp_e310_fpga_sg3.bin",
+                   "usrp_e3xx_fpga_idle.bin",
+@@ -26,7 +26,7 @@ PACKAGE_MAPPING = {
+     },
+     "x300": {
+         "type": "x3xx",
+-        "package_name": "x3xx_x300_fpga_default.zip",
++        "package_name": "x3xx_x300_fpga_default-g{}.zip",
+         "files": ["usrp_x300_fpga_HG.bin",
+                   "usrp_x300_fpga_HG.lvbitx",
+                   "usrp_x300_fpga_XG.bin",
+@@ -38,7 +38,7 @@ PACKAGE_MAPPING = {
+     },
+     "x310": {
+         "type": "x3xx",
+-        "package_name": "x3xx_x310_fpga_default.zip",
++        "package_name": "x3xx_x310_fpga_default-g{}.zip",
+         "files": ["usrp_x310_fpga_HG.bin",
+                   "usrp_x310_fpga_HG.lvbitx",
+                   "usrp_x310_fpga_XG.bin",
+@@ -50,7 +50,7 @@ PACKAGE_MAPPING = {
+     },
+     "n310": {
+         "type": "n3xx",
+-        "package_name": "n3xx_n310_fpga_default.zip",
++        "package_name": "n3xx_n310_fpga_default-g{}.zip",
+         "files": ['usrp_n310_fpga_HG.bit',
+                   'usrp_n310_fpga_HG.bit.md5',
+                   'usrp_n310_fpga_HG.dts',
+@@ -64,7 +64,7 @@ PACKAGE_MAPPING = {
+     },
+     "n300": {
+         "type": "n3xx",
+-        "package_name": "n3xx_n300_fpga_default.zip",
++        "package_name": "n3xx_n300_fpga_default-g{}.zip",
+         "files": ['usrp_n300_fpga_HG.bit',
+                   'usrp_n300_fpga_HG.bit.md5',
+                   'usrp_n300_fpga_HG.dts',
+@@ -78,7 +78,7 @@ PACKAGE_MAPPING = {
+     },
+     "n310_aa": {
+         "type": "n3xx",
+-        "package_name": "n3xx_n310_fpga_aurora.zip",
++        "package_name": "n3xx_n310_fpga_aurora-g{}.zip",
+         "files": ['usrp_n310_fpga_AA.bit',
+                   'usrp_n310_fpga_AA.bit.md5',
+                   'usrp_n310_fpga_AA.dts',
+@@ -97,12 +97,12 @@ PACKAGE_MAPPING = {
+     },
+     "n310_cpld": {
+         "type": "n3xx",
+-        "package_name": "n3xx_n310_cpld_default.zip",
++        "package_name": "n3xx_n310_cpld_default-g{}.zip",
+         "files": ['usrp_n310_mg_cpld.svf']
+     },
+     'n200': {
+         'type': 'usrp2',
+-        'package_name': 'usrp2_n200_fpga_default.zip',
++        'package_name': 'usrp2_n200_fpga_default-g{}.zip',
+         'files': ["usrp_n200_r2_fpga.bin",
+                   "usrp_n200_r3_fpga.bin",
+                   "usrp_n200_r4_fpga.bin",
+@@ -111,7 +111,7 @@ PACKAGE_MAPPING = {
+     },
+     'n210': {
+         'type': 'usrp2',
+-        'package_name': 'usrp2_n210_fpga_default.zip',
++        'package_name': 'usrp2_n210_fpga_default-g{}.zip',
+         'files': ["usrp_n210_r2_fpga.bin",
+                   "usrp_n210_r3_fpga.bin",
+                   "usrp_n210_r4_fpga.bin",
+@@ -120,83 +120,83 @@ PACKAGE_MAPPING = {
+     },
+     'n200_fw': {
+         'type': 'usrp2',
+-        'package_name': 'usrp2_n200_fw_default.zip',
++        'package_name': 'usrp2_n200_fw_default-g{}.zip',
+         'files': ["usrp_n200_fw.bin"],
+     },
+     'n210_fw': {
+         'type': 'usrp2',
+-        'package_name': 'usrp2_n210_fw_default.zip',
++        'package_name': 'usrp2_n210_fw_default-g{}.zip',
+         'files': ["usrp_n210_fw.bin"],
+     },
+     'usrp2': {
+         'type': 'usrp2',
+-        'package_name': 'usrp2_usrp2_fpga_default.zip',
++        'package_name': 'usrp2_usrp2_fpga_default-g{}.zip',
+         'files': ["usrp2_fpga.bin"],
+     },
+     'usrp2_fw': {
+         'type': 'usrp2',
+-        'package_name': 'usrp2_usrp2_fw_default.zip',
++        'package_name': 'usrp2_usrp2_fw_default-g{}.zip',
+         'files': ["usrp2_fw.bin"],
+     },
+     'b200': {
+         'type': 'b2xx',
+-        'package_name': 'b2xx_b200_fpga_default.zip',
++        'package_name': 'b2xx_b200_fpga_default-g{}.zip',
+         'files': ["usrp_b200_fpga.bin"],
+     },
+     'b200mini': {
+         'type': 'b2xx',
+-        'package_name': 'b2xx_b200mini_fpga_default.zip',
++        'package_name': 'b2xx_b200mini_fpga_default-g{}.zip',
+         'files': ["usrp_b200mini_fpga.bin"],
+     },
+     'b205mini': {
+         'type': 'b2xx',
+-        'package_name': 'b2xx_b205mini_fpga_default.zip',
++        'package_name': 'b2xx_b205mini_fpga_default-g{}.zip',
+         'files': ["usrp_b205mini_fpga.bin"],
+     },
+     'b210': {
+         'type': 'b2xx',
+-        'package_name': 'b2xx_b210_fpga_default.zip',
++        'package_name': 'b2xx_b210_fpga_default-g{}.zip',
+         'files': ["usrp_b210_fpga.bin"],
+     },
+     'b2xx_fw': {
+         'type': 'b2xx',
+-        'package_name': 'b2xx_common_fw_default.zip',
++        'package_name': 'b2xx_common_fw_default-g{}.zip',
+         'files': ["usrp_b200_fw.hex"],
+     },
+     'n230': {
+         'type': 'n230',
+-        'package_name': 'n230_n230_fpga_default.zip',
++        'package_name': 'n230_n230_fpga_default-g{}.zip',
+         'files': ["usrp_n230_fpga.bin",
+                   "usrp_n230_fpga.bit",
+                   "usrp_n230_fpga.rpt"],
+     },
+     'b100': {
+         'type': 'usrp1',
+-        'package_name': 'usrp1_b100_fpga_default.zip',
++        'package_name': 'usrp1_b100_fpga_default-g{}.zip',
+         'files': ["usrp_b100_fpga_2rx.bin",
+                   "usrp_b100_fpga.bin"],
+     },
+     'b100_fw': {
+         'type': 'usrp1',
+-        'package_name': 'usrp1_b100_fw_default.zip',
++        'package_name': 'usrp1_b100_fw_default-g{}.zip',
+         'files': ["usrp_b100_fw.ihx"],
+     },
+     'usrp1': {
+         'type': 'usrp1',
+-        'package_name': 'usrp1_usrp1_fpga_default.zip',
++        'package_name': 'usrp1_usrp1_fpga_default-g{}.zip',
+         'files': ["usrp1_fpga_4rx.rbf",
+                   "usrp1_fpga.rbf",
+                   "usrp1_fw.ihx"],
+     },
+     'octoclock': {
+         'type': 'octoclock',
+-        'package_name': 'octoclock_octoclock_fw_default.zip',
++        'package_name': 'octoclock_octoclock_fw_default-g{}.zip',
+         'files': ["octoclock_bootloader.hex",
+                   "octoclock_r4_fw.hex"],
+     },
+     'winusb_drv': {
+         'type': 'usb',
+-        'package_name': 'usb_common_windrv_default.zip',
++        'package_name': 'usb_common_windrv_default-g{}.zip',
+         'files': ["winusb_driver/",
+                   "winusb_driver/erllc_uhd_b205mini.inf",
+                   "winusb_driver/erllc_uhd_b100.inf",
+diff --git a/images/manifest.txt b/images/manifest.txt
+index 49c9a0edb..d3478ac3d 100644
+--- a/images/manifest.txt
++++ b/images/manifest.txt
+@@ -1,45 +1,52 @@
+ # UHD Image Manifest File
+ # Target    hash    url     SHA256
+ # X300-Series
+-x3xx_x310_fpga_default          fpga-1791847        x3xx/fpga-1791847/x3xx_x310_fpga_default.zip      b18622e48f8a7e762c07ec90a563a5925f6098fe9a905fe1689c246696678142
+-x3xx_x300_fpga_default          fpga-1791847        x3xx/fpga-1791847/x3xx_x300_fpga_default.zip      2e184533f90abe17ce931848c8d2ca628b497399ac9bdd069f685ba9ce50aa3c
++x3xx_x310_fpga_default          fpga-1791847        x3xx/fpga-1791847/x3xx_x310_fpga_default-g1791847.zip                   b18622e48f8a7e762c07ec90a563a5925f6098fe9a905fe1689c246696678142
++x3xx_x300_fpga_default          fpga-1791847        x3xx/fpga-1791847/x3xx_x300_fpga_default-g1791847.zip                   2e184533f90abe17ce931848c8d2ca628b497399ac9bdd069f685ba9ce50aa3c
+ # Example daughterboard targets (none currently exist)
+ #x3xx_twinrx_cpld_default   example_target
+ #dboard_ubx_cpld_default    example_target
++
+ # E-Series
+-e3xx_e310_fpga_default          fpga-1c568e6        e3xx/fpga-1c568e6/e3xx_e310_fpga_default.zip      2957b4bdefe6885644ef2bc7b0e3845d13a7fe45f5a0933a2adaffd24c1b6802
++e3xx_e310_fpga_default          fpga-1c568e6        e3xx/fpga-1c568e6/e3xx_e310_fpga_default-g1c568e6.zip                   2957b4bdefe6885644ef2bc7b0e3845d13a7fe45f5a0933a2adaffd24c1b6802
++
+ # N300-Series
+-n3xx_n310_fpga_default          fpga-fad351d        n3xx/fpga-fad351d/n3xx_n310_fpga_default.zip      de65ef6521ed20c57fbe75c86afc0dc80531d77b0c88a89cec742bf67363b9be
+-n3xx_n300_fpga_default          fpga-fad351d        n3xx/fpga-fad351d/n3xx_n300_fpga_default.zip      0fb5aebee11f9cbb99bb6c09f50099c5eba807acab46a3a23e8f65b1ef4e06c8
+-n3xx_n310_fpga_aurora           fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_fpga_aurora.zip       62a12a2c85526f759c96a1eb7db226e715cdd83b9c277d29f037ae00c72bf7fa
+-#n3xx_n310_cpld_default         fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_cpld_default.zip      0
++n3xx_n310_fpga_default          fpga-fad351d        n3xx/fpga-fad351d/n3xx_n310_fpga_default-gfad351d.zip                   de65ef6521ed20c57fbe75c86afc0dc80531d77b0c88a89cec742bf67363b9be
++n3xx_n300_fpga_default          fpga-fad351d        n3xx/fpga-fad351d/n3xx_n300_fpga_default-gfad351d.zip                   0fb5aebee11f9cbb99bb6c09f50099c5eba807acab46a3a23e8f65b1ef4e06c8
++n3xx_n310_fpga_aurora           fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_fpga_aurora-g6bea23d.zip                    62a12a2c85526f759c96a1eb7db226e715cdd83b9c277d29f037ae00c72bf7fa
++#n3xx_n310_cpld_default         fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_cpld_default-g6bea23d.zip                   0
+ # N3XX Mykonos firmware
+-#n3xx_n310_fw_default           fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_fw_default.zip        0
++#n3xx_n310_fw_default           fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_fw_default-g6bea23d.zip                     0
+ # N300-Series Filesystems, etc
+-#n3xx_common_sdk_default        fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_common_sdk_default.zip     0
+-#n3xx_n310_mender_default       fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_mender_default.zip    0
+-#n3xx_n300_mender_default       fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n300_mender_default.zip    0
+-#n3xx_n310_sdimg_default        fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_sdimg_default.zip     0
+-#n3xx_n300_sdimg_default        fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n300_sdimg_default.zip     0
++#n3xx_common_sdk_default        fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_common_sdk_default-g6bea23d.zip                  0
++#n3xx_n310_mender_default       fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_mender_default-g6bea23d.zip                 0
++#n3xx_n300_mender_default       fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n300_mender_default-g6bea23d.zip                 0
++#n3xx_n310_sdimg_default        fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_sdimg_default-g6bea23d.zip                  0
++#n3xx_n300_sdimg_default        fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n300_sdimg_default-g6bea23d.zip                  0
++
+ # B200-Series
+-b2xx_b200_fpga_default          fpga-1c568e6        b2xx/fpga-1c568e6/b2xx_b200_fpga_default.zip      7ba7561d517dc9a474b01f06c273f921a3a27005e41cd38fde7cd03bbb00284f
+-b2xx_b200mini_fpga_default      fpga-1c568e6        b2xx/fpga-1c568e6/b2xx_b200mini_fpga_default.zip  5cf63ec2d50630c35b6614729ae426d209cda48b02f25dd6eb31650f6ffe5bab
+-b2xx_b210_fpga_default          fpga-1c568e6        b2xx/fpga-1c568e6/b2xx_b210_fpga_default.zip      612b239f86a6d1b09736c6eb55cfe370937d0414acfee48f96cecfe94c080a89
+-b2xx_b205mini_fpga_default      fpga-1c568e6        b2xx/fpga-1c568e6/b2xx_b205mini_fpga_default.zip  ab4de1ff063cb2224f74f17c6e7371fec314cb95fcef2a8035529a3fe1e6355f
+-b2xx_common_fw_default          uhd-14000041        b2xx/uhd-14000041/b2xx_common_fw_default.zip      920790744085d8525529c1d0ece8942fef6d29b0a503530a814727fbacd7732c
++b2xx_b200_fpga_default          fpga-1c568e6        b2xx/fpga-1c568e6/b2xx_b200_fpga_default-g1c568e6.zip                   7ba7561d517dc9a474b01f06c273f921a3a27005e41cd38fde7cd03bbb00284f
++b2xx_b200mini_fpga_default      fpga-1c568e6        b2xx/fpga-1c568e6/b2xx_b200mini_fpga_default-g1c568e6.zip               5cf63ec2d50630c35b6614729ae426d209cda48b02f25dd6eb31650f6ffe5bab
++b2xx_b210_fpga_default          fpga-1c568e6        b2xx/fpga-1c568e6/b2xx_b210_fpga_default-g1c568e6.zip                   612b239f86a6d1b09736c6eb55cfe370937d0414acfee48f96cecfe94c080a89
++b2xx_b205mini_fpga_default      fpga-1c568e6        b2xx/fpga-1c568e6/b2xx_b205mini_fpga_default-g1c568e6.zip               ab4de1ff063cb2224f74f17c6e7371fec314cb95fcef2a8035529a3fe1e6355f
++b2xx_common_fw_default          uhd-14000041        b2xx/uhd-14000041/b2xx_common_fw_default-g14000041.zip                  920790744085d8525529c1d0ece8942fef6d29b0a503530a814727fbacd7732c
++
+ # USRP2 Devices
+-usrp2_usrp2_fw_default          fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_usrp2_fw_default.zip     d523a18318cb6a7637be40484bf03a6f54766410fee2c1a1f72e8971ea9a9cb6
+-usrp2_usrp2_fpga_default        fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_usrp2_fpga_default.zip   505c70aedc8cdfbbfe654bcdbe1ce604c376e733a44cdd1351571f61a7f1cb49
+-usrp2_n200_fpga_default         fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_n200_fpga_default.zip    833a0098d66c0c502b9c3975d651a79e125133c507f9f4b2c472f9eb96fdaef8
+-usrp2_n200_fw_default           fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_n200_fw_default.zip      3eee2a6195caafe814912167fccf2dfc369f706446f8ecee36e97d2c0830116f
+-usrp2_n210_fpga_default         fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_n210_fpga_default.zip    5ce68ac539ee6eeb7d04fb3127c1fabcaff442a8edfaaa2f3746590f9df909bd
+-usrp2_n210_fw_default           fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_n210_fw_default.zip      3646fcd3fc974d18c621cb10dfe97c4dad6d282036dc63b7379995dfad95fb98
+-n230_n230_fpga_default          fpga-1c568e6        n230/fpga-1c568e6/n230_n230_fpga_default.zip      8cf8b5318aa797d180b8a09b2dc39f25418a5952c11ec65687ceb5542a3a59cb
++usrp2_usrp2_fw_default          fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_usrp2_fw_default-g6bea23d.zip                  d523a18318cb6a7637be40484bf03a6f54766410fee2c1a1f72e8971ea9a9cb6
++usrp2_usrp2_fpga_default        fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_usrp2_fpga_default-g6bea23d.zip                505c70aedc8cdfbbfe654bcdbe1ce604c376e733a44cdd1351571f61a7f1cb49
++usrp2_n200_fpga_default         fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_n200_fpga_default-g6bea23d.zip                 833a0098d66c0c502b9c3975d651a79e125133c507f9f4b2c472f9eb96fdaef8
++usrp2_n200_fw_default           fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_n200_fw_default-g6bea23d.zip                   3eee2a6195caafe814912167fccf2dfc369f706446f8ecee36e97d2c0830116f
++usrp2_n210_fpga_default         fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_n210_fpga_default-g6bea23d.zip                 5ce68ac539ee6eeb7d04fb3127c1fabcaff442a8edfaaa2f3746590f9df909bd
++usrp2_n210_fw_default           fpga-6bea23d        usrp2/fpga-6bea23d/usrp2_n210_fw_default-g6bea23d.zip                   3646fcd3fc974d18c621cb10dfe97c4dad6d282036dc63b7379995dfad95fb98
++n230_n230_fpga_default          fpga-1c568e6        n230/fpga-1c568e6/n230_n230_fpga_default-g1c568e6.zip                   8cf8b5318aa797d180b8a09b2dc39f25418a5952c11ec65687ceb5542a3a59cb
++
+ # USRP1 Devices
+-usrp1_usrp1_fpga_default        fpga-6bea23d        usrp1/fpga-6bea23d/usrp1_usrp1_fpga_default.zip   03bf72868c900dd0853bf48e2ede91058d579829b0e70c021e51b0e282d1d5be
+-usrp1_b100_fpga_default         fpga-6bea23d        usrp1/fpga-6bea23d/usrp1_b100_fpga_default.zip    7f2306f21e17aa3fae3f966d08c6297d6cf42041974f846ca89f0d633ece8769
+-usrp1_b100_fw_default           fpga-6bea23d        usrp1/fpga-6bea23d/usrp1_b100_fw_default.zip      867f17fac085535dbcb01c226ce87acf49806de6ed0ae9b214d7c8da86e2a71d
++usrp1_usrp1_fpga_default        fpga-6bea23d        usrp1/fpga-6bea23d/usrp1_usrp1_fpga_default-g6bea23d.zip                03bf72868c900dd0853bf48e2ede91058d579829b0e70c021e51b0e282d1d5be
++usrp1_b100_fpga_default         fpga-6bea23d        usrp1/fpga-6bea23d/usrp1_b100_fpga_default-g6bea23d.zip                 7f2306f21e17aa3fae3f966d08c6297d6cf42041974f846ca89f0d633ece8769
++usrp1_b100_fw_default           fpga-6bea23d        usrp1/fpga-6bea23d/usrp1_b100_fw_default-g6bea23d.zip                   867f17fac085535dbcb01c226ce87acf49806de6ed0ae9b214d7c8da86e2a71d
++
+ # Octoclock
+-octoclock_octoclock_fw_default  uhd-14000041        octoclock/uhd-14000041/octoclock_octoclock_fw_default.zip     8da7f1af8cecb7f6259a237a18c39058ba69a11567fa373cffc9704031a1d053
++octoclock_octoclock_fw_default  uhd-14000041        octoclock/uhd-14000041/octoclock_octoclock_fw_default-g14000041.zip     8da7f1af8cecb7f6259a237a18c39058ba69a11567fa373cffc9704031a1d053
++
+ # Legacy USB Windows drivers
+-usb_common_windrv_default       uhd-14000041        usb/uhd-14000041/usb_common_windrv_default.zip    835e94b2bdf2312fd3881a1b78e2ec236c1f42b7a5bd3927f85f73cf5e3a5231
++usb_common_windrv_default       uhd-14000041        usb/uhd-14000041/usb_common_windrv_default-g14000041.zip                835e94b2bdf2312fd3881a1b78e2ec236c1f42b7a5bd3927f85f73cf5e3a5231
+diff --git a/images/package_images.py b/images/package_images.py
+index cab51a913..3bbeac49c 100644
+--- a/images/package_images.py
++++ b/images/package_images.py
+@@ -132,7 +132,7 @@ def gen_zip(zip_filename, files_list):
+         return False
+ 
+ 
+-def do_gen_package(pkg_target, install_dir=""):
++def do_gen_package(pkg_target, install_dir="", repo_and_hash=""):
+     """Generate the entire N3XX image package, from the start to the end"""
+     print("---Generating package for {}---".format(pkg_target))
+     filelist = PACKAGE_MAPPING[pkg_target]['files']
+@@ -143,8 +143,13 @@ def do_gen_package(pkg_target, install_dir=""):
+         "\n".join("--{}".format(md5_fn) for md5_fn in md5_files)))
+     gen_md5(md5_files, "md5_hashes.txt")
+ 
++    # Determine the current Git hash (w/o the repository)
++    githash_l = re.findall(r"[\d\w]+-([\d\w]{7,8})", repo_and_hash)
++    githash = githash_l[0] if githash_l else ""
++
+     zip_files = gen_filelist(includes=filelist)
+-    zip_filename = os.path.join(install_dir, PACKAGE_MAPPING[pkg_target]['package_name'])
++    zip_filename = os.path.join(install_dir, PACKAGE_MAPPING[pkg_target]['package_name'])\
++        .format(githash)
+     print("Files to zip:\n{}".format(
+         "\n".join("--{}".format(zip_fn) for zip_fn in zip_files)))
+     if not gen_zip(zip_filename, zip_files):
+@@ -175,7 +180,9 @@ def gen_package(pkg_targets=(), repo_and_hash="", manifest_fn=""):
+                 os.mkdir(git_path)
+ 
+             # Generate the package and add the the zip filename to the SHA list
+-            sha_filenames.append(do_gen_package(pkg_target, install_dir=git_path))
++            sha_filenames.append(do_gen_package(pkg_target,
++                                                install_dir=git_path,
++                                                repo_and_hash=repo_and_hash))
+         else:
+             print("Error: Specify a supported type from {}".format(
+                 list(PACKAGE_MAPPING.keys())))
+-- 
+2.11.0
+

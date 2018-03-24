@@ -1,0 +1,29 @@
+From 7db36f84a954a844284614fe7b7ec65ab8bf234e Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Tue, 13 Mar 2018 16:16:02 -0700
+Subject: [PATCH 22/40] mpm: n3xx: Fix failure on get_device_info() when
+ uninitialized
+
+---
+ mpm/python/usrp_mpm/periph_manager/n3xx.py | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/mpm/python/usrp_mpm/periph_manager/n3xx.py b/mpm/python/usrp_mpm/periph_manager/n3xx.py
+index ed75b1f51..6926ee1d7 100644
+--- a/mpm/python/usrp_mpm/periph_manager/n3xx.py
++++ b/mpm/python/usrp_mpm/periph_manager/n3xx.py
+@@ -797,8 +797,9 @@ class n3xx(PeriphManagerBase):
+         """
+         Append the device info with current IP addresses.
+         """
+-        device_info = self._xport_mgrs['udp'].get_xport_info() \
+-                if self._device_initialized else {}
++        if not self._device_initialized:
++            return {}
++        device_info = self._xport_mgrs['udp'].get_xport_info()
+         device_info.update({
+             'fpga_version': "{}.{}".format(
+                 *self.mboard_regs_control.get_compat_number())
+-- 
+2.11.0
+

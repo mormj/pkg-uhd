@@ -1,0 +1,27 @@
+From 32eacedb21c552c4599add1ade76a1e44502079c Mon Sep 17 00:00:00 2001
+From: Brent Stapleton <brent.stapleton@ettus.com>
+Date: Thu, 1 Mar 2018 13:51:37 -0800
+Subject: [PATCH 07/40] n300: Add N300 FPGA images to the manifest
+
+Also updates the N310 image package
+---
+ images/manifest.txt | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/images/manifest.txt b/images/manifest.txt
+index 5e20d35ad..49c9a0edb 100644
+--- a/images/manifest.txt
++++ b/images/manifest.txt
+@@ -9,7 +9,8 @@ x3xx_x300_fpga_default          fpga-1791847        x3xx/fpga-1791847/x3xx_x300_
+ # E-Series
+ e3xx_e310_fpga_default          fpga-1c568e6        e3xx/fpga-1c568e6/e3xx_e310_fpga_default.zip      2957b4bdefe6885644ef2bc7b0e3845d13a7fe45f5a0933a2adaffd24c1b6802
+ # N300-Series
+-n3xx_n310_fpga_default          fpga-1c568e6        n3xx/fpga-1c568e6/n3xx_n310_fpga_default.zip      658bc41282107940a22f19f95581cfe7007642fdfde5a1261c0e92c741782120
++n3xx_n310_fpga_default          fpga-fad351d        n3xx/fpga-fad351d/n3xx_n310_fpga_default.zip      de65ef6521ed20c57fbe75c86afc0dc80531d77b0c88a89cec742bf67363b9be
++n3xx_n300_fpga_default          fpga-fad351d        n3xx/fpga-fad351d/n3xx_n300_fpga_default.zip      0fb5aebee11f9cbb99bb6c09f50099c5eba807acab46a3a23e8f65b1ef4e06c8
+ n3xx_n310_fpga_aurora           fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_fpga_aurora.zip       62a12a2c85526f759c96a1eb7db226e715cdd83b9c277d29f037ae00c72bf7fa
+ #n3xx_n310_cpld_default         fpga-6bea23d        n3xx/fpga-6bea23d/n3xx_n310_cpld_default.zip      0
+ # N3XX Mykonos firmware
+-- 
+2.11.0
+

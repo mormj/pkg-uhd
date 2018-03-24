@@ -1,0 +1,32 @@
+From 06b87004a4f12d261c587d34ad645d67a390f158 Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Tue, 1 Nov 2016 16:43:14 -0700
+Subject: [PATCH 24/40] lib: Add include guards for xports.hpp
+
+---
+ host/lib/rfnoc/xports.hpp | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/host/lib/rfnoc/xports.hpp b/host/lib/rfnoc/xports.hpp
+index 5ee65175a..06fd4713b 100644
+--- a/host/lib/rfnoc/xports.hpp
++++ b/host/lib/rfnoc/xports.hpp
+@@ -5,6 +5,9 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ //
+ 
++#ifndef INCLUDED_LIBUHD_XPORTS_HPP
++#define INCLUDED_LIBUHD_XPORTS_HPP
++
+ #include <uhd/types/sid.hpp>
+ #include <uhd/types/endianness.hpp>
+ #include <uhd/transport/zero_copy.hpp>
+@@ -27,3 +30,5 @@ namespace uhd {
+ 
+ };
+ 
++#endif /* INCLUDED_LIBUHD_XPORTS_HPP */
++
+-- 
+2.11.0
+

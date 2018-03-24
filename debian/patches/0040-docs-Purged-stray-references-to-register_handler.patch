@@ -1,0 +1,57 @@
+From 8bb15ee133ea98d6755d392b8493966c785291dd Mon Sep 17 00:00:00 2001
+From: Martin Braun <martin.braun@ettus.com>
+Date: Mon, 19 Mar 2018 13:28:22 -0700
+Subject: [PATCH 40/40] docs: Purged stray references to register_handler
+
+This is a no-longer-supported API call from before the logging API
+restructuring.
+---
+ host/docs/general.dox                | 17 ++---------------
+ host/utils/latency/lib/Responder.cpp |  3 ---
+ 2 files changed, 2 insertions(+), 18 deletions(-)
+
+diff --git a/host/docs/general.dox b/host/docs/general.dox
+index 06a8887c9..df3e515ce 100644
+--- a/host/docs/general.dox
++++ b/host/docs/general.dox
+@@ -212,21 +212,8 @@ For a module to be loaded at runtime, it must be:
+ 
+ \subsection general_misc_prints Disabling or redirecting prints to stdout
+ 
+-The user can disable the UHD library from printing directly to stdout by
+-registering a custom message handler. The handler will intercept all
+-messages, which can be dropped or redirected. Only one handler can be
+-registered at a time. Make **register_handler** your first call into
+-the UHD library:
+-
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~{.cpp}
+-
+-
+-void my_handler(uhd::msg::type_t type, const std::string &msg){
+-//handle the message...
+-}
+-
+-uhd::msg::register_handler(&my_handler);
+-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
++UHD will never print to stdout (this was changed in the 3.11.0.0 release).
++To find out more about configuring UHD logging, see \ref page_logging.
+ 
+ */
+ // vim:ft=doxygen:
+diff --git a/host/utils/latency/lib/Responder.cpp b/host/utils/latency/lib/Responder.cpp
+index 1b0450a23..8cb1170db 100644
+--- a/host/utils/latency/lib/Responder.cpp
++++ b/host/utils/latency/lib/Responder.cpp
+@@ -152,9 +152,6 @@ Responder::Responder( Options& opt)
+         return;
+     }
+ 
+-    // set up handlers for test run
+-    // uhd::msg::register_handler(&_late_handler); // capture UHD output.
+-
+     cerr_redirect(_ss_cerr.rdbuf());
+     register_stop_signal_handler();
+ }
+-- 
+2.11.0
+

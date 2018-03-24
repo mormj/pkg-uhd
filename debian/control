@@ -2,50 +2,82 @@ Source: uhd
 Section: science
 Priority: optional
 Maintainer: A. Maitland Bottoms <bottoms@debian.org>
-Uploaders: Bdale Garbee <bdale@gag.com>
-Build-Depends: debhelper (>= 8.0.0~), cmake (>= 2.8.4+dfsg.1-3), autoconf, autotools-dev, pkg-config, python-dev, python-cheetah, python-docutils, doxygen, libboost-all-dev, libusb-1.0-0-dev, liborc-0.4-dev, liboil0.3-dev, libncurses5-dev
-Standards-Version: 3.9.2
-Homepage: http://code.ettus.com/redmine/ettus/projects/uhd/wiki
-Vcs-Browser: http://gnuradio.org/cgit/gnuradio.git/log/
-Vcs-Git: git://code.ettus.com/ettus/uhd.git
+Build-Depends: cmake,
+               debhelper (>= 9),
+	       doxygen,
+	       doxygen-latex,
+	       graphviz [!powerpcspe],
+               libboost-date-time-dev,
+	       libboost-dev,
+               libboost-filesystem-dev,
+               libboost-program-options-dev,
+               libboost-regex-dev,
+               libboost-serialization-dev,
+               libboost-system-dev,
+               libboost-test-dev,
+               libboost-thread-dev,
+               libgps-dev,
+               libncurses5-dev,
+               liborc-0.4-dev,
+	       libudev-dev [linux-any],
+               libusb-1.0-0-dev [linux-any],
+               libusb2-dev [kfreebsd-any],
+               pkg-config,
+               python-mako,
+	       python-requests
+Standards-Version: 4.1.3
+Homepage: http://www.ettus.com/sdr-software/detail/usrp-hardware-driver
+Vcs-Browser: http://salsa.debian.org/bottoms/pkg-uhd
+Vcs-Git: git://salsa.debian.org/bottoms/pkg-uhd.git
 
 Package: uhd-host
 Architecture: any
-Depends: libuhd003, python, uhd-images, adduser, ${shlibs:Depends}, ${misc:Depends}
-Recommends: gnuradio, python-tk
-Description: universal hardware driver for Ettus Research products
+Depends: adduser,
+         libuhd3.11.0 (= ${binary:Version}),
+         python,
+         python-requests,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Recommends: curl, procps, python-tk
+Suggests: gnuradio, fdisk | util-linux (<< 2.29.2-3~)
+Description: universal hardware driver for Ettus Research products - host apps
  Host utilities for the Universal Hardware Driver for Ettus Research products.
  .
+ The supported devices provide analog radio receiver and transmitter hardware
+ along with digital interfaces for getting signals to and from a software
+ defined radio running on the host computer.
+ .
  This package includes the uhd_find_devices application to locate and
- configure attached peripherals, and the uhd_usrp_probe application to
- display hardware configuration information.
+ configure attached peripherals, the uhd_usrp_probe application to
+ display hardware configuration information and Doxygen generated
+ documentation.
 
-Package: libuhd003
+Package: libuhd3.11.0
 Architecture: any
 Section: libs
-Pre-Depends: multiarch-support, ${misc:Pre-Depends}
-Depends: python, uhd-contrib-images, adduser, ${shlibs:Depends}, ${misc:Depends}
-Recommends: gnuradio
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Suggests: gnuradio
 Multi-Arch: same
-Description: universal hardware driver for Ettus Research products
+Description: universal hardware driver for Ettus Research products - library
  Host library for the Universal Hardware Driver for Ettus Research products.
+ .
+ The supported devices provide analog radio receiver and transmitter hardware
+ along with digital interfaces for getting signals to and from a software
+ defined radio running on the host computer.
 
 Package: libuhd-dev
 Architecture: any
 Section: libdevel
-Depends: libuhd003 (= ${binary:Version}), python, uhd-images, adduser, ${shlibs:Depends}, ${misc:Depends}
+Depends: libuhd3.11.0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Recommends: gnuradio
-Description: universal hardware driver for Ettus Research products
+Multi-Arch: same
+Description: universal hardware driver for Ettus Research products - headers
  Host library for the Universal Hardware Driver for Ettus Research products.
  .
- This package contains the header files and documentation for
- developing with libuhd.
-
-Package: uhd-contrib-images
-Architecture: all
-Section: contrib/libs
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Multi-Arch: foreign
-Description: firmware for Ettus Research products
- These are images to configure hardware for use with
- the Universal Hardware Driver host driver and API.
+ The supported devices provide analog radio receiver and transmitter hardware
+ along with digital interfaces for getting signals to and from a software
+ defined radio running on the host computer.
+ .
+ This package contains the header files for developing with libuhd.
+ Doxygen generated documentation is in the uhd-host package.

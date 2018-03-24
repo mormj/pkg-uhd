@@ -1,0 +1,36 @@
+From 46ebbfc5e08ac7117b7a7b8c35376b4fd06add58 Mon Sep 17 00:00:00 2001
+From: sugandhagupta <sugandha.gupta@ettus.com>
+Date: Tue, 6 Mar 2018 11:17:19 -0800
+Subject: [PATCH 08/40] n3xx_bist: Ignore errors from uhd_usrp_probe on running
+ ddr3 test
+
+we only care about getting a valid throughput regex match, and can
+ignore errors from uhd_usrp_probe, e.g. no daughterboards, etc.
+---
+ mpm/python/n3xx_bist | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/mpm/python/n3xx_bist b/mpm/python/n3xx_bist
+index 00732a6c3..90764ea06 100755
+--- a/mpm/python/n3xx_bist
++++ b/mpm/python/n3xx_bist
+@@ -412,13 +412,11 @@ class N3XXBIST(object):
+                 ddr3_bist_executor,
+                 stderr=subprocess.STDOUT,
+                 shell=True,
+-            ).decode("utf-8")
++            )
+         except subprocess.CalledProcessError as ex:
+-            sys.stderr.write("Calling `{}' failed with return code {}.\n".format(
+-                ddr3_bist_executor, ex.returncode
+-            ))
+-            result['error_msg'] = ex.output
++            # Don't throw errors from uhd_usrp_probe
+             output = ex.output
++        output = output.decode("utf-8")
+         mobj = re.search(r"Throughput: (?P<thrup>[0-9.]+)\s?MB", output)
+         if mobj is not None:
+             result['throughput'] = float(mobj.group('thrup')) * 1000
+-- 
+2.11.0
+

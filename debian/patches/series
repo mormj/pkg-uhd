@@ -3,3 +3,5 @@ debian-change-abi-change-soname
 debian-armhf-convert-without-neon
 reproducible-doxygen-settings
 n230-hurd
+doxygen-pdf
+use_SOURCE_DATE_EPOCH

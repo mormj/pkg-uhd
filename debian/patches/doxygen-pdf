@@ -1,25 +1,10 @@
---- a/fpga-src/docs/Doxyfile
-+++ b/fpga-src/docs/Doxyfile
-@@ -132,7 +132,7 @@
- # shortest path that makes the file name unique will be used
- # The default value is: YES.
- 
--FULL_PATH_NAMES        = YES
-+FULL_PATH_NAMES        = NO
- 
- # The STRIP_FROM_PATH tag can be used to strip a user-defined part of the path.
- # Stripping is only done if one of the specified strings matches the left-hand
+From: A. Maitland Bottoms <bottoms@debian.org>
+Subject: doxygen pdf
+
+Go ahead and let Doxygen make a .pdf file for us.
+
 --- a/host/docs/Doxyfile.in
 +++ b/host/docs/Doxyfile.in
-@@ -121,7 +121,7 @@
- # path before files name in the file list and in the header files. If set
- # to NO the shortest path that makes the file name unique will be used.
- 
--FULL_PATH_NAMES        = YES
-+FULL_PATH_NAMES        = NO
- 
- # If the FULL_PATH_NAMES tag is set to YES then the STRIP_FROM_PATH tag
- # can be used to strip a user-defined part of the path. Stripping is
 @@ -601,7 +601,7 @@
  # The QUIET tag can be used to turn on/off the messages that are generated
  # by doxygen. Possible values are YES and NO. If left blank NO is used.
@@ -40,7 +25,7 @@
  # If a relative path is entered the value of OUTPUT_DIRECTORY will be
 --- a/host/docs/CMakeLists.txt
 +++ b/host/docs/CMakeLists.txt
-@@ -119,6 +119,7 @@
+@@ -109,6 +109,7 @@
      ADD_CUSTOM_COMMAND(
          OUTPUT ${CMAKE_CURRENT_BINARY_DIR_DOXYGEN} DEPENDS ${DOXYGEN_DEPENDENCIES}
          COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile

@@ -8,7 +8,7 @@ broke that convention.
 
 --- a/host/lib/utils/CMakeLists.txt
 +++ b/host/lib/utils/CMakeLists.txt
-@@ -119,18 +119,11 @@
+@@ -139,18 +139,11 @@
  FILE(TO_NATIVE_PATH "${CMAKE_INSTALL_PREFIX}" UHD_PKG_PATH)
  STRING(REPLACE "\\" "\\\\" UHD_PKG_PATH "${UHD_PKG_PATH}")
  
@@ -27,4 +27,4 @@ broke that convention.
 +    "UHD_PKG_PATH=\"${UHD_PKG_PATH}\";UHD_LIB_DIR=\"lib${LIB_SUFFIX}\""
  )
  
- ########################################################################
+ SET_SOURCE_FILES_PROPERTIES(

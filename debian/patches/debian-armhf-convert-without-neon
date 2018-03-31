@@ -6,7 +6,7 @@ then compilation of convert_with_neon.cpp fails.
 
 --- a/host/lib/convert/CMakeLists.txt
 +++ b/host/lib/convert/CMakeLists.txt
-@@ -56,18 +56,18 @@
+@@ -65,18 +65,18 @@
  ########################################################################
  # Check for NEON SIMD headers
  ########################################################################

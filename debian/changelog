@@ -1,6 +1,65 @@
+uhd (3.11.0.1-1) unstable; urgency=medium
+
+  * New upstream release
+  * use_SOURCE_DATE_EPOCH patch
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Sat, 31 Mar 2018 09:45:31 -0400
+
+uhd (3.11.0.1-0ubuntu1) trusty; urgency=low
+
+  * N300: Added driver support (includes some refactoring of N3xx
+    codebase)
+  * MPM: Fix PyLint warnings, Fix error handling for TCA communication
+    errors, Fix printout of AD9371 version
+  * uhd_images_downloader: Create unique archive names for images archives
+    (now include git hashes in the filename)
+  * uhd_images_downloader: Fix SHA256 check
+  * utils: Add support for N3xx filesystem images to images downloader
+  * UHD: Minor logging fixes
+  * UHD: fix legacy compat to work with 2TX radio block
+  * X300: improve lvbitx bitstream md5 read time
+  * examples: Enhance benchmark_rate with more stats and timestamps for errors
+  * cmake: Correctly fail when an unavailable component is requested
+  * debian: Add UHDConfig.cmake to install list for libuhd-dev
+
+ -- Ettus Research <packages@ettus.com>  Wed, 28 Mar 2018 03:28:36 -0800
+
+uhd (3.11.0.0-1) experimental; urgency=medium
+
+  * Debian build
+  * Install rfnoc xml block descriptions with libuhd-dev
+  * PDF documentation in /usr/share/doc/uhd-host/doxygen/latex/refman.pdf.gz
+  * ABI/API changes from 3.10.3.0-2 using abi-compliance-checker in
+    /usr/share/doc/libuhd-dev/libuhd-dev_3.11.0.0-1_report.html
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Mon, 05 Mar 2018 21:49:24 -0500
+
+uhd (3.11.0.0-0ubuntu1) trusty; urgency=low
+
+  * N310: Added driver
+  * UBX: Add support for CAL antenna for Rev E
+  * Added the module peripheral manager (MPM) with all subcomponents (N310
+    drivers, mpm_shell, RPC server, BIST, etc.)
+  * UHD: Added rpclib as a internally tracked dependency
+  * UHD: Reduced the usage of Boost
+  * UHD: Updated uhd_images_downloader: Now uses more elaborate manifest to
+    optimize downloads
+  * UHD: Introduced uhdlib internal include paths
+  * UHD: Add support for configuration files. USRP settings can now be set using
+    a uhd.conf file in addition to device args
+  * UHD: Add narrow and narrow_cast
+  * gr-usrptest: Various bugfixes
+  * Updated required Vivado version to 2017.4
+  * Updated all license headers to use SPDX identifiers and correctly identify
+    Ettus Research as part of National Instruments
+  * This release includes all bugfixes and features from previous releases, in
+    particular, the 3.10.* release cycle
+
+ -- Ettus Research <packages@ettus.com>  Mon, 05 Mar 2018 10:48:10 -0800
+
 uhd (3.10.3.0-2) unstable; urgency=medium
 
-  * Udo botched shlibs setting (Closes: #889894)
+  * Undo botched shlibs setting (Closes: #889894)
 
  -- A. Maitland Bottoms <bottoms@debian.org>  Thu, 08 Feb 2018 20:14:46 -0500
 

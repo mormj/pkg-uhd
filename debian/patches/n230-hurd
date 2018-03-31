@@ -7,7 +7,7 @@ Needed for Debian hurd-i386 builds.
 
 --- a/host/lib/usrp/n230/n230_defaults.h
 +++ b/host/lib/usrp/n230/n230_defaults.h
-@@ -54,7 +54,7 @@
+@@ -44,7 +44,7 @@
  //radio 0.5MiB minus 8 packets worth of buffering to ensure
  //that the FIFO does not overflow
  static const size_t DEFAULT_SEND_BUFF_SIZE  = 500*1024;

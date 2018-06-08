@@ -33,7 +33,7 @@ Vcs-Git: git://salsa.debian.org/bottoms/pkg-uhd.git
 Package: uhd-host
 Architecture: any
 Depends: adduser,
-         libuhd3.11.0 (= ${binary:Version}),
+         libuhd3.12.0 (= ${binary:Version}),
          python,
          python-requests,
          ${misc:Depends},
@@ -52,7 +52,7 @@ Description: universal hardware driver for Ettus Research products - host apps
  display hardware configuration information and Doxygen generated
  documentation.
 
-Package: libuhd3.11.0
+Package: libuhd3.12.0
 Architecture: any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
@@ -69,7 +69,7 @@ Description: universal hardware driver for Ettus Research products - library
 Package: libuhd-dev
 Architecture: any
 Section: libdevel
-Depends: libuhd3.11.0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: libuhd3.12.0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Recommends: gnuradio
 Multi-Arch: same
 Description: universal hardware driver for Ettus Research products - headers

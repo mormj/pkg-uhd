@@ -14,8 +14,12 @@ override_dh_acc:
 	- cat logs/libuhd-dev/*/log.txt
 
 override_dh_auto_configure:
-	dh_auto_configure -- -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" \
+	dh_auto_configure -- -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" -DENABLE_RFNOC=True \
 	                      -DPKG_LIB_DIR="/usr/lib/uhd" -DDOXYGEN_HAVE_DOT=True
+
+# RFNoC test 30 files if no USRP available
+override_dh_auto_test:
+	- dh_auto_test
 
 override_dh_auto_install:
 	cp debian/uhd-host.limits debian/uhd-host/etc/security/limits.d/uhd.conf

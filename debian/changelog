@@ -1,3 +1,9 @@
+uhd (3.12.0.0-3) unstable; urgency=medium
+
+  * ENABLE_RFNOC in debian/rules
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Mon, 25 Jun 2018 15:02:24 -0400
+
 uhd (3.12.0.0-2) unstable; urgency=medium
 
   * upload to unstable

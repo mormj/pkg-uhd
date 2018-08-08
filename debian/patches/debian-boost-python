@@ -1,0 +1,40 @@
+--- a/host/CMakeLists.txt
++++ b/host/CMakeLists.txt
+@@ -289,7 +289,6 @@
+ SET(BOOST_PYTHON_COMPONENT python)
+ SET(BOOST_PYTHON_VERSION 2.7)
+ IF(${ENABLE_PYTHON3})
+-    SET(BOOST_PYTHON_COMPONENT python3)
+     SET(BOOST_PYTHON_VERSION 3)
+ ENDIF()
+ 
+@@ -348,10 +347,6 @@
+ #Check to see if the Python version we're looking for exists
+ SET(BOOST_PYTHON_FOUND ${Boost_PYTHON_FOUND})
+ SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON_LIBRARY})
+-IF(${ENABLE_PYTHON3})
+-    SET(BOOST_PYTHON_FOUND ${Boost_PYTHON3_FOUND})
+-    SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON3_LIBRARY})
+-ENDIF()
+ 
+ MESSAGE(STATUS "Boost include directories: ${Boost_INCLUDE_DIRS}")
+ MESSAGE(STATUS "Boost library directories: ${Boost_LIBRARY_DIRS}")
+--- a/host/python/CMakeLists.txt
++++ b/host/python/CMakeLists.txt
+@@ -23,6 +23,7 @@
+ 
+ # Build pyuhd library
+ ADD_LIBRARY(pyuhd SHARED pyuhd.cpp)
++set_target_properties(pyuhd PROPERTIES SKIP_BUILD_RPATH TRUE)
+ TARGET_INCLUDE_DIRECTORIES(pyuhd PUBLIC
+     ${PYTHON_NUMPY_INCLUDE_DIR}
+     ${CMAKE_SOURCE_DIR}/lib
+@@ -48,7 +49,7 @@
+ 
+ ADD_CUSTOM_COMMAND(OUTPUT ${TIMESTAMP_FILE}
+   COMMAND ${CMAKE_COMMAND} -E copy ${PYUHD_FILES} ${CMAKE_CURRENT_BINARY_DIR}/uhd
+-  COMMAND ${PYTHON} ${SETUP_PY} -q build
++  COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} -q build
+   COMMAND ${CMAKE_COMMAND} -E touch ${TIMESTAMP_FILE}
+   DEPENDS ${PYUHD_FILES})
+ 

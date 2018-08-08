@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: A. Maitland Bottoms <bottoms@debian.org>
 Build-Depends: cmake,
                debhelper (>= 10),
+	       dh-python,
 	       doxygen,
 	       doxygen-latex,
 	       graphviz [!powerpcspe],
@@ -11,6 +12,7 @@ Build-Depends: cmake,
 	       libboost-dev,
                libboost-filesystem-dev,
                libboost-program-options-dev,
+	       libboost-python-dev,
                libboost-regex-dev,
                libboost-serialization-dev,
                libboost-system-dev,
@@ -23,9 +25,12 @@ Build-Depends: cmake,
                libusb-1.0-0-dev [linux-any],
                libusb2-dev [kfreebsd-any],
                pkg-config,
-               python-mako,
-	       python-requests
-Standards-Version: 4.1.3
+	       python3-all-dev,
+               python3-mako,
+	       python3-numpy,
+	       python3-requests,
+	       python3-setuptools
+Standards-Version: 4.1.4
 Homepage: http://www.ettus.com/sdr-software/detail/usrp-hardware-driver
 Vcs-Browser: http://salsa.debian.org/bottoms/pkg-uhd
 Vcs-Git: git://salsa.debian.org/bottoms/pkg-uhd.git
@@ -33,7 +38,7 @@ Vcs-Git: git://salsa.debian.org/bottoms/pkg-uhd.git
 Package: uhd-host
 Architecture: any
 Depends: adduser,
-         libuhd3.12.0 (= ${binary:Version}),
+         libuhd3.13.0 (= ${binary:Version}),
          python,
          python-requests,
          ${misc:Depends},
@@ -52,7 +57,7 @@ Description: universal hardware driver for Ettus Research products - host apps
  display hardware configuration information and Doxygen generated
  documentation.
 
-Package: libuhd3.12.0
+Package: libuhd3.13.0
 Architecture: any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
@@ -69,7 +74,7 @@ Description: universal hardware driver for Ettus Research products - library
 Package: libuhd-dev
 Architecture: any
 Section: libdevel
-Depends: libuhd3.12.0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: libuhd3.13.0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Recommends: gnuradio
 Multi-Arch: same
 Description: universal hardware driver for Ettus Research products - headers
@@ -81,3 +86,18 @@ Description: universal hardware driver for Ettus Research products - headers
  .
  This package contains the header files for developing with libuhd.
  Doxygen generated documentation is in the uhd-host package.
+
+Package: python3-uhd
+Architecture: any
+Section: libdevel
+Depends: libuhd3.13.0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
+Recommends: gnuradio
+Multi-Arch: same
+Description: universal hardware driver for Ettus Research products - Python3
+ Host library for the Universal Hardware Driver for Ettus Research products.
+ .
+ The supported devices provide analog radio receiver and transmitter hardware
+ along with digital interfaces for getting signals to and from a software
+ defined radio running on the host computer.
+ .
+ This package contains the Python API support for Python3.

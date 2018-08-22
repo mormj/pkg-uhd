@@ -1,3 +1,4 @@
+0001-mpm-mg-move-init_rf_cal-before-JESD-de-framer-bringu.patch
 revert-cmake-allow-UHD-library-and-utilities-to-be-in-separ
 debian-change-abi-change-soname
 debian-armhf-convert-without-neon

@@ -1,24 +1,25 @@
 --- a/host/CMakeLists.txt
 +++ b/host/CMakeLists.txt
-@@ -289,7 +289,6 @@
+@@ -289,7 +289,7 @@
  SET(BOOST_PYTHON_COMPONENT python)
  SET(BOOST_PYTHON_VERSION 2.7)
  IF(${ENABLE_PYTHON3})
 -    SET(BOOST_PYTHON_COMPONENT python3)
++    SET(BOOST_PYTHON_COMPONENT python-py36)
      SET(BOOST_PYTHON_VERSION 3)
  ENDIF()
  
-@@ -348,10 +347,6 @@
- #Check to see if the Python version we're looking for exists
+@@ -349,8 +349,8 @@
  SET(BOOST_PYTHON_FOUND ${Boost_PYTHON_FOUND})
  SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON_LIBRARY})
--IF(${ENABLE_PYTHON3})
+ IF(${ENABLE_PYTHON3})
 -    SET(BOOST_PYTHON_FOUND ${Boost_PYTHON3_FOUND})
 -    SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON3_LIBRARY})
--ENDIF()
++    SET(BOOST_PYTHON_FOUND ${Boost_PYTHON-PY36_FOUND})
++    SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON-PY36_LIBRARY})
+ ENDIF()
  
  MESSAGE(STATUS "Boost include directories: ${Boost_INCLUDE_DIRS}")
- MESSAGE(STATUS "Boost library directories: ${Boost_LIBRARY_DIRS}")
 --- a/host/python/CMakeLists.txt
 +++ b/host/python/CMakeLists.txt
 @@ -23,6 +23,7 @@

@@ -1,0 +1,29 @@
+--- a/host/include/uhd/rfnoc/blocks/CMakeLists.txt
++++ b/host/include/uhd/rfnoc/blocks/CMakeLists.txt
+@@ -10,6 +10,6 @@
+ # We always need this, even when RFNoC is 'disabled'
+ UHD_INSTALL(
+     FILES ${xml_files}
+-    DESTINATION ${PKG_DATA_DIR}/rfnoc/blocks
++    DESTINATION ${PKG_DATA_DIR}/${UHD_VERSION_ABI_STRING}/rfnoc/blocks
+     COMPONENT headers # TODO: Different component
+ )
+--- a/host/include/uhd/rfnoc/constants.hpp
++++ b/host/include/uhd/rfnoc/constants.hpp
+@@ -8,6 +8,7 @@
+ #ifndef INCLUDED_LIBUHD_RFNOC_CONSTANTS_HPP
+ #define INCLUDED_LIBUHD_RFNOC_CONSTANTS_HPP
+ 
++#include <uhd/version.hpp>
+ #include <uhd/types/dict.hpp>
+ #include <boost/assign/list_of.hpp>
+ #include <stdint.h>
+@@ -18,7 +19,7 @@
+ 
+ // All these configure the XML reader
+ //! Where the RFNoC block/component definition files lie, relative to UHD_PKG_DIR
+-static const std::string XML_DEFAULT_PATH = "share/uhd/rfnoc";
++      static const std::string XML_DEFAULT_PATH = std::string("share/uhd/")+std::string(UHD_VERSION_ABI_STRING)+std::string("/rfnoc");
+ //! The name of the environment variable storing the bath to the block definition files
+ static const std::string XML_PATH_ENV = "UHD_RFNOC_DIR";
+ 

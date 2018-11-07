@@ -1,0 +1,70 @@
+From 308b9c755173c314e08c04a67ff30704ee967d2a Mon Sep 17 00:00:00 2001
+From: "A. Maitland Bottoms" <bottoms@debian.org>
+Date: Fri, 26 Oct 2018 21:19:28 -0400
+Subject: [PATCH 3/6] modern cmake targets
+
+Use CMake install(EXPORT ... to export UHD targets in Modern CMake usage,
+so that find_package(UHD) does the right things.
+---
+ host/CMakeLists.txt                   |  21 +++----
+ host/cmake/Modules/UHDConfig.cmake.in | 100 +++-------------------------------
+ host/lib/CMakeLists.txt               |   2 +
+ 3 files changed, 20 insertions(+), 103 deletions(-)
+
+--- a/host/CMakeLists.txt
++++ b/host/CMakeLists.txt
+@@ -551,9 +551,17 @@
+ 
+ UHD_INSTALL(
+     FILES ${cmake_configs}
+-    DESTINATION ${CMAKE_MODULES_DIR}/uhd
++    DESTINATION ${CMAKE_INSTALL_PREFIX}/${LIBRARY_DIR}/cmake/uhd
+     COMPONENT "devel"
+ )
++install(EXPORT UHD-export
++  FILE
++  UHDTargets.cmake
++  NAMESPACE
++  UHD::
++  DESTINATION
++  ${CMAKE_INSTALL_PREFIX}/${LIBRARY_DIR}/cmake/uhd
++  )
+ 
+ ########################################################################
+ # Handle pre-built UHD Images for packaging
+--- a/host/lib/CMakeLists.txt
++++ b/host/lib/CMakeLists.txt
+@@ -186,6 +186,7 @@
+ 
+ IF(NOT UHDHOST_PKG) #Syntax makes it unusable by UHD_INSTALL
+     INSTALL(TARGETS uhd
++        EXPORT UHD-export
+         LIBRARY DESTINATION ${LIBRARY_DIR} COMPONENT libraries # .so file
+         ARCHIVE DESTINATION ${LIBRARY_DIR} COMPONENT libraries # .lib file
+         RUNTIME DESTINATION ${RUNTIME_DIR} COMPONENT libraries # .dll file
+@@ -199,6 +200,7 @@
+     ADD_LIBRARY(uhd_static STATIC ${libuhd_sources})
+     SET_TARGET_PROPERTIES(uhd_static PROPERTIES OUTPUT_NAME uhd)
+     INSTALL(TARGETS uhd_static
++        EXPORT UHD-export
+         ARCHIVE DESTINATION lib${LIB_SUFFIX} # .lib or .a file
+     )
+ ENDIF(ENABLE_STATIC_LIBS)
+--- a/host/cmake/Modules/UHDConfig.cmake.in
++++ b/host/cmake/Modules/UHDConfig.cmake.in
+@@ -36,7 +36,6 @@
+     LIST(APPEND UHD_LIBDIR_HINTS ${UHD_DIR}/lib)
+ ENDIF()
+ 
+-INCLUDE(FindPkgConfig)
+ IF(PKG_CONFIG_FOUND)
+   IF(NOT ${CMAKE_VERSION} VERSION_LESS "2.8.0")
+     SET(UHD_QUIET "QUIET")
+@@ -107,3 +106,7 @@
+   MESSAGE(FATAL_ERROR "UHD is required, but was not found.")
+ 
+ ENDIF()
++
++if(NOT TARGET UHD::uhd)
++  include("${UHD_CMAKE_DIR}/UHDTargets.cmake")
++endif()

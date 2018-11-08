@@ -24,7 +24,6 @@ Build-Depends: cmake,
 	       libudev-dev [linux-any],
                libusb-1.0-0-dev [linux-any],
                libusb2-dev [kfreebsd-any],
-               pkg-config,
 	       python3-all-dev,
                python3-mako,
 	       python3-numpy,
@@ -38,7 +37,7 @@ Vcs-Git: git://salsa.debian.org/bottoms/pkg-uhd.git
 Package: uhd-host
 Architecture: any
 Depends: adduser,
-         libuhd3.13.0 (= ${binary:Version}),
+         libuhd3.13.1 (= ${binary:Version}),
          python,
          python-requests,
          ${misc:Depends},
@@ -57,7 +56,7 @@ Description: universal hardware driver for Ettus Research products - host apps
  display hardware configuration information and Doxygen generated
  documentation.
 
-Package: libuhd3.13.0
+Package: libuhd3.13.1
 Architecture: any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
@@ -74,7 +73,7 @@ Description: universal hardware driver for Ettus Research products - library
 Package: libuhd-dev
 Architecture: any
 Section: libdevel
-Depends: libuhd3.13.0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: libuhd3.13.1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Recommends: gnuradio
 Multi-Arch: same
 Description: universal hardware driver for Ettus Research products - headers
@@ -90,7 +89,7 @@ Description: universal hardware driver for Ettus Research products - headers
 Package: python3-uhd
 Architecture: any
 Section: libdevel
-Depends: libuhd3.13.0 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
+Depends: libuhd3.13.1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
 Recommends: gnuradio
 Multi-Arch: same
 Description: universal hardware driver for Ettus Research products - Python3

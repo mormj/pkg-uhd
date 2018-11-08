@@ -1,5 +1,5 @@
 usr/include
-usr/lib/*/cmake/uhd/*.cmake usr/lib/cmake/uhd/
+usr/lib/*/cmake/uhd/*.cmake
 usr/lib/*/libuhd.so
+/usr/lib/*/libuhd.a
 usr/lib/*/pkgconfig
-usr/share/uhd

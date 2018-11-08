@@ -1,6 +1,17 @@
+From 52878b8cb10cf1f8fd9f29d3bf28250871dd7158 Mon Sep 17 00:00:00 2001
+From: "A. Maitland Bottoms" <bottoms@debian.org>
+Date: Fri, 26 Oct 2018 21:25:56 -0400
+Subject: [PATCH 4/6] debian boost python
+
+The boost python3 component is python-py36 in Debian.
+---
+ host/CMakeLists.txt        | 6 +++---
+ host/python/CMakeLists.txt | 3 ++-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
 --- a/host/CMakeLists.txt
 +++ b/host/CMakeLists.txt
-@@ -289,7 +289,7 @@
+@@ -286,7 +286,7 @@
  SET(BOOST_PYTHON_COMPONENT python)
  SET(BOOST_PYTHON_VERSION 2.7)
  IF(${ENABLE_PYTHON3})
@@ -9,7 +20,7 @@
      SET(BOOST_PYTHON_VERSION 3)
  ENDIF()
  
-@@ -349,8 +349,8 @@
+@@ -346,8 +346,8 @@
  SET(BOOST_PYTHON_FOUND ${Boost_PYTHON_FOUND})
  SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON_LIBRARY})
  IF(${ENABLE_PYTHON3})
@@ -30,12 +41,3 @@
  TARGET_INCLUDE_DIRECTORIES(pyuhd PUBLIC
      ${PYTHON_NUMPY_INCLUDE_DIR}
      ${CMAKE_SOURCE_DIR}/lib
-@@ -48,7 +49,7 @@
- 
- ADD_CUSTOM_COMMAND(OUTPUT ${TIMESTAMP_FILE}
-   COMMAND ${CMAKE_COMMAND} -E copy ${PYUHD_FILES} ${CMAKE_CURRENT_BINARY_DIR}/uhd
--  COMMAND ${PYTHON} ${SETUP_PY} -q build
-+  COMMAND ${PYTHON_EXECUTABLE} ${SETUP_PY} -q build
-   COMMAND ${CMAKE_COMMAND} -E touch ${TIMESTAMP_FILE}
-   DEPENDS ${PYUHD_FILES})
- 

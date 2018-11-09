@@ -66,5 +66,5 @@ so that find_package(UHD) does the right things.
  ENDIF()
 +
 +if(NOT TARGET UHD::uhd)
-+  include("${UHD_CMAKE_DIR}/UHDTargets.cmake")
++  include("${CMAKE_CURRENT_LIST_DIR}/UHDTargets.cmake")
 +endif()

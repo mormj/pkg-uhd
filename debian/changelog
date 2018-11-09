@@ -1,3 +1,9 @@
+uhd (3.13.0.2-3) unstable; urgency=medium
+
+  * Correct path to UHDTargets.cmake
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 09 Nov 2018 11:06:12 -0500
+
 uhd (3.13.0.2-2) unstable; urgency=medium
 
   * Use Debian package version, not git describe

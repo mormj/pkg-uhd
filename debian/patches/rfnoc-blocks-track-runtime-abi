@@ -9,8 +9,6 @@ each installed version of libuhd finds its own runtime support
  host/include/uhd/rfnoc/constants.hpp         | 3 ++-
  2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/host/include/uhd/rfnoc/blocks/CMakeLists.txt b/host/include/uhd/rfnoc/blocks/CMakeLists.txt
-index 027b6eb53..f5b4ebaaf 100644
 --- a/host/include/uhd/rfnoc/blocks/CMakeLists.txt
 +++ b/host/include/uhd/rfnoc/blocks/CMakeLists.txt
 @@ -7,9 +7,15 @@
@@ -30,8 +28,6 @@ index 027b6eb53..f5b4ebaaf 100644
 +    DESTINATION ${PKG_DATA_DIR}/${UHD_BLOCKS_ABI}/rfnoc/blocks
      COMPONENT headers # TODO: Different component
  )
-diff --git a/host/include/uhd/rfnoc/constants.hpp b/host/include/uhd/rfnoc/constants.hpp
-index 6df4c535f..77cd7ff55 100644
 --- a/host/include/uhd/rfnoc/constants.hpp
 +++ b/host/include/uhd/rfnoc/constants.hpp
 @@ -8,6 +8,7 @@
@@ -42,7 +38,7 @@ index 6df4c535f..77cd7ff55 100644
  #include <uhd/types/dict.hpp>
  #include <boost/assign/list_of.hpp>
  #include <stdint.h>
-@@ -18,7 +19,7 @@ namespace uhd {
+@@ -18,7 +19,7 @@
  
  // All these configure the XML reader
  //! Where the RFNoC block/component definition files lie, relative to UHD_PKG_DIR
@@ -51,6 +47,3 @@ index 6df4c535f..77cd7ff55 100644
  //! The name of the environment variable storing the bath to the block definition files
  static const std::string XML_PATH_ENV = "UHD_RFNOC_DIR";
  
--- 
-2.11.0
-

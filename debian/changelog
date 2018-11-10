@@ -1,3 +1,9 @@
+uhd (3.13.1.0~rc1-2) experimental; urgency=medium
+
+  * Correct path to UHDTargets.cmake
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 09 Nov 2018 20:46:00 -0500
+
 uhd (3.13.1.0~rc1-1) experimental; urgency=medium
 
   * New upstream pre-release, ABI bump

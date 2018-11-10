@@ -52,7 +52,7 @@ index 4651e3a9c..feeb1d27c 100644
  ENDIF()
 +
 +if(NOT TARGET UHD::uhd)
-+  include("${UHD_CMAKE_DIR}/UHDTargets.cmake")
++  include("${CMAKE_CURRENT_LIST_DIR}/UHDTargets.cmake")
 +endif()
 diff --git a/host/lib/CMakeLists.txt b/host/lib/CMakeLists.txt
 index 3b243ab8b..2202884bb 100644

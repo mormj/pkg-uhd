@@ -10,3 +10,4 @@ improve-UHD_IMAGES_DIR-logic
 modern-cmake-targets
 debian-boost-python
 rfnoc-blocks-track-runtime-abi
+boost-time-conversion

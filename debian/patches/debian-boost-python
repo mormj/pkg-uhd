@@ -11,23 +11,45 @@ The boost python3 component is python-py36 in Debian.
 
 --- a/host/CMakeLists.txt
 +++ b/host/CMakeLists.txt
-@@ -286,7 +286,7 @@
- SET(BOOST_PYTHON_COMPONENT python)
- SET(BOOST_PYTHON_VERSION 2.7)
+@@ -283,11 +283,16 @@
+ # Choose a version of Python
+ ########################################################################
+ OPTION(ENABLE_PYTHON3 "Enable Python 3. Default is Python 2" OFF)
+-SET(BOOST_PYTHON_COMPONENT python)
+-SET(BOOST_PYTHON_VERSION 2.7)
  IF(${ENABLE_PYTHON3})
--    SET(BOOST_PYTHON_COMPONENT python3)
-+    SET(BOOST_PYTHON_COMPONENT python-py36)
++  IF(NOT BOOST_PYTHON_COMPONENT)
+     SET(BOOST_PYTHON_COMPONENT python3)
++  ENDIF()
      SET(BOOST_PYTHON_VERSION 3)
++ELSE()
++  IF(NOT BOOST_PYTHON_COMPONENT)
++    SET(BOOST_PYTHON_COMPONENT python)
++  ENDIF()
++    SET(BOOST_PYTHON_VERSION 2.7)
  ENDIF()
  
-@@ -346,8 +346,8 @@
+ ########################################################################
+@@ -346,8 +351,22 @@
  SET(BOOST_PYTHON_FOUND ${Boost_PYTHON_FOUND})
  SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON_LIBRARY})
  IF(${ENABLE_PYTHON3})
--    SET(BOOST_PYTHON_FOUND ${Boost_PYTHON3_FOUND})
--    SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON3_LIBRARY})
-+    SET(BOOST_PYTHON_FOUND ${Boost_PYTHON-PY36_FOUND})
-+    SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON-PY36_LIBRARY})
++  IF(${Boost_PYTHON3_FOUND})
+     SET(BOOST_PYTHON_FOUND ${Boost_PYTHON3_FOUND})
+     SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON3_LIBRARY})
++  ENDIF()
++  IF(${Boost_PYTHON35_FOUND})
++    SET(BOOST_PYTHON_FOUND ${Boost_PYTHON35_FOUND})
++    SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON35_LIBRARY})
++  ENDIF()
++  IF(${Boost_PYTHON36_FOUND})
++    SET(BOOST_PYTHON_FOUND ${Boost_PYTHON36_FOUND})
++    SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON36_LIBRARY})
++  ENDIF()
++  IF(${Boost_PYTHON37_FOUND})
++    SET(BOOST_PYTHON_FOUND ${Boost_PYTHON37_FOUND})
++    SET(BOOST_PYTHON_LIBRARY ${Boost_PYTHON37_LIBRARY})
++  ENDIF()
  ENDIF()
  
  MESSAGE(STATUS "Boost include directories: ${Boost_INCLUDE_DIRS}")

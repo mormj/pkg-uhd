@@ -1,3 +1,4 @@
+0001-images-Add-N3xx-Aurora-images.patch
 revert-cmake-allow-UHD-library-and-utilities-to-be-in-separ
 reproducible-doxygen-settings
 n230-hurd
@@ -7,3 +8,4 @@ improve-UHD_IMAGES_DIR-logic
 modern-cmake-targets
 debian-boost-python
 rfnoc-blocks-track-runtime-abi
+boost-time-conversion

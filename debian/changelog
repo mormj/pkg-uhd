@@ -1,3 +1,12 @@
+uhd (3.13.1.0~rc1-3) experimental; urgency=medium
+
+  * update to v3.13.1.0-rc1-1-gd3b7e90ae
+  * build with default Python3 and boost copmponents (Closes: #914983)
+  * Update compat level to enable parallel builds (Closes: #914322)
+  * build with ninja
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Thu, 29 Nov 2018 00:47:43 -0500
+
 uhd (3.13.1.0~rc1-2) experimental; urgency=medium
 
   * Correct path to UHDTargets.cmake

@@ -24,6 +24,7 @@ Build-Depends: cmake,
 	       libudev-dev [linux-any],
                libusb-1.0-0-dev [linux-any],
                libusb2-dev [kfreebsd-any],
+	       ninja-build,
 	       python3-all-dev,
                python3-mako,
 	       python3-numpy,
@@ -91,7 +92,6 @@ Architecture: any
 Section: libdevel
 Depends: libuhd3.13.1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
 Recommends: gnuradio
-Multi-Arch: same
 Description: universal hardware driver for Ettus Research products - Python3
  Host library for the Universal Hardware Driver for Ettus Research products.
  .

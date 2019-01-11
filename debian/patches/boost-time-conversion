@@ -24,14 +24,3 @@ accept double as an initializer.
                  std::cout << std::endl;
                  throw std::runtime_error(str(boost::format("timed out waiting for consecutive locks on sensor \"%s\"") % sensor_name));
              }
---- a/host/examples/rfnoc_nullsource_ce_rx.cpp
-+++ b/host/examples/rfnoc_nullsource_ce_rx.cpp
-@@ -278,7 +278,7 @@
-     std::cout << boost::format("Creating the USRP device with: %s...") % args << std::endl;
-     uhd::device3::sptr usrp = uhd::device3::make(args);
- 
--    boost::this_thread::sleep(boost::posix_time::seconds(setup_time)); //allow for some setup time
-+    boost::this_thread::sleep(boost::posix_time::seconds(long(setup_time))); //allow for some setup time
-     // Reset device streaming state
-     usrp->clear();
-     uhd::rfnoc::graph::sptr rx_graph = usrp->create_graph("rx_graph");

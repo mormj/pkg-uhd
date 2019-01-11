@@ -1,3 +1,9 @@
+uhd (3.13.1.0-2) unstable; urgency=high
+
+  * Debian armhf needs NEON_SIMD_ENABLE=OFF
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Fri, 11 Jan 2019 16:43:32 -0500
+
 uhd (3.13.1.0-1) unstable; urgency=high
 
   * New upstream stable release

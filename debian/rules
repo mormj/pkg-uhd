@@ -16,7 +16,7 @@ override_dh_acc:
 	- cat logs/libuhd-dev/*/log.txt
 
 override_dh_auto_configure:
-	if [ $(DEB_BUILD_ARCH) == armhf ]; then \
+	if [ $(DEB_BUILD_ARCH) = armhf ]; then \
 	dh_auto_configure -- -DCMAKE_BUILD_TYPE=RelWithDebInfo -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" \
 			     -DENABLE_RFNOC=True -DENABLE_STATIC_LIBS=ON \
 			     -DUHD_VERSION=$(DEBVER) -DENABLE_PYTHON_API=ON -DENABLE_PYTHON3=ON \

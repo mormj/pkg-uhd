@@ -1,3 +1,9 @@
+uhd (3.13.1.0-3) unstable; urgency=high
+
+  * Fix armhf shell test syntax
+
+ -- A. Maitland Bottoms <bottoms@debian.org>  Tue, 15 Jan 2019 00:08:48 -0500
+
 uhd (3.13.1.0-2) unstable; urgency=high
 
   * Debian armhf needs NEON_SIMD_ENABLE=OFF

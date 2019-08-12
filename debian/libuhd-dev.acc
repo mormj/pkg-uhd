@@ -6,7 +6,7 @@ debian/libuhd-dev/usr/include/uhd/
 </headers>
 
 <libs>
-debian/libuhd3.13.0/usr/lib/
+debian/libuhd3.14.1/usr/lib/
 </libs>
 
 </descriptor>

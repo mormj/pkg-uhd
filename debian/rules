@@ -6,7 +6,7 @@ DEBVER=$(shell head -1 $(DEB_DEBIAN_DIR)/changelog | awk -F'[()]' '{print $$2}')
 VER=$(shell dpkg-parsechangelog -l$(DEB_DEBIAN_DIR)/changelog \
               | sed -rne 's,^Version: ([^-]+).*,\1,p')
 #GITREV=$(shell echo $(VER) | sed -rne 's,([0-9]).([0-9].).([0-9]).([0-9]),release_00\1_0\2_00\3_00\4,p')
-GITREV=v3.13.1.0-rc1
+GITREV=v3.14.1.0
 py3default = $(subst .,,$(shell py3versions -dv))
 %:
 	dh $@ --sourcedirectory=host --with python3 --buildsystem=cmake+ninja
@@ -16,12 +16,22 @@ override_dh_acc:
 	- cat logs/libuhd-dev/*/log.txt
 
 override_dh_auto_configure:
+	if [ $(DEB_BUILD_ARCH) = armhf ]; then \
 	dh_auto_configure -- -DCMAKE_BUILD_TYPE=RelWithDebInfo -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" \
 			     -DENABLE_RFNOC=True -DENABLE_STATIC_LIBS=ON \
 			     -DUHD_VERSION=$(DEBVER) -DENABLE_PYTHON_API=ON -DENABLE_PYTHON3=ON \
 			     -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 \
 			     -DBOOST_PYTHON_COMPONENT=python$(py3default) \
-	                     -DPKG_LIB_DIR="/usr/lib/uhd" -DDOXYGEN_HAVE_DOT=True
+	                     -DPKG_LIB_DIR="/usr/lib/uhd" -DDOXYGEN_HAVE_DOT=True \
+			     -DNEON_SIMD_ENABLE=OFF ;\
+	else \
+	dh_auto_configure -- -DCMAKE_BUILD_TYPE=RelWithDebInfo -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" \
+			     -DENABLE_RFNOC=True -DENABLE_STATIC_LIBS=ON \
+			     -DUHD_VERSION=$(DEBVER) -DENABLE_PYTHON_API=ON -DENABLE_PYTHON3=ON \
+			     -DPYTHON_EXECUTABLE:FILEPATH=/usr/bin/python3 \
+			     -DBOOST_PYTHON_COMPONENT=python$(py3default) \
+	                     -DPKG_LIB_DIR="/usr/lib/uhd" -DDOXYGEN_HAVE_DOT=True ;\
+	fi
 
 # RFNoC test 30 failes if no USRP available
 override_dh_auto_test:
@@ -41,5 +51,7 @@ get-orig-source:
 	cd uhd && git archive --format=tar --prefix=uhd-$(VER)/  $(GITREV) | xz > ../../uhd_$(VER).orig.tar.xz
 	cd uhd && git checkout $(GITREV)
 	cd uhd && rm -rf fpga-src/.git fpga-src/.gitignore
+	cd uhd && rm -rf fpga-src/usrp3/top/b200/planahead/planahead.runs/impl_1/rundef.js
+	cd uhd && rm -rf host/cmake/msvc/amd64 host/cmake/msvc/x86
 	cd uhd && tar cf - fpga-src | xz > ../../uhd_$(VER).orig-fpga-src.tar.xz
 	rm -rf uhd

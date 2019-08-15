@@ -36,9 +36,9 @@ each installed version of libuhd finds its own runtime support
  
 +#include <uhd/version.hpp>
  #include <uhd/types/dict.hpp>
- #include <boost/assign/list_of.hpp>
  #include <stdint.h>
-@@ -18,7 +19,7 @@
+ #include <boost/assign/list_of.hpp>
+@@ -17,7 +18,7 @@
  
  // All these configure the XML reader
  //! Where the RFNoC block/component definition files lie, relative to UHD_PKG_DIR

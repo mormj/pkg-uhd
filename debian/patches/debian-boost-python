@@ -30,7 +30,7 @@ The boost python3 component is python-py36 in Debian.
  endif()
  
  ########################################################################
-@@ -347,8 +352,22 @@
+@@ -348,8 +353,22 @@
  set(BOOST_PYTHON_FOUND ${Boost_PYTHON_FOUND})
  set(BOOST_PYTHON_LIBRARY ${Boost_PYTHON_LIBRARY})
  if(${ENABLE_PYTHON3})

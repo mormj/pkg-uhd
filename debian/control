@@ -3,7 +3,7 @@ Section: science
 Priority: optional
 Maintainer: A. Maitland Bottoms <bottoms@debian.org>
 Build-Depends: cmake,
-               debhelper (>= 10),
+               debhelper (>= 12),
 	       dh-python,
 	       doxygen,
 	       doxygen-latex,
@@ -30,7 +30,7 @@ Build-Depends: cmake,
 	       python3-numpy,
 	       python3-requests,
 	       python3-setuptools
-Standards-Version: 4.1.4
+Standards-Version: 4.4.0
 Homepage: http://www.ettus.com/sdr-software/detail/usrp-hardware-driver
 Vcs-Browser: http://salsa.debian.org/bottoms/pkg-uhd
 Vcs-Git: git://salsa.debian.org/bottoms/pkg-uhd.git
@@ -38,7 +38,7 @@ Vcs-Git: git://salsa.debian.org/bottoms/pkg-uhd.git
 Package: uhd-host
 Architecture: any
 Depends: adduser,
-         libuhd3.13.1 (= ${binary:Version}),
+         libuhd3.14.1 (= ${binary:Version}),
          ${python3:Depends},
          python3-requests,
          ${misc:Depends},
@@ -57,7 +57,7 @@ Description: universal hardware driver for Ettus Research products - host apps
  display hardware configuration information and Doxygen generated
  documentation.
 
-Package: libuhd3.13.1
+Package: libuhd3.14.1
 Architecture: any
 Section: libs
 Pre-Depends: ${misc:Pre-Depends}
@@ -74,7 +74,7 @@ Description: universal hardware driver for Ettus Research products - library
 Package: libuhd-dev
 Architecture: any
 Section: libdevel
-Depends: libuhd3.13.1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
+Depends: libuhd3.14.1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}
 Recommends: gnuradio
 Multi-Arch: same
 Description: universal hardware driver for Ettus Research products - headers
@@ -90,7 +90,7 @@ Description: universal hardware driver for Ettus Research products - headers
 Package: python3-uhd
 Architecture: any
 Section: libdevel
-Depends: libuhd3.13.1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
+Depends: libuhd3.14.1 (= ${binary:Version}), ${misc:Depends}, ${shlibs:Depends}, ${python3:Depends}
 Recommends: gnuradio
 Description: universal hardware driver for Ettus Research products - Python3
  Host library for the Universal Hardware Driver for Ettus Research products.

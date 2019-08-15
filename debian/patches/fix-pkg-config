@@ -1,0 +1,15 @@
+Author: A. Maitland Bottoms <bottoms@debian.org>
+Description: fix-pkg-config
+ Fixes bug found by lintian:
+ pkg-config-references-unknown-shared-library
+ pkgconfig/uhd.pc -lboost_system (line 14)
+
+--- a/host/uhd.pc.in
++++ b/host/uhd.pc.in
+@@ -11,5 +11,5 @@
+ Requires.private: @UHD_PC_REQUIRES@
+ Conflicts:
+ Cflags: -I${includedir} @UHD_PC_CFLAGS@
+-Libs: -L${libdir} -luhd -lboost_system
++Libs: -L${libdir} -luhd
+ Libs.private: @UHD_PC_LIBS@

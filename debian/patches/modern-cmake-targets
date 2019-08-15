@@ -13,7 +13,7 @@ so that find_package(UHD) does the right things.
 
 --- a/host/CMakeLists.txt
 +++ b/host/CMakeLists.txt
-@@ -556,9 +556,17 @@
+@@ -557,9 +557,17 @@
  
  UHD_INSTALL(
      FILES ${cmake_configs}
@@ -52,7 +52,7 @@ so that find_package(UHD) does the right things.
 +endif()
 --- a/host/lib/CMakeLists.txt
 +++ b/host/lib/CMakeLists.txt
-@@ -186,6 +186,7 @@
+@@ -189,6 +189,7 @@
  
  if(NOT UHDHOST_PKG) #Syntax makes it unusable by UHD_INSTALL
      install(TARGETS uhd
@@ -60,7 +60,7 @@ so that find_package(UHD) does the right things.
          LIBRARY DESTINATION ${LIBRARY_DIR} COMPONENT libraries # .so file
          ARCHIVE DESTINATION ${LIBRARY_DIR} COMPONENT libraries # .lib file
          RUNTIME DESTINATION ${RUNTIME_DIR} COMPONENT libraries # .dll file
-@@ -200,6 +201,7 @@
+@@ -203,6 +204,7 @@
      set_target_properties(uhd_static PROPERTIES OUTPUT_NAME uhd)
      set_target_properties(uhd_static PROPERTIES COMPILE_DEFINITIONS UHD_STATIC_LIB)
      install(TARGETS uhd_static

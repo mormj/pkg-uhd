@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: UHD
-Upstream-Contact: http://www.ettus.com/contact
+Upstream-Contact: https://www.ettus.com/contact
 Source: https://github.com/EttusResearch/uhd/
 Comment: Only the host directory of the distributed source is used
  to build the uhd-host package for Debian main.

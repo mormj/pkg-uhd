@@ -1,4 +1,3 @@
-fix-pkg-config
 revert-cmake-allow-UHD-library-and-utilities-to-be-in-separ
 reproducible-doxygen-settings
 n230-hurd

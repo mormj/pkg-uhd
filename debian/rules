@@ -6,7 +6,7 @@ DEBVER=$(shell head -1 $(DEB_DEBIAN_DIR)/changelog | awk -F'[()]' '{print $$2}')
 VER=$(shell dpkg-parsechangelog -l$(DEB_DEBIAN_DIR)/changelog \
               | sed -rne 's,^Version: ([^-]+).*,\1,p')
 #GITREV=$(shell echo $(VER) | sed -rne 's,([0-9]).([0-9].).([0-9]).([0-9]),release_00\1_0\2_00\3_00\4,p')
-GITREV=v3.14.1.0
+GITREV=v3.14.1.1
 py3default = $(subst .,,$(shell py3versions -dv))
 %:
 	dh $@ --sourcedirectory=host --with python3 --buildsystem=cmake+ninja
